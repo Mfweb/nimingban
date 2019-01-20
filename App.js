@@ -1,17 +1,72 @@
 import React, { Component } from 'react'
 import { Text, Button, View, Image, StyleSheet, FlatList,SafeAreaView,StatusBar, TouchableHighlight } from 'react-native'
 import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator, DrawerActions } from 'react-navigation'
-import { parseDOM } from 'htmlparser2'
 import { getForumList } from './network'
+import { getHTMLDom } from './html-decoder'
+
+const globalColor = '#f45a8d';
 
 const styles = StyleSheet.create({
-  leftMenuIcon: {
-    width: 32,
-    height: 32
-  },
   mainList: {
     flex: 1,
     backgroundColor: '#DCDCDC'
+  },
+  mainListItem: {
+    backgroundColor: '#FFF',
+    marginTop: 10,
+    padding: 3,
+    shadowOffset: {width: 0, height: 5},
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    shadowColor: '#696969',
+  },
+  mainListItemContent: {
+    color: '#000',
+    fontSize: 20
+  },
+  mainListItemHeader: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginBottom: 3
+  },
+  mainListItemUserCookieName: {
+    fontSize: 18,
+    color: globalColor
+  },
+  mainListItemUserCookieNameBigVIP: {
+    fontSize: 18,
+    color: 'red'
+  },
+  mainListItemTid: {
+    fontSize: 18,
+    color: globalColor
+  },
+  mainListItemTime: {
+    fontSize: 18,
+    color: globalColor
+  },
+  mainListItemBottom: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 3,
+    paddingRight: 5
+  },
+  mainListReplayCountIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 3
+  },
+  mainListReplayCountText: {
+    color: '#696969',
+    fontSize: 18
+  },
+  leftMenuIcon: {
+    width: 32,
+    height: 32
   },
   icon: {
     width: 24,
@@ -19,62 +74,38 @@ const styles = StyleSheet.create({
   },
 });
 
-const htmlConstStyles = StyleSheet.create({
-  defaultStyle: {
-    fontSize: 20
-  },
-  a: {
-    color: '#4169E1',
-    textDecorationLine: 'underline'
-  },
-  strong: {
-    fontWeight: 'bold'
-  }
-});
-
-
-function getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null) {
-  let outPut = [];
-  htmlJSONIn.forEach(htmlTag => {
-    switch (htmlTag.type) {
-      case 'text':
-        switch (tagName) {
-          case 'a':
-            outPut.push(<Text style={htmlConstStyles.a} key={htmlTag.data+countKey++}>{htmlTag.data}</Text>);
-            break;
-          case 'strong':
-            outPut.push(<Text style={htmlConstStyles.strong} key={htmlTag.data+countKey++}>{htmlTag.data}</Text>);
-            break;
-          case 'br':
-            outPut.push(<Text key={htmlTag.data+countKey++}>\r\n</Text>);
-            break;
-          case 'font':
-            //let style = createStyleSheetByAttribs(tagAttribs);
-            outPut.push(<Text style={tagAttribs} key={htmlTag.data+countKey++}>{htmlTag.data}</Text>);
-            break;
-          default:
-            outPut.push(<Text key={htmlTag.data+countKey++}>{htmlTag.data}</Text>);
-            break;
-        }
-        break;
-      case 'tag':
-        outPut = outPut.concat(getHTMLDom(htmlTag.children, countKey, htmlTag.name, htmlTag.attribs))
-        break;
-      default:
-        break;
-    }
-  });
-  return outPut;
-}
-
 class MainListItem extends React.Component {
   render() {
-    //转JSON
-    let htmlJSON = parseDOM(this.props.itemDetail.content);
-    console.log(htmlJSON);
-    let outPut = getHTMLDom(htmlJSON);
+    console.log(this.props.itemDetail);
+    let userID = getHTMLDom(this.props.itemDetail.userid);
+    let threadContent = getHTMLDom(this.props.itemDetail.content);
+    let replayCountText = this.props.itemDetail.remainReplys ? (this.props.itemDetail.remainReplys.toString() + "(" + this.props.itemDetail.replyCount + ")" ):this.props.itemDetail.replyCount;
     return (
-      <Text style={htmlConstStyles.defaultStyle}>{outPut}</Text>
+      <View style={styles.mainListItem}>
+
+        <View style={styles.mainListItemHeader}>
+          <Text style={ this.props.itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName }>
+            {userID}
+          </Text>
+
+          <Text style={styles.mainListItemTid}>
+            No.{this.props.itemDetail.id}
+          </Text>
+
+          <Text style={styles.mainListItemTime}>
+            {this.props.itemDetail.now}
+          </Text>
+        </View>
+
+        <Text style={styles.mainListItemContent}>
+        {threadContent}
+        </Text>
+
+        <View style={styles.mainListItemBottom}>
+          <Image style={styles.mainListReplayCountIcon} source={require('./imgs/replay-count.png')}></Image>
+          <Text style={styles.mainListReplayCountText}>{replayCountText}</Text>
+        </View>
+      </View>
     );
   }
 }
@@ -146,17 +177,20 @@ class HomeScreen extends React.Component {
 
   _pullDownRefresh = async () => {
       this.setState({loading: true});
-      console.log('pullDown');
-      /*page = 1;
-      let listText = await getForumList(4, page);
-      console.log(listText);
-      try{
-        let listJSON = JSON.parse(listText);
-        console.log(listJSON);
-      }catch(error){
-        alert('请求数据失败,' + error);
-      }*/
-      this.setState({loading: false});
+      page = 1;
+      getForumList(4, page).then((res) => {
+        if(res.status == 'ok') {
+          this.setState({
+            threadList: res.res,
+            page: 1,
+            loading: false
+          });
+        }
+        else {
+          alert('请求数据失败:' + res.errmsg);
+        }
+        this.setState( {loading: false} );
+      });
   }
 }
 
@@ -211,7 +245,7 @@ const MainStackNavigator = createStackNavigator({
     //顶栏配置
     defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: '#ffafc9'
+        backgroundColor: globalColor
       },
       headerTintColor: '#ffffff'
     }
