@@ -26,4 +26,8 @@ async function getForumList(fid, page) {
     }
 }
 
-export { getForumList };
+function getImageCDN() {
+    return 'https://nmbimg.fastmirror.org/'
+}
+
+export { getForumList, getImageCDN};

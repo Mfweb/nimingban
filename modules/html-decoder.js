@@ -53,7 +53,7 @@ function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null
 
 function getHTMLDom(htmlTextIn, defaultFontSize = 20) {
     let domJSON = parseDOM( escape2Html(htmlTextIn) );
-    console.log(domJSON);
+    //console.log(domJSON);
     let dom = _getHTMLDom(domJSON);
     return (
         <Text>{dom}</Text>

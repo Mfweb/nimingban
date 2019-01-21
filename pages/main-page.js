@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
 import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList } from '../modules/network'
+import { getForumList, getImageCDN } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView } from '../component/list-process-view'
 
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     mainListItemHeaderL1: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 8
     },
@@ -97,6 +97,16 @@ const styles = StyleSheet.create({
         color: '#696969',
         fontSize: 18
     },
+    mainListItemImageTouch: {
+        marginTop: 5,
+        flex: 0,
+        width: Dimensions.get('window').width / 2.5,
+    },
+    mainListItemImage: {
+        height: Dimensions.get('window').width / 2.5,
+        width: Dimensions.get('window').width / 2.5,
+        left: 0,
+    },
     leftMenuIcon: {
         width: 32,
         height: 32
@@ -119,36 +129,37 @@ class MainListItem extends React.Component {
         })
     }
     render() {
-        //console.log(this.props.itemDetail);
-        let userID = getHTMLDom(this.props.itemDetail.userid);
-        let threadContent = getHTMLDom(this.props.itemDetail.content);
-        let replayCountText = this.props.itemDetail.remainReplys ? (this.props.itemDetail.remainReplys.toString() + "(" + this.props.itemDetail.replyCount + ")") : this.props.itemDetail.replyCount;
+        console.log(this.props.itemDetail);
+        let {itemDetail} = this.props;
+        let userID = getHTMLDom(itemDetail.userid);
+        let threadContent = getHTMLDom(itemDetail.content);
+        let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
         return (
             <TouchableOpacity onPress={this._onPress}>
                 <View style={styles.mainListItem}>
                     <View style={styles.mainListItemHeader}>
                         <View style={styles.mainListItemHeaderL1}>
-                            <Text style={this.props.itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName}>
+                            <Text style={itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName}>
                                 {userID}
                             </Text>
 
                             <Text style={styles.mainListItemTid}>
-                                No.{this.props.itemDetail.id}
+                                No.{itemDetail.id}
                             </Text>
 
                             <Text style={styles.mainListItemTime}>
-                                {this.props.itemDetail.now}
+                                {itemDetail.now}
                             </Text>
                         </View>
                     </View>
                     <View style={styles.mainListItemHeaderL2}>
                         <View style={styles.mainListItemHeaderL2L}>
-                            <Text style={this.props.itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{this.props.itemDetail.title}</Text>
-                            <Text style={this.props.itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{this.props.itemDetail.name}</Text>
+                            <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
+                            <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
                         </View>
 
                         <View style={styles.mainListItemHeaderL2R}>
-                            <Text style={this.props.itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
+                            <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
                         </View>
 
                     </View>
@@ -156,6 +167,13 @@ class MainListItem extends React.Component {
                     <Text style={styles.mainListItemContent}>
                         {threadContent}
                     </Text>
+                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={()=>{console.log(123123);}}>
+                        <Image style={styles.mainListItemImage}
+                        source={ {uri: getImageCDN() + 'thumb/' + itemDetail.img + itemDetail.ext} } 
+                        resizeMode = 'contain'
+                        />
+                    </TouchableOpacity>
+
 
                     <View style={styles.mainListItemBottom}>
                         <Image style={styles.mainListReplayCountIcon} source={require('../imgs/replay-count.png')}></Image>
