@@ -27,6 +27,7 @@ function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null
                     case 'a':
                         outPut.push(<Text style={htmlConstStyles.a} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
                         break;
+                    case 'b':
                     case 'strong':
                         outPut.push(<Text style={htmlConstStyles.strong} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
                         break;
@@ -36,7 +37,11 @@ function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null
                     case 'font':
                         outPut.push(<Text style={tagAttribs} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
                         break;
+                    case null:
+                        outPut.push(<Text key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
+                        break;
                     default:
+                        console.warn('Unknow HTML tag:' + tagName);
                         outPut.push(<Text key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
                         break;
                 }
