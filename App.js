@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList,SafeAreaView,StatusBar, TouchableHighlight } from 'react-native'
-import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator, DrawerActions } from 'react-navigation'
-import { getForumList } from './network'
-import { getHTMLDom } from './html-decoder'
+import { Text, Button, View, Image, StyleSheet, FlatList,SafeAreaView,StatusBar, TouchableHighlight, Dimensions, Animated } from 'react-native'
+import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
+import { getForumList } from './modules/network'
+import { getHTMLDom } from './modules/html-decoder'
+import { ListProcessView } from './component/list-process-view'
 
 const globalColor = '#f45a8d';
 
@@ -106,9 +107,10 @@ const styles = StyleSheet.create({
   },
 });
 
+
 class MainListItem extends React.Component {
   render() {
-    console.log(this.props.itemDetail);
+    //console.log(this.props.itemDetail);
     let userID = getHTMLDom(this.props.itemDetail.userid);
     let threadContent = getHTMLDom(this.props.itemDetail.content);
     let replayCountText = this.props.itemDetail.remainReplys ? (this.props.itemDetail.remainReplys.toString() + "(" + this.props.itemDetail.replyCount + ")" ):this.props.itemDetail.replyCount;
@@ -158,7 +160,8 @@ class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
+      headerLoading: true,
+      footerLoading: 0,
       threadList: Array(), 
       page: 1
     };
@@ -183,27 +186,35 @@ class HomeScreen extends React.Component {
     if(this.state.threadList.length == 0) {
       page = 1;
       this.setState({
-        loading: true
+        headerLoading: true
       });
       getForumList(4, page).then((res) => {
         if(res.status == 'ok') {
           this.setState({
             threadList: res.res,
             page: 1,
-            loading: false
+            headerLoading: false
           });
         }
         else {
           alert('请求数据失败:' + res.errmsg);
         }
-        this.setState( {loading: false} );
+        this.setState( {headerLoading: false} );
       });
     }
     this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer })
   }
+
   _renderItem = ({item}) => (
     <MainListItem itemDetail={item}/>
-  );
+  )
+  
+  _footerComponent = () => {
+    let windowWidth = Dimensions.get('window').width;
+    return (
+      <ListProcessView mode={this.state.footerLoading} toMax={windowWidth} height={8} />
+    );
+  }
 
   render() {
     return (
@@ -212,28 +223,54 @@ class HomeScreen extends React.Component {
         extraData={this.state}
         style={styles.mainList} 
         onRefresh={this._pullDownRefresh} 
-        refreshing={this.state.loading}
+        refreshing={this.state.headerLoading}
         keyExtractor={(item, index) => item.id}
         renderItem={this._renderItem}
+        ListFooterComponent={this._footerComponent}
+        onEndReachedThreshold={0.1}
+        onEndReached={this._pullUpLoading}
         />
     );
   }
 
+  _pullUpLoading = async() => {
+    if(this.state.footerLoading != 0) {
+      return;
+    }
+    this.setState({footerLoading: 1});
+    page ++;
+    getForumList(4, page).then((res) => {
+      if(res.status == 'ok') {
+        var tempList = this.state.threadList.slice()
+        tempList = tempList.concat(res.res);
+        this.setState({
+          threadList: tempList,
+          page: 1,
+          footerLoading: 0
+        });
+      }
+      else {
+        this.setState( {footerLoading: 0} );
+        alert('请求数据失败:' + res.errmsg);
+      }
+    });
+  }
+
   _pullDownRefresh = async () => {
-      this.setState({loading: true});
+      this.setState({headerLoading: true});
       page = 1;
       getForumList(4, page).then((res) => {
         if(res.status == 'ok') {
           this.setState({
             threadList: res.res,
             page: 1,
-            loading: false
+            headerLoading: false
           });
         }
         else {
           alert('请求数据失败:' + res.errmsg);
         }
-        this.setState( {loading: false} );
+        this.setState( {headerLoading: false} );
       });
   }
 }
