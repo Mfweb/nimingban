@@ -11,17 +11,17 @@ async function getForumList(fid, page) {
     let response = await fetch(apiURLs.getForumThread, {
         method: 'POST',
         headers: {
-            'content-type'      : 'application/x-www-form-urlencoded',
-            'X-Requested-With'  : 'XMLHttpRequest',
-            'User-Agent'        : 'HavfunClient-WeChatAPP'
+            'content-type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+            'User-Agent': 'HavfunClient-WeChatAPP'
         },
         body: 'id=' + fid + '&page=' + page
     });
     let res = await response.text();
-    try{
+    try {
         let resJSON = JSON.parse(res);
         return { status: 'ok', res: resJSON };
-    } catch(error) {
+    } catch (error) {
         return { status: 'error', errmsg: error };
     }
 }
