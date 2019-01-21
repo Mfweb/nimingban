@@ -23,7 +23,6 @@ function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null
                     outPut.push(<Text style={htmlConstStyles.a} key={htmlTag.data+countKey++}>{htmlTag.data}</Text>);
                     break;
                 case 'strong':
-                    console.log(htmlTag.data);
                     outPut.push(<Text style={htmlConstStyles.strong} key={htmlTag.data+countKey++}>{htmlTag.data}</Text>);
                     break;
                 case 'br':

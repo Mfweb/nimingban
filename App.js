@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   mainListItem: {
     backgroundColor: '#FFF',
     marginTop: 10,
-    padding: 3,
+    padding: 8,
     shadowOffset: {width: 0, height: 5},
     shadowOpacity: 0.5,
     shadowRadius: 5,
@@ -25,11 +25,27 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   mainListItemHeader: {
+
+  },
+  mainListItemHeaderL1: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginBottom: 3
+    marginBottom: 8
+  },
+  mainListItemHeaderL2: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8
+  },
+  mainListItemHeaderL2L: {
+    marginLeft: 5,
+  },
+  mainListItemHeaderL2R: {
+    marginRight: 5,
   },
   mainListItemUserCookieName: {
     fontSize: 18,
@@ -46,6 +62,22 @@ const styles = StyleSheet.create({
   mainListItemTime: {
     fontSize: 18,
     color: globalColor
+  },
+  mainListItemTitle: {
+    fontSize: 16,
+    color: '#696969'
+  },
+  mainListItemName: {
+    fontSize: 16,
+    color: '#696969'
+  },
+  mainListItemSAGE: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 22
+  },
+  displayNone: {
+    display: 'none'
   },
   mainListItemBottom: {
     flex: 1,
@@ -82,19 +114,31 @@ class MainListItem extends React.Component {
     let replayCountText = this.props.itemDetail.remainReplys ? (this.props.itemDetail.remainReplys.toString() + "(" + this.props.itemDetail.replyCount + ")" ):this.props.itemDetail.replyCount;
     return (
       <View style={styles.mainListItem}>
-
         <View style={styles.mainListItemHeader}>
-          <Text style={ this.props.itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName }>
-            {userID}
-          </Text>
+          <View style={styles.mainListItemHeaderL1}>
+            <Text style={ this.props.itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName }>
+              {userID}
+            </Text>
 
-          <Text style={styles.mainListItemTid}>
-            No.{this.props.itemDetail.id}
-          </Text>
+            <Text style={styles.mainListItemTid}>
+              No.{this.props.itemDetail.id}
+            </Text>
 
-          <Text style={styles.mainListItemTime}>
-            {this.props.itemDetail.now}
-          </Text>
+            <Text style={styles.mainListItemTime}>
+              {this.props.itemDetail.now}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.mainListItemHeaderL2}>
+          <View style={styles.mainListItemHeaderL2L}>
+            <Text style={this.props.itemDetail.title=='无标题' ? styles.displayNone :styles.mainListItemTitle}>{this.props.itemDetail.title}</Text>
+            <Text style={this.props.itemDetail.name=='无名氏' ? styles.displayNone :styles.mainListItemName}>{this.props.itemDetail.name}</Text>
+          </View>
+
+          <View style={styles.mainListItemHeaderL2R}>
+            <Text style={this.props.itemDetail.sage=='0'? styles.displayNone:styles.mainListItemSAGE}>SAGE</Text>
+          </View>
+
         </View>
 
         <Text style={styles.mainListItemContent}>
