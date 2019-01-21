@@ -128,6 +128,11 @@ class MainListItem extends React.Component {
             title: this.props.itemDetail.title,
         })
     }
+    _oPressImage = () => {
+        this.props.navigation.push('ImageViewer', {
+            imgName: this.props.itemDetail.img + this.props.itemDetail.ext
+        })
+    }
     render() {
         console.log(this.props.itemDetail);
         let {itemDetail} = this.props;
@@ -167,7 +172,7 @@ class MainListItem extends React.Component {
                     <Text style={styles.mainListItemContent}>
                         {threadContent}
                     </Text>
-                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={()=>{console.log(123123);}}>
+                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._oPressImage}>
                         <Image style={styles.mainListItemImage}
                         source={ {uri: getImageCDN() + 'thumb/' + itemDetail.img + itemDetail.ext} } 
                         resizeMode = 'contain'

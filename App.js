@@ -6,6 +6,7 @@ import { getHTMLDom } from './modules/html-decoder'
 import { ListProcessView } from './component/list-process-view'
 import { HomeScreen } from './pages/main-page'
 import { DetailsScreen } from './pages/detail-thread'
+import { ImageViewer } from './pages/image-viewer'
 
 const globalColor = '#f45a8d';
 
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
 
 class MyNotificationsScreen extends React.Component {
     static navigationOptions = {
-        drawerLabel: 'Notifications',
+        drawerLabel: '这里还没完成',
         drawerIcon: ({ tintColor }) => (
             <Image
                 source={require('./imgs/menu.png')}
@@ -51,6 +52,11 @@ const MainStackNavigator = createStackNavigator({
         screen: DetailsScreen,
         headerBackTitle: '返回'
     },
+    //图片预览
+    ImageViewer: {
+        screen: ImageViewer,
+        headerBackTitle: '返回'
+    }
 }, {
         initialRouteName: 'Home',
         //顶栏配置
