@@ -40,7 +40,6 @@ class ListProcessView extends React.Component {
         return (
             <View style={{
                 backgroundColor: listProcessColorList[(this.state.colorNow + 1 >= listProcessColorList.length) ? 0 : this.state.colorNow + 1],
-                display: this.props.mode == 0 ? 'none' : 'flex',
                 marginBottom: 8
             }}>
                 <Animated.View style={{ height: this.props.height, transform: [{ translateX: this.state.translateNow }], backgroundColor: listProcessColorList[this.state.colorNow] }}>

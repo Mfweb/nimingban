@@ -244,10 +244,15 @@ class HomeScreen extends React.Component {
     )
 
     _footerComponent = () => {
-        let windowWidth = Dimensions.get('window').width;
-        return (
-            <ListProcessView mode={this.state.footerLoading} toMax={windowWidth} height={8} />
-        );
+        if(this.state.footerLoading == 0) {
+            return (<View style={{height: 8}}></View>);
+        }
+        else {
+            let windowWidth = Dimensions.get('window').width;
+            return (
+                <ListProcessView toMax={windowWidth} height={8} />
+            );
+        }
     }
 
     render() {
@@ -258,7 +263,7 @@ class HomeScreen extends React.Component {
                 style={styles.mainList}
                 onRefresh={this._pullDownRefresh}
                 refreshing={this.state.headerLoading}
-                keyExtractor={(item, index) => item.id}
+                keyExtractor={(item, index) => {return item.toString() + '-' + index.toString()}}
                 renderItem={this._renderItem}
                 ListFooterComponent={this._footerComponent}
                 onEndReachedThreshold={0.1}
@@ -267,44 +272,49 @@ class HomeScreen extends React.Component {
         );
     }
 
-    _pullUpLoading = async () => {
-        if (this.state.footerLoading != 0) {
+    _pullUpLoading = () => {
+        if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        this.setState({ footerLoading: 1 });
-        page++;
-        getForumList(4, page).then((res) => {
-            if (res.status == 'ok') {
-                var tempList = this.state.threadList.slice()
-                tempList = tempList.concat(res.res);
-                this.setState({
-                    threadList: tempList,
-                    page: 1,
-                    footerLoading: 0
-                });
-            }
-            else {
-                this.setState({ footerLoading: 0 });
-                alert('请求数据失败:' + res.errmsg);
-            }
+        this.setState({ footerLoading: 1 }, async function() {
+            page++;
+            getForumList(4, page).then((res) => {
+                if (res.status == 'ok') {
+                    var tempList = this.state.threadList.slice()
+                    tempList = tempList.concat(res.res);
+                    this.setState({
+                        threadList: tempList,
+                        page: 1,
+                        footerLoading: 0
+                    });
+                }
+                else {
+                    this.setState({ footerLoading: 0 });
+                    alert('请求数据失败:' + res.errmsg);
+                }
+            });
         });
     }
 
     _pullDownRefresh = async () => {
-        this.setState({ headerLoading: true });
-        page = 1;
-        getForumList(4, page).then((res) => {
-            if (res.status == 'ok') {
-                this.setState({
-                    threadList: res.res,
-                    page: 1,
-                    headerLoading: false
-                });
-            }
-            else {
-                alert('请求数据失败:' + res.errmsg);
-            }
-            this.setState({ headerLoading: false });
+        if (this.state.footerLoading != 0 || this.state.headerLoading) {
+            return;
+        }
+        this.setState({ headerLoading: true }, function() {
+            page = 1;
+            getForumList(4, page).then((res) => {
+                if (res.status == 'ok') {
+                    this.setState({
+                        threadList: res.res,
+                        page: 1,
+                        headerLoading: false
+                    });
+                }
+                else {
+                    alert('请求数据失败:' + res.errmsg);
+                }
+                this.setState({ headerLoading: false });
+            });
         });
     }
 }
