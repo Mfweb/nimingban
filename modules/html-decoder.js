@@ -11,7 +11,12 @@ const htmlConstStyles = StyleSheet.create({
         fontWeight: 'bold'
     }
 });
-
+function escape2Html(str) {
+    var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+    return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function(all,t){
+        return arrEntities[t];
+    });
+}
 
 function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null) {
     let outPut = [];
@@ -47,7 +52,7 @@ function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null
 }
 
 function getHTMLDom(htmlTextIn, defaultFontSize = 20) {
-    let domJSON = parseDOM(htmlTextIn);
+    let domJSON = parseDOM( escape2Html(htmlTextIn) );
     console.log(domJSON);
     let dom = _getHTMLDom(domJSON);
     return (
