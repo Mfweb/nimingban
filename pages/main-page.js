@@ -140,6 +140,7 @@ class MainListItem extends React.Component {
     componentDidMount() {
         if(this.props.itemDetail.img) {
             getImage('thumb', this.props.itemDetail.img + this.props.itemDetail.ext).then((res) => {
+                console.log(res);
                 if(res.status == 'ok') {
                     this.setState({
                         imageMode: 'contain',

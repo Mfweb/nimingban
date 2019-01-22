@@ -6,8 +6,8 @@ const apiBaseURL = 'https://adnmb1.com';
 const appMark = 'HavfunClient-WeChatAPP';
 
 const localDir = {
-    imageCacheThumb: RNFS.MainBundlePath + '/Cache/Image/Thumb',
-    imageCacheFull: RNFS.MainBundlePath + '/Cache/Image/Full'
+    imageCacheThumb: RNFS.CachesDirectoryPath + '/Cache/Image/Thumb',
+    imageCacheFull: RNFS.DocumentDirectoryPath + '/Cache/Image/Full'
 };
 
 const apiURLs = {
@@ -54,8 +54,8 @@ function getImageCDN() {
  */
 async function getImage(imgMode, imageName) {
     try {
-        let imgUrl = getImageCDN() + imgMode + '/' + imageName;
-        let localPath = (imgMode === 'thumb' ? localDir.imageCacheThumb : localDir.imageCacheFull) + '/' + imageName.replace('/','-');
+        var imgUrl = getImageCDN() + imgMode + '/' + imageName;
+        var localPath = (imgMode === 'thumb' ? localDir.imageCacheThumb : localDir.imageCacheFull) + '/' + imageName.replace('/','-');
 
         if(await RNFS.exists(localPath)) {
             console.log('Get image from cache.');
@@ -68,7 +68,8 @@ async function getImage(imgMode, imageName) {
 
         if ( !await RNFS.exists(localDir.imageCacheThumb) ) {
             console.log('Make new thumb image dir.');
-            await RNFS.mkdir(localDir.imageCacheThumb, { NSURLIsExcludedFromBackupKey: true });
+            let a = await RNFS.mkdir(localDir.imageCacheThumb, { NSURLIsExcludedFromBackupKey: true });
+            console.log(a);
         }
         if ( !await RNFS.exists(localDir.imageCacheFull) ) {
             console.log('Make new full image dir.');
