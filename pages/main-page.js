@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
 import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList, getImageCDN } from '../modules/network'
+import { getForumList, getImageCDN, getImage } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView } from '../component/list-process-view'
 
@@ -121,6 +121,10 @@ const styles = StyleSheet.create({
 class MainListItem extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            imageSource: require('../imgs/loading.png'),
+            imageMode: 'center'//contain
+        }
     }
     _onPress = () => {
         this.props.navigation.push('Details', {
@@ -133,9 +137,22 @@ class MainListItem extends React.Component {
             imgName: this.props.itemDetail.img + this.props.itemDetail.ext
         })
     }
+    componentDidMount() {
+        if(this.props.itemDetail.img) {
+            getImage('thumb', this.props.itemDetail.img + this.props.itemDetail.ext).then((res) => {
+                if(res.status == 'ok') {
+                    this.setState({
+                        imageMode: 'contain',
+                        imageSource: {uri: 'file://' + res.path}
+                    });
+                }
+            });
+        }
+    }
+
     render() {
-        console.log(this.props.itemDetail);
-        let {itemDetail} = this.props;
+        //console.log(this.props.itemDetail);
+        let { itemDetail } = this.props;
         let userID = getHTMLDom(itemDetail.userid);
         let threadContent = getHTMLDom(itemDetail.content);
         let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
@@ -174,8 +191,8 @@ class MainListItem extends React.Component {
                     </Text>
                     <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._oPressImage}>
                         <Image style={styles.mainListItemImage}
-                        source={ {uri: getImageCDN() + 'thumb/' + itemDetail.img + itemDetail.ext} } 
-                        resizeMode = 'contain'
+                        source={ this.state.imageSource } 
+                        resizeMode = {this.state.imageMode}
                         />
                     </TouchableOpacity>
 
