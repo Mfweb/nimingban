@@ -143,8 +143,7 @@ class MainListItem extends React.Component {
     }
     _onPress = () => {
         this.props.navigation.push('Details', {
-            tid: this.props.itemDetail.id,
-            title: this.props.itemDetail.title,
+            threadDetail: this.props.itemDetail
         })
     }
     _onPressImage = () => {

@@ -195,21 +195,25 @@ class DetailsScreen extends React.Component {
         };
     }
 
+    isUnMount = false;
+    localReplyCount = 0;
+    threadDetail = null;
+
     static navigationOptions = ({navigation}) => {
         return {
-            title: navigation.getParam('title', '无标题')
+            title: navigation.getParam('threadDetail', null).title
         };
     };
 
-    threadID = null;
-    isUnMount = false;
-    localReplyCount = 0;
     componentDidMount() {
-        this.threadID = this.props.navigation.getParam('tid', '-1');
+        this.threadDetail = this.props.navigation.getParam('threadDetail', null);
         this._pullDownRefresh();
         this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer });
         this.isUnMount = false;
         this.localReplyCount = 0;
+        this.setState({
+            replyList: [this.threadDetail]
+        });
     }
     componentWillUnmount() {
         this.isUnMount = true;
@@ -220,7 +224,7 @@ class DetailsScreen extends React.Component {
         if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
             this.loadingImages.push(index);
             let imgName = item.img + item.ext;
-            console.log(imgName);
+            //console.log(imgName);
             getImage('thumb', imgName).then((res) => {
                 if(this.isUnMount) {
                     return;
@@ -285,7 +289,7 @@ class DetailsScreen extends React.Component {
         console.log('getting:' + this.state.page);
         this.isScroll = false;
         this.setState({ footerLoading: 1 }, async function() {
-            getReplyList(this.threadID, this.state.page).then((res) => {
+            getReplyList(this.threadDetail.id, this.state.page).then((res) => {
                 if(this.isUnMount) {
                     return;
                 }
@@ -305,7 +309,7 @@ class DetailsScreen extends React.Component {
                             var nextPage = this.state.page + 1;
                             var tempList = this.state.replyList.slice()
                             res.res.replys.splice(0, this.localReplyCount);
-                            console.log(res.res.replys);
+                            //console.log(res.res.replys);
                             tempList = tempList.concat(res.res.replys);
                         }
                         this.setState({
@@ -338,7 +342,7 @@ class DetailsScreen extends React.Component {
             return;
         }
         this.setState({ headerLoading: true, page: 1 }, function() {
-            getReplyList(this.threadID, this.state.page).then((res) => {
+            getReplyList(this.threadDetail.id, this.state.page).then((res) => {
                 if (res.status == 'ok') {
                     this.localReplyCount = 0;
                     this.loadingImages = [];
@@ -365,7 +369,7 @@ class DetailsScreen extends React.Component {
                 }
                 else {
                     this.setState({
-                        replyList: [{ id: '', img: '', ext: '', now: '', userid: '', name: '',email: '', title: '',
+                        replyList: [this.threadDetail, { id: '', img: '', ext: '', now: '', userid: '', name: '',email: '', title: '',
                                 content: '请求数据失败:' + res.errmsg + ',下拉刷新。', sage: '0', admin: '0',
                         }]
                     });
@@ -374,7 +378,7 @@ class DetailsScreen extends React.Component {
             }).catch(function(){
                 this.setState({
                     headerLoading: false,
-                    replyList: [{ id: '', img: '', ext: '', now: '', userid: '', name: '',email: '', title: '',
+                    replyList: [this.threadDetail, { id: '', img: '', ext: '', now: '', userid: '', name: '',email: '', title: '',
                             content: '请求数据失败,下拉刷新。', sage: '0', admin: '0',
                     }]
                 });

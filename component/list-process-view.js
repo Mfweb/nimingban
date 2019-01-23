@@ -72,11 +72,11 @@ class ImageProcessView extends React.Component {
     isUnMount = false;
     componentDidMount() {
         this.startAnime();
-        console.log('Anime loading mount');
+        //console.log('Anime loading mount');
     }
     componentWillUnmount() {
         this.isUnMount = true;
-        console.log('Anime loading unmount');
+        //console.log('Anime loading unmount');
     }
     startAnime = function () {
         if(this.isUnMount) {
