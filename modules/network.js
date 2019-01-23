@@ -85,7 +85,7 @@ async function getImage(imgMode, imageName) {
             discretionary: true,
             cacheable: true,
         });
-        downloadRes.promise.then();
+
         let downloadStaRes = await downloadRes.promise;
         if(downloadStaRes.statusCode == 200 && downloadStaRes.bytesWritten > 0) {
             return {
@@ -102,7 +102,6 @@ async function getImage(imgMode, imageName) {
                 path: localPath
             }
         }
-        console.log(downloadStaRes);
 
     } catch (error) {
         return {

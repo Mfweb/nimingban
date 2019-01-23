@@ -140,6 +140,9 @@ class MainListItem extends React.Component {
     componentDidMount() {
         if(this.props.itemDetail.img) {
             getImage('thumb', this.props.itemDetail.img + this.props.itemDetail.ext).then((res) => {
+                if(this.isUnMount) {
+                    return;
+                }
                 console.log(res);
                 if(res.status == 'ok') {
                     this.setState({
@@ -150,7 +153,9 @@ class MainListItem extends React.Component {
             });
         }
     }
-
+    componentWillUnmount() {
+        this.isUnMount = true;
+    }
     render() {
         //console.log(this.props.itemDetail);
         let { itemDetail } = this.props;

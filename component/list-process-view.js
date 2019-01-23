@@ -14,7 +14,13 @@ class ListProcessView extends React.Component {
     componentDidMount() {
         this.startAnime()
     }
+    componentWillUnmount() {
+        this.isUnMount = true;
+    }
     startAnime = function () {
+        if(this.isUnMount) {
+            return;
+        }
         let nextColor = this.state.colorNow + 1;
         if (nextColor >= listProcessColorList.length) {
             nextColor = 0;
