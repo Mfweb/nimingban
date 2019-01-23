@@ -202,10 +202,17 @@ class DetailsScreen extends React.Component {
     };
 
     threadID = null;
+    isUnMount = false;
+    localReplyCount = 0;
     componentDidMount() {
         this.threadID = this.props.navigation.getParam('tid', '-1');
         this._pullDownRefresh();
-        this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer })
+        this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer });
+        this.isUnMount = false;
+        this.localReplyCount = 0;
+    }
+    componentWillUnmount() {
+        this.isUnMount = true;
     }
 
     loadingImages = Array();
@@ -215,6 +222,9 @@ class DetailsScreen extends React.Component {
             let imgName = item.img + item.ext;
             console.log(imgName);
             getImage('thumb', imgName).then((res) => {
+                if(this.isUnMount) {
+                    return;
+                }
                 if(res.status == 'ok') {
                     let tempList = this.state.replyList.slice();
                     tempList[index].localImage = 'file://' + res.path;
@@ -253,6 +263,7 @@ class DetailsScreen extends React.Component {
                 refreshing={this.state.headerLoading}
                 keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
                 renderItem={this._renderItem}
+                onScroll={this._onScroll}
                 ListFooterComponent={this._footerComponent}
                 ItemSeparatorComponent={this._itemSeparator}
                 onEndReachedThreshold={0.1}
@@ -261,13 +272,23 @@ class DetailsScreen extends React.Component {
             />
         );
     }
-
+    isScroll = false;
+    _onScroll = (re) => {
+        this.isScroll = true;
+        //console.log(re);
+        //console.log('is scroll');
+    }
     _pullUpLoading = () => {
-        if (this.state.footerLoading != 0 || this.state.headerLoading) {
+        if (this.state.footerLoading != 0 || this.state.headerLoading || !this.isScroll ) {
             return;
         }
+        console.log('getting:' + this.state.page);
+        this.isScroll = false;
         this.setState({ footerLoading: 1 }, async function() {
             getReplyList(this.threadID, this.state.page).then((res) => {
+                if(this.isUnMount) {
+                    return;
+                }
                 if (res.status == 'ok') {
                     if( ((res.res.replys.length == 1) && (res.res.replys[0].id == 9999999))
                         || (res.res.replys.length == 0) ) {
@@ -279,22 +300,34 @@ class DetailsScreen extends React.Component {
                         if( res.res.replys[0].id == 9999999 ) {
                             res.res.replys.splice(0, 1);
                         }
-                        let nextPage = this.state.page + 1;
-                        var tempList = this.state.replyList.slice()
-                        tempList = tempList.concat(res.res.replys);
+                        let cpCount = (this.localReplyCount > 0) ? (res.res.replys.length - this.localReplyCount) : res.res.replys.length;
+                        if(cpCount > 0) {
+                            var nextPage = this.state.page + 1;
+                            var tempList = this.state.replyList.slice()
+                            res.res.replys.splice(0, this.localReplyCount);
+                            console.log(res.res.replys);
+                            tempList = tempList.concat(res.res.replys);
+                        }
                         this.setState({
                             replyList: tempList,
                             page: nextPage,
                             footerLoading: 0
-                        });
+                        }, ()=>{console.log('replay count:' + this.state.replyList.length.toString());});
+                        if(res.res.replys.length >= 19) {
+                            this.localReplyCount = 0;
+                        }
+                        else {
+                            this.localReplyCount = (res.res.replys[0].id == 9999999) ? (res.res.replys.length - 1) : (res.res.replys.length + 1);
+                        }
                     }
                 }
                 else {
                     this.setState({ footerLoading: 0 });
                     alert('请求数据失败:' + res.errmsg);
                 }
-            }).catch(()=>{
+            }).catch((res)=>{
                 this.setState({ footerLoading: 0 });
+                console.log(res);
                 alert('请求数据失败');
             });
         });
@@ -307,6 +340,7 @@ class DetailsScreen extends React.Component {
         this.setState({ headerLoading: true, page: 1 }, function() {
             getReplyList(this.threadID, this.state.page).then((res) => {
                 if (res.status == 'ok') {
+                    this.localReplyCount = 0;
                     let tempList = Array();
                     tempList.push({
                         id: res.res.id,
