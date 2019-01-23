@@ -53,6 +53,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'red'
     },
+    mainListItemUserCookieNamePO: {
+        backgroundColor: '#FFE4E1'
+    },
     mainListItemTid: {
         fontSize: 18,
         color: globalColor
@@ -90,10 +93,10 @@ const styles = StyleSheet.create({
     ItemSeparator: {
         height: 1,
         backgroundColor: '#FFB6C1'
-    }
+    },
 });
 
-
+var poID = '';
 class MainListImage extends React.Component {
     constructor(props) {
         super(props);
@@ -141,13 +144,23 @@ class MainListItem extends React.Component {
         
         let userID = getHTMLDom(itemDetail.userid);
         let threadContent = getHTMLDom(itemDetail.content);
-        let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
+
+        let userIDStyle = [];
+        if(itemDetail.admin == 1) {
+            userIDStyle.push(styles.mainListItemUserCookieNameBigVIP);
+        }
+        else {
+            userIDStyle.push(styles.mainListItemUserCookieName);
+        }
+        if(itemDetail.userid == poID){
+            userIDStyle.push(styles.mainListItemUserCookieNamePO);
+        }
         return (
             <TouchableOpacity onPress={this._onPress}>
                 <View style={styles.mainListItem}>
                     <View style={styles.mainListItemHeader}>
                         <View style={styles.mainListItemHeaderL1}>
-                            <Text style={itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName}>
+                            <Text style={userIDStyle}>
                                 {userID}
                             </Text>
 
@@ -198,7 +211,6 @@ class DetailsScreen extends React.Component {
     isUnMount = false;
     localReplyCount = 0;
     threadDetail = null;
-
     static navigationOptions = ({navigation}) => {
         return {
             title: navigation.getParam('threadDetail', null).title
@@ -207,6 +219,7 @@ class DetailsScreen extends React.Component {
 
     componentDidMount() {
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
+        poID = this.threadDetail.userid;
         this._pullDownRefresh();
         this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer });
         this.isUnMount = false;
