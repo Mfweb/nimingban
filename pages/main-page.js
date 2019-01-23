@@ -339,6 +339,7 @@ class HomeScreen extends React.Component {
         this.setState({ headerLoading: true, page: 1 }, function() {
             getForumList(4, this.state.page).then((res) => {
                 if (res.status == 'ok') {
+                    this.loadingImages = [];
                     this.setState({
                         threadList: res.res,
                         page: 2,

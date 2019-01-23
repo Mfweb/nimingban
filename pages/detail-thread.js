@@ -341,6 +341,7 @@ class DetailsScreen extends React.Component {
             getReplyList(this.threadID, this.state.page).then((res) => {
                 if (res.status == 'ok') {
                     this.localReplyCount = 0;
+                    this.loadingImages = [];
                     let tempList = Array();
                     tempList.push({
                         id: res.res.id,
