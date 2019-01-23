@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
-import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList, getImageCDN, getImage,clearImageCache } from '../modules/network'
+import { getForumList, getImage, clearImageCache } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 
@@ -167,7 +166,8 @@ class MainListItem extends React.Component {
         
         let userID = getHTMLDom(itemDetail.userid);
         let threadContent = getHTMLDom(itemDetail.content);
-        let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
+        //let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
+        let replayCountText = itemDetail.replyCount;
         return (
             <TouchableOpacity onPress={this._onPress}>
                 <View style={styles.mainListItem}>
@@ -220,7 +220,7 @@ class HomeScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            headerLoading: true,
+            headerLoading: false,
             footerLoading: 0,
             threadList: Array(),
             page: 1
@@ -249,25 +249,7 @@ class HomeScreen extends React.Component {
 
     componentDidMount() {
         //clearImageCache();
-        if (this.state.threadList.length == 0) {
-            page = 1;
-            this.setState({
-                headerLoading: true
-            });
-            getForumList(4, page).then((res) => {
-                if (res.status == 'ok') {
-                    this.setState({
-                        threadList: res.res,
-                        page: 1,
-                        headerLoading: false
-                    });
-                }
-                else {
-                    alert('请求数据失败:' + res.errmsg);
-                }
-                this.setState({ headerLoading: false });
-            });
-        }
+        this._pullDownRefresh();
         this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer })
     }
 
@@ -328,14 +310,14 @@ class HomeScreen extends React.Component {
             return;
         }
         this.setState({ footerLoading: 1 }, async function() {
-            page++;
-            getForumList(4, page).then((res) => {
+            getForumList(4, this.state.page).then((res) => {
                 if (res.status == 'ok') {
+                    let nextPage = this.state.page + 1;
                     var tempList = this.state.threadList.slice()
                     tempList = tempList.concat(res.res);
                     this.setState({
                         threadList: tempList,
-                        page: 1,
+                        page: nextPage,
                         footerLoading: 0
                     });
                 }
@@ -343,6 +325,9 @@ class HomeScreen extends React.Component {
                     this.setState({ footerLoading: 0 });
                     alert('请求数据失败:' + res.errmsg);
                 }
+            }).catch(()=>{
+                this.setState({ footerLoading: 0 });
+                alert('请求数据失败');
             });
         });
     }
@@ -351,13 +336,12 @@ class HomeScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        this.setState({ headerLoading: true }, function() {
-            page = 1;
-            getForumList(4, page).then((res) => {
+        this.setState({ headerLoading: true, page: 1 }, function() {
+            getForumList(4, this.state.page).then((res) => {
                 if (res.status == 'ok') {
                     this.setState({
                         threadList: res.res,
-                        page: 1,
+                        page: 2,
                         headerLoading: false
                     });
                 }
@@ -365,6 +349,9 @@ class HomeScreen extends React.Component {
                     alert('请求数据失败:' + res.errmsg);
                 }
                 this.setState({ headerLoading: false });
+            }).catch(()=>{
+                this.setState({ headerLoading: false });
+                alert('请求数据失败');
             });
         });
     }

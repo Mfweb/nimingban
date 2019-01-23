@@ -3,7 +3,7 @@ import RNFS from 'react-native-fs';
 
 const apiBaseURL = 'https://adnmb1.com';
 
-const appMark = 'HavfunClient-WeChatAPP';
+const appMark = 'PinkAdao';
 
 const localDir = {
     imageCacheThumb: RNFS.CachesDirectoryPath + '/Cache/Image/Thumb',
@@ -11,27 +11,52 @@ const localDir = {
 };
 
 const apiURLs = {
-    getForumList: apiBaseURL + '/Api/getForumList?appid=PinkAdao',
-    getForumThread: apiBaseURL + '/Api/showf?appid=PinkAdao',
-    getImageCDN: apiBaseURL + '/Api/getCdnPath?appid=PinkAdao'
+    getForumList: apiBaseURL + '/Api/getForumList?appid=' + appMark,
+    getForumThread: apiBaseURL + '/Api/showf?appid=' + appMark,
+    getImageCDN: apiBaseURL + '/Api/getCdnPath?appid=' + appMark,
+    getThreadReply: apiBaseURL + '/Api/thread?appid=' + appMark
 };
 
+const apiRequestHeader = {
+    'content-type': 'application/x-www-form-urlencoded',
+    'X-Requested-With': 'XMLHttpRequest',
+    'User-Agent': 'HavfunClient-' + appMark
+};
 /**
- * 
+ * 获取板块内串列表
  * @param {Number} fid 板块ID
  * @param {Number} page 第几页
  */
 async function getForumList(fid, page) {
     let response = await fetch(apiURLs.getForumThread, {
         method: 'POST',
-        headers: {
-            'content-type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest',
-            'User-Agent': appMark
-        },
+        headers: apiRequestHeader,
         body: 'id=' + fid + '&page=' + page
     });
     let res = await response.text();
+    try {
+        let resJSON = JSON.parse(res);
+        return { status: 'ok', res: resJSON };
+    } catch (error) {
+        return { status: 'error', errmsg: error };
+    }
+}
+
+/**
+ * 获取串回复
+ * @param {Number} tid 串ID
+ * @param {Number} page 分页
+ */
+async function getReplyList(tid, page) {
+    let response = await fetch(apiURLs.getThreadReply, {
+        method: 'POST',
+        headers: apiRequestHeader,
+        body: 'id=' + tid + '&page=' + page
+    });
+    let res = await response.text();
+    if(res == '"该主题不存在"') {
+        return { status: 'error', errmsg: '该主题不存在' };
+    }
     try {
         let resJSON = JSON.parse(res);
         return { status: 'ok', res: resJSON };
@@ -47,6 +72,9 @@ function getImageCDN() {
     return 'https://nmbimg.fastmirror.org/'
 }
 
+/**
+ * 清空缩略图缓存
+ */
 async function clearImageCache() {
     try {
         await RNFS.unlink(localDir.imageCacheThumb);
@@ -87,7 +115,7 @@ async function getImage(imgMode, imageName) {
             fromUrl: imgUrl,
             toFile: localPath,
             headers: {
-                'User-Agent': appMark
+                'User-Agent': 'HavfunClient-' + appMark
             },
             background: true,
             discretionary: true,
@@ -121,4 +149,4 @@ async function getImage(imgMode, imageName) {
     }
 }
 
-export { getForumList, getImageCDN, getImage, clearImageCache};
+export { getForumList, getImageCDN, getImage, clearImageCache, getReplyList};
