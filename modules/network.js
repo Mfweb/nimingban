@@ -47,6 +47,14 @@ function getImageCDN() {
     return 'https://nmbimg.fastmirror.org/'
 }
 
+async function clearImageCache() {
+    try {
+        await RNFS.unlink(localDir.imageCacheThumb);
+    }catch(error) {
+
+    }
+}
+
 /**
  * 获取串图片
  * @param {String} imgMode 获取全图（image）还是缩略图（thumb）
@@ -113,4 +121,4 @@ async function getImage(imgMode, imageName) {
     }
 }
 
-export { getForumList, getImageCDN, getImage};
+export { getForumList, getImageCDN, getImage, clearImageCache};

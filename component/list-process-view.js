@@ -1,7 +1,11 @@
 import React from 'react'
-import { View, Animated } from 'react-native'
+import { View, Animated,Dimensions } from 'react-native'
 
-const listProcessColorList = ['#f45a8d', '#8A2BE2', '#00BFFF', '#FF7F50'];
+//loading动画颜色，粉(岛)-紫(岛)-浅蓝(芦苇)-橙(岛)
+const listProcessColorList = ['#F45A8D', '#8A2BE2', '#00BFFF', '#FF7F50'];
+/**
+ * List底部loading动画
+ */
 class ListProcessView extends React.Component {
     constructor(props) {
         super(props);
@@ -55,5 +59,59 @@ class ListProcessView extends React.Component {
     }
 }
 
+/**
+ * 图片Loading动画
+ */
+class ImageProcessView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            translateNow: new Animated.Value(0),
+        };
+    }
+    isUnMount = false;
+    componentDidMount() {
+        this.startAnime();
+        console.log('Anime loading mount');
+    }
+    componentWillUnmount() {
+        this.isUnMount = true;
+        console.log('Anime loading unmount');
+    }
+    startAnime = function () {
+        if(this.isUnMount) {
+            return;
+        }
+        this.state.translateNow.setValue(0);
 
-export { ListProcessView }
+        Animated.timing(
+            this.state.translateNow,
+            {
+                toValue: 360,
+                duration: 1000,
+                useNativeDriver: true,
+                stiffness: 80
+            }
+        ).start(() => this.startAnime());
+    }
+    render() {
+        return (
+            <Animated.Image 
+            style={{
+                height: Dimensions.get('window').width / 2.5,
+                width: Dimensions.get('window').width / 2.5,
+                left: 0,
+                transform: [
+                    { 
+                        rotate: this.state.translateNow.interpolate( {inputRange: [0, 360],outputRange: ['0deg', '360deg']} )
+                    }
+                ] 
+            }}
+            resizeMode='center'
+            source={require('../imgs/loading.png')}>
+            </Animated.Image>
+        );
+    }
+}
+
+export { ListProcessView, ImageProcessView }

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
 import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList, getImageCDN, getImage } from '../modules/network'
+import { getForumList, getImageCDN, getImage,clearImageCache } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
-import { ListProcessView } from '../component/list-process-view'
+import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 
 const globalColor = '#f45a8d';
 
@@ -117,6 +117,26 @@ const styles = StyleSheet.create({
     },
 });
 
+class MainListImage extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        let { itemDetail } = this.props;
+        let imageSource = itemDetail.localImage?{uri:itemDetail.localImage}:require('../imgs/loading.png');
+        if(itemDetail.localImage) {
+            return (
+                <Image style={itemDetail.img?styles.mainListItemImage:styles.displayNone}
+                source={ imageSource } 
+                resizeMode='contain'
+                />
+            );
+        }
+        else {
+            return (<ImageProcessView />);
+        }
+    }
+}
 
 class MainListItem extends React.Component {
     constructor(props) {
@@ -142,7 +162,7 @@ class MainListItem extends React.Component {
         //console.log(this.props.itemDetail);
         let { itemDetail } = this.props;
 
-        let imgMode = itemDetail.localImage?'contain':'center';
+        //let imgMode = itemDetail.localImage?'contain':'center';
         let imageSource = itemDetail.localImage?{uri:itemDetail.localImage}:require('../imgs/loading.png');
         
         let userID = getHTMLDom(itemDetail.userid);
@@ -182,10 +202,7 @@ class MainListItem extends React.Component {
                         {threadContent}
                     </Text>
                     <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage}>
-                        <Image style={styles.mainListItemImage}
-                        source={ imageSource } 
-                        resizeMode = { imgMode }
-                        />
+                        <MainListImage itemDetail={itemDetail} />
                     </TouchableOpacity>
 
 
@@ -231,6 +248,7 @@ class HomeScreen extends React.Component {
     }
 
     componentDidMount() {
+        //clearImageCache();
         if (this.state.threadList.length == 0) {
             page = 1;
             this.setState({
