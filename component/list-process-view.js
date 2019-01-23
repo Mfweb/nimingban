@@ -10,7 +10,7 @@ class ListProcessView extends React.Component {
             translateNow: new Animated.Value(0),
         };
     }
-
+    isUnMount = false;
     componentDidMount() {
         this.startAnime()
     }

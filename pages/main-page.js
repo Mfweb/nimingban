@@ -121,10 +121,6 @@ const styles = StyleSheet.create({
 class MainListItem extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            imageSource: require('../imgs/loading.png'),
-            imageMode: 'center'//contain
-        }
     }
     _onPress = () => {
         this.props.navigation.push('Details', {
@@ -132,33 +128,23 @@ class MainListItem extends React.Component {
             title: this.props.itemDetail.title,
         })
     }
-    _oPressImage = () => {
+    _onPressImage = () => {
         this.props.navigation.push('ImageViewer', {
             imgName: this.props.itemDetail.img + this.props.itemDetail.ext
         })
     }
+
     componentDidMount() {
-        if(this.props.itemDetail.img) {
-            getImage('thumb', this.props.itemDetail.img + this.props.itemDetail.ext).then((res) => {
-                if(this.isUnMount) {
-                    return;
-                }
-                console.log(res);
-                if(res.status == 'ok') {
-                    this.setState({
-                        imageMode: 'contain',
-                        imageSource: {uri: 'file://' + res.path}
-                    });
-                }
-            });
-        }
     }
     componentWillUnmount() {
-        this.isUnMount = true;
     }
     render() {
         //console.log(this.props.itemDetail);
         let { itemDetail } = this.props;
+
+        let imgMode = itemDetail.localImage?'contain':'center';
+        let imageSource = itemDetail.localImage?{uri:itemDetail.localImage}:require('../imgs/loading.png');
+        
         let userID = getHTMLDom(itemDetail.userid);
         let threadContent = getHTMLDom(itemDetail.content);
         let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
@@ -195,10 +181,10 @@ class MainListItem extends React.Component {
                     <Text style={styles.mainListItemContent}>
                         {threadContent}
                     </Text>
-                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._oPressImage}>
+                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage}>
                         <Image style={styles.mainListItemImage}
-                        source={ this.state.imageSource } 
-                        resizeMode = {this.state.imageMode}
+                        source={ imageSource } 
+                        resizeMode = { imgMode }
                         />
                     </TouchableOpacity>
 
@@ -222,8 +208,13 @@ class HomeScreen extends React.Component {
             threadList: Array(),
             page: 1
         };
+        /*this.viewabilityConfig = {
+            minimumViewTime: 100,
+            viewAreaCoveragePercentThreshold: 10,
+            waitForInteraction: true,
+        }*/
     }
-
+    
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
@@ -262,9 +253,24 @@ class HomeScreen extends React.Component {
         this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer })
     }
 
-    _renderItem = ({ item }) => (
-        <MainListItem itemDetail={item} navigation={this.props.navigation} />
-    )
+    loadingImages = Array();
+    _renderItem = ({ item, index }) => {
+        if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
+            this.loadingImages.push(index);
+            let imgName = item.img + item.ext;
+            //console.log(imgName);
+            getImage('thumb', imgName).then((res) => {
+                if(res.status == 'ok') {
+                    let tempList = this.state.threadList.slice();
+                    tempList[index].localImage = 'file://' + res.path;
+                    this.setState({ threadList: tempList });
+                }
+            }).catch(function() {
+            });
+        }
+        return (
+        <MainListItem itemDetail={item} navigation={this.props.navigation} />)
+    }
 
     _footerComponent = () => {
         if(this.state.footerLoading == 0) {
@@ -277,7 +283,9 @@ class HomeScreen extends React.Component {
             );
         }
     }
-
+    /*_onViewableItemsChanged = ({changed}) => {
+        console.log(changed);
+    }*/
     render() {
         return (
             <FlatList
@@ -286,11 +294,13 @@ class HomeScreen extends React.Component {
                 style={styles.mainList}
                 onRefresh={this._pullDownRefresh}
                 refreshing={this.state.headerLoading}
-                keyExtractor={(item, index) => {return item.toString() + '-' + index.toString()}}
+                keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
                 renderItem={this._renderItem}
                 ListFooterComponent={this._footerComponent}
                 onEndReachedThreshold={0.1}
                 onEndReached={this._pullUpLoading}
+                onViewableItemsChanged={this._onViewableItemsChanged}
+                /*viewabilityConfig={this.viewabilityConfig}*/
             />
         );
     }
