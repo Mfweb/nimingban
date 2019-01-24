@@ -230,11 +230,14 @@ class HomeScreen extends React.Component {
             waitForInteraction: true,
         }*/
     }
-    
+    fid = 4;
+    fname = '综合板1';
+
+
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
-            title: 'A岛-黎明版',
+            title: 'A岛(' + navigation.getParam('name', '综合板1') + ')',
             headerLeft: (
                 <TouchableHighlight style={{ marginLeft: 5 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                     <Image
@@ -247,6 +250,9 @@ class HomeScreen extends React.Component {
     }
 
     componentDidMount() {
+        this.fid = this.props.navigation.getParam('forumID', '4');
+        this.fname = this.props.navigation.getParam('name', '综合板1');
+
         //clearImageCache();
         this._pullDownRefresh();
         this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer })
@@ -309,7 +315,7 @@ class HomeScreen extends React.Component {
             return;
         }
         this.setState({ footerLoading: 1 }, async function() {
-            getThreadList(4, this.state.page).then((res) => {
+            getThreadList(this.fid, this.state.page).then((res) => {
                 if (res.status == 'ok') {
                     let nextPage = this.state.page + 1;
                     var tempList = this.state.threadList.slice()
@@ -336,7 +342,7 @@ class HomeScreen extends React.Component {
             return;
         }
         this.setState({ headerLoading: true, page: 1 }, function() {
-            getThreadList(4, this.state.page).then((res) => {
+            getThreadList(this.fid, this.state.page).then((res) => {
                 if (res.status == 'ok') {
                     this.loadingImages = [];
                     this.setState({

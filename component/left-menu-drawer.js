@@ -13,8 +13,8 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         backgroundColor: '#D3D3D3',
         marginBottom: 5,
-        paddingTop: 5,
-        paddingBottom: 5,
+        paddingTop: 8,
+        paddingBottom: 8,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
@@ -22,15 +22,15 @@ const styles = StyleSheet.create({
     },
     groupText: {
         color: globalColor,
-        fontSize: 30,
+        fontSize: 24,
     },
     itemView: {
         marginLeft: 10,
-        paddingTop: 3,
-        paddingBottom: 3
+        paddingTop: 5,
+        paddingBottom: 5
     },
     itemText: {
-        fontSize: 28
+        fontSize: 20
     },
     icon: {
         width: 24,
@@ -60,7 +60,6 @@ class LeftDrawerNavigator extends React.Component {
                 this.setState({
                     forumList: tempList
                 });
-                console.log(tempList);
             }
             else {
                 alert('获取板块列表失败,' + res.errmsg);
@@ -80,14 +79,28 @@ class LeftDrawerNavigator extends React.Component {
         );
     }
 
+    _onPressItem = (item)=> {
+        this.props.navigation._childrenNavigation.Home.reset([
+            NavigationActions.navigate({ 
+                routeName: 'Home',
+                params: {
+                    forumID: item.id,
+                    name: item.name
+                }
+            })
+        ], 0);
+        this.props.navigation.closeDrawer();
+    }
     _renderItem = ({item}) => {
         let displayName = item.showName?getHTMLDom(item.showName):getHTMLDom(item.name);
         return(
-            <View style={styles.itemView}>
-                <Text style={styles.itemText}>
-                {displayName}
-                </Text>
-            </View>
+            <TouchableOpacity onPress={()=>this._onPressItem(item)}>
+                <View style={styles.itemView}>
+                    <Text style={styles.itemText}>
+                    {displayName}
+                    </Text>
+                </View>
+            </TouchableOpacity>
         );
     }
     _listHeaderComponent = () => (
