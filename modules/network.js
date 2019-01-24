@@ -22,12 +22,30 @@ const apiRequestHeader = {
     'X-Requested-With': 'XMLHttpRequest',
     'User-Agent': 'HavfunClient-' + appMark
 };
+
+/**
+ * 获取板块列表
+ */
+async function getForumList() {
+    let response = await fetch(apiURLs.getForumList, {
+        method: 'GET',
+        headers: apiRequestHeader,
+    });
+    let res = await response.text();
+    try {
+        let resJSON = JSON.parse(res);
+        return { status: 'ok', res: resJSON };
+    } catch (error) {
+        return { status: 'error', errmsg: error };
+    }
+}
+
 /**
  * 获取板块内串列表
  * @param {Number} fid 板块ID
  * @param {Number} page 第几页
  */
-async function getForumList(fid, page) {
+async function getThreadList(fid, page) {
     let response = await fetch(apiURLs.getForumThread, {
         method: 'POST',
         headers: apiRequestHeader,
@@ -149,4 +167,4 @@ async function getImage(imgMode, imageName) {
     }
 }
 
-export { getForumList, getImageCDN, getImage, clearImageCache, getReplyList};
+export { getForumList, getThreadList, getImageCDN, getImage, clearImageCache, getReplyList};

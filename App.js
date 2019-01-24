@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
+import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, SectionList, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
 import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
 import { getForumList } from './modules/network'
 import { getHTMLDom } from './modules/html-decoder'
@@ -7,40 +7,9 @@ import { ListProcessView } from './component/list-process-view'
 import { HomeScreen } from './pages/main-page'
 import { DetailsScreen } from './pages/detail-thread'
 import { ImageViewer } from './pages/image-viewer'
+import { LeftDrawerNavigator } from './component/left-menu-drawer'
 
 const globalColor = '#f45a8d';
-
-const styles = StyleSheet.create({
-    icon: {
-        width: 24,
-        height: 24,
-    },
-});
-
-
-
-class MyNotificationsScreen extends React.Component {
-    static navigationOptions = {
-        drawerLabel: '这里还没完成',
-        drawerIcon: ({ tintColor }) => (
-            <Image
-                source={require('./imgs/menu.png')}
-                style={[styles.icon, { tintColor: tintColor }]}
-            />
-        ),
-    };
-
-    render() {
-        return (
-            <Button
-                onPress={() => this.props.navigation.goBack()}
-                title="Go back home"
-            />
-        );
-    }
-}
-
-
 
 const MainStackNavigator = createStackNavigator({
     //主页
@@ -72,11 +41,10 @@ const AppNavigator = createDrawerNavigator({
     Home: {
         screen: MainStackNavigator,
     },
-    Notifications: {
-        screen: MyNotificationsScreen,
-    },
 }, {
         drawerPosition: 'left',
+        contentComponent: LeftDrawerNavigator,
+        drawerWidth: Dimensions.get('window').width * 0.7
     });
 
 export default createAppContainer(AppNavigator);

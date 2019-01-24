@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
-import { getForumList, getImage, clearImageCache } from '../modules/network'
+import { getThreadList, getImage, clearImageCache } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 
@@ -309,7 +309,7 @@ class HomeScreen extends React.Component {
             return;
         }
         this.setState({ footerLoading: 1 }, async function() {
-            getForumList(4, this.state.page).then((res) => {
+            getThreadList(4, this.state.page).then((res) => {
                 if (res.status == 'ok') {
                     let nextPage = this.state.page + 1;
                     var tempList = this.state.threadList.slice()
@@ -336,7 +336,7 @@ class HomeScreen extends React.Component {
             return;
         }
         this.setState({ headerLoading: true, page: 1 }, function() {
-            getForumList(4, this.state.page).then((res) => {
+            getThreadList(4, this.state.page).then((res) => {
                 if (res.status == 'ok') {
                     this.loadingImages = [];
                     this.setState({
