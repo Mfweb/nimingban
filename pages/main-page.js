@@ -161,7 +161,7 @@ class MainListItem extends React.Component {
         let replayCountText = itemDetail.replyCount;
         let fName = itemDetail.fname;
         return (
-            <TouchableOpacity onPress={this._onPress}>
+            <TouchableOpacity onPress={this._onPress} activeOpacity={0.5}>
                 <View style={styles.mainListItem}>
                     <View style={styles.mainListItemHeader}>
                         <View style={styles.mainListItemHeaderL1}>
@@ -194,7 +194,7 @@ class MainListItem extends React.Component {
                     <Text style={styles.mainListItemContent}>
                         {threadContent}
                     </Text>
-                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage}>
+                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage} activeOpacity={0.5}>
                         <MainListImage itemDetail={itemDetail} />
                     </TouchableOpacity>
 

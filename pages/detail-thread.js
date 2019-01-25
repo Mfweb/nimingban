@@ -151,7 +151,7 @@ class MainListItem extends React.Component {
             userIDStyle.push(styles.mainListItemUserCookieNamePO);
         }
         return (
-            <TouchableOpacity onPress={this._onPress}>
+            <TouchableOpacity onPress={this._onPress} activeOpacity={0.8}>
                 <View style={styles.mainListItem}>
                     <View style={styles.mainListItemHeader}>
                         <View style={styles.mainListItemHeaderL1}>
