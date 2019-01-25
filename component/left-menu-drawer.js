@@ -1,8 +1,10 @@
-import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, SectionList, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
-import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
+import React from 'react'
+import { Text, View, Image, StyleSheet, SafeAreaView, SectionList, Dimensions, TouchableOpacity } from 'react-native'
+import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
+
 const globalColor = '#f45a8d';
 const styles = StyleSheet.create({
     wlp: {
@@ -32,10 +34,17 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 20
     },
-    icon: {
-        width: 24,
-        height: 24,
+    bottomTools: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingTop: 5,
+        paddingBottom: 5,
+        backgroundColor: globalColor
     },
+    bottomToolsItem: {
+
+    }
 });
 
 
@@ -136,7 +145,19 @@ class LeftDrawerNavigator extends React.Component {
                     keyExtractor={(item, index) => {return index.toString()}}
                 />      
                 <SafeAreaView>
+                    <View style={styles.bottomTools}>
+                        <View style={styles.bottomToolsItem}>
+                            <Icon name={'settings'} size={32} color={'#FFF'} />
+                        </View>
 
+                        <View style={styles.bottomToolsItem}>
+                            <Icon name={'star'} size={32} color={'#FFF'} />
+                        </View>
+
+                        <View style={styles.bottomToolsItem}>
+                            <Icon name={'user'} size={32} color={'#FFF'} />
+                        </View>
+                    </View>
                 </SafeAreaView>
             </View>
         );
