@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native'
 import { getThreadList, getImage } from '../modules/network'
-import { getHTMLDom } from '../modules/html-decoder'
+import { getHTMLDom, ReplaceUrl } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 const globalColor = '#f45a8d';

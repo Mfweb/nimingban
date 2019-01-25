@@ -38,46 +38,52 @@ function styleStringToObject(stringIn) {
     return outPutArray;
 }
 
+var domKey = 0;
 /**
  * 将DOM转为JSX MAP
  * @param {object} htmlJSONIn DOM JSON结构
- * @param {number} countKey 用来累积Key的，起始为0
  * @param {string} tagName 递归传递的html标签名
  * @param {object} tagAttribs 递归传递的html表情属性
  */
-function _getHTMLDom(htmlJSONIn, aCallback, countKey = 0, tagName = null, tagAttribs = null) {
+function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
     let outPut = [];
     htmlJSONIn.forEach(htmlTag => {
         switch (htmlTag.type) {
             case 'text':
                 switch (tagName) {
                     case 'a':
-                        outPut.push(<Text onPress={()=>aCallback(tagAttribs)} style={htmlConstStyles.a} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} onPress={()=>aCallback(tagAttribs)} style={htmlConstStyles.a}>{htmlTag.data}</Text>);
                         break;
                     case 'b':
                     case 'strong':
-                        outPut.push(<Text style={htmlConstStyles.strong} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} style={htmlConstStyles.strong}>{htmlTag.data}</Text>);
                         break;
                     case 'br':
-                        outPut.push(<Text key={htmlTag.data + countKey++}>\r\n</Text>);
+                        outPut.push(<Text key={domKey++}>\r\n</Text>);
                         break;
                     case 'font':
                         if(tagAttribs.hasOwnProperty('style') ) {
                             tagAttribs = styleStringToObject(tagAttribs.style);
                         }
-                        outPut.push(<Text style={tagAttribs} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} style={tagAttribs}>{htmlTag.data}</Text>);
                         break;
                     case null:
-                        outPut.push(<Text key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
+                        let checkURL = replaceUrl(htmlTag.data);
+                        if( checkURL != htmlTag.data ) {
+                            outPut = outPut.concat(getHTMLDom(checkURL, aCallback));
+                        }
+                        else {
+                            outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
+                        }
                         break;
                     default:
                         console.warn('Unknow HTML tag:' + tagName);
-                        outPut.push(<Text key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
                         break;
                 }
                 break;
             case 'tag':
-                outPut = outPut.concat(_getHTMLDom(htmlTag.children, aCallback, countKey, htmlTag.name, htmlTag.attribs))
+                outPut = outPut.concat(_getHTMLDom(htmlTag.children, aCallback, htmlTag.name, htmlTag.attribs))
                 break;
             default:
                 break;
@@ -93,11 +99,23 @@ function _getHTMLDom(htmlJSONIn, aCallback, countKey = 0, tagName = null, tagAtt
  */
 function getHTMLDom(htmlTextIn, aCallback = ()=>{}) {
     let domJSON = parseDOM( escape2Html(htmlTextIn) );
-    //console.log(domJSON);
     let dom = _getHTMLDom(domJSON, aCallback);
     return (
-        <Text>{dom}</Text>
+        <Text key={domKey++}>{dom}</Text>
     );
+}
+/**
+ * 将字符串中的链接转为超链接
+ * 还不完善
+ * @param {string} htmlTextIn 输入字符串
+ */
+function replaceUrl(htmlTextIn) {
+    var re = /(http[s]?:\/\/([\w-]+.)+([:\d+])?(\/[\w-\.\/\?%&=]*)?)/gi;
+    var s = htmlTextIn.replace(re, function(a) {
+        return '<a href="' + a + '">' + a + '</a>';
+    });
+    //console.log(s);
+    return s;
 }
 
 export { getHTMLDom };
