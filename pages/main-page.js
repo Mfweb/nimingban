@@ -166,7 +166,9 @@ class MainListItem extends React.Component {
                 })
             }
             else {
-                console.log('url:' + url.href);
+                this.props.navigation.push('WebView', {
+                    URL: url.href
+                });
             }
         });
         //let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;

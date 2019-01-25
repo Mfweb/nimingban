@@ -8,6 +8,7 @@ import { HomeScreen } from './pages/main-page'
 import { DetailsScreen } from './pages/detail-thread'
 import { ImageViewer } from './pages/image-viewer'
 import { LeftDrawerNavigator } from './component/left-menu-drawer'
+import { PinkWebView} from './pages/webwiew'
 
 const globalColor = '#f45a8d';
 
@@ -24,6 +25,11 @@ const MainStackNavigator = createStackNavigator({
     //图片预览
     ImageViewer: {
         screen: ImageViewer,
+        headerBackTitle: '返回'
+    },
+    //Web
+    WebView: {
+        screen: PinkWebView,
         headerBackTitle: '返回'
     }
 }, {
