@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
-import { getThreadList, getImage, clearImageCache } from '../modules/network'
+import React from 'react'
+import { Text, View, Image, StyleSheet, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native'
+import { getThreadList, getImage } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
-import { ListProcessView,ImageProcessView } from '../component/list-process-view'
-
+import { ListProcessView, ImageProcessView } from '../component/list-process-view'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 const globalColor = '#f45a8d';
 
 const styles = StyleSheet.create({
@@ -91,12 +91,8 @@ const styles = StyleSheet.create({
         marginBottom: 3,
         paddingRight: 5
     },
-    mainListReplayCountIcon: {
-        width: 24,
-        height: 24,
-        marginRight: 3
-    },
     mainListReplayCountText: {
+        marginLeft: 3,
         color: '#696969',
         fontSize: 18
     },
@@ -109,10 +105,6 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').width / 2.5,
         width: Dimensions.get('window').width / 2.5,
         left: 0,
-    },
-    leftMenuIcon: {
-        width: 32,
-        height: 32
     },
     icon: {
         width: 24,
@@ -208,7 +200,7 @@ class MainListItem extends React.Component {
 
 
                     <View style={styles.mainListItemBottom}>
-                        <Image style={styles.mainListReplayCountIcon} source={require('../imgs/replay-count.png')}></Image>
+                        <Icon name={'bubble'} size={24} color={globalColor} />
                         <Text style={styles.mainListReplayCountText}>{replayCountText}</Text>
                     </View>
                 </View>
@@ -241,12 +233,9 @@ class HomeScreen extends React.Component {
         return {
             title: 'A岛(' + navigation.getParam('name', '时间线') + ')',
             headerLeft: (
-                <TouchableHighlight style={{ marginLeft: 5 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Image
-                        style={styles.leftMenuIcon}
-                        source={require('../imgs/menu.png')}
-                    />
-                </TouchableHighlight>
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={30} color={'#FFF'} />
+                </TouchableOpacity>
             )
         }
     }
