@@ -147,15 +147,21 @@ class LeftDrawerNavigator extends React.Component {
                 <SafeAreaView>
                     <View style={styles.bottomTools}>
                         <View style={styles.bottomToolsItem}>
-                            <Icon name={'settings'} size={32} color={'#FFF'} />
+                            <TouchableOpacity>
+                                <Icon name={'settings'} size={32} color={'#FFF'} />
+                            </TouchableOpacity>
                         </View>
 
                         <View style={styles.bottomToolsItem}>
-                            <Icon name={'star'} size={32} color={'#FFF'} />
+                            <TouchableOpacity>
+                                <Icon name={'star'} size={32} color={'#FFF'} />
+                            </TouchableOpacity>
                         </View>
 
                         <View style={styles.bottomToolsItem}>
-                            <Icon name={'user'} size={32} color={'#FFF'} />
+                            <TouchableOpacity>
+                                <Icon name={'user'} size={32} color={'#FFF'} />
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </SafeAreaView>

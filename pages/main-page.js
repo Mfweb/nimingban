@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native'
 import { getThreadList, getImage } from '../modules/network'
-import { getHTMLDom, ReplaceUrl } from '../modules/html-decoder'
+import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 const globalColor = '#f45a8d';
@@ -106,9 +106,9 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width / 2.5,
         left: 0,
     },
-    icon: {
-        width: 24,
-        height: 24,
+    headerRightView: {
+        flex: 1,
+        flexDirection: 'row',
     },
 });
 
@@ -248,8 +248,18 @@ class HomeScreen extends React.Component {
             title: 'A岛(' + navigation.getParam('name', '时间线') + ')',
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={30} color={'#FFF'} />
+                    <Icon name={'menu'} size={24} color={'#FFF'} />
                 </TouchableOpacity>
+            ),
+            headerRight: (
+                <View style={styles.headerRightView}>
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                        <Icon name={'note'} size={24} color={'#FFF'} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                        <Icon name={'options-vertical'} size={24} color={'#FFF'} />
+                    </TouchableOpacity>
+                </View>
             )
         }
     }

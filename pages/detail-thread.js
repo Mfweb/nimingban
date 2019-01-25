@@ -3,6 +3,7 @@ import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBa
 import { getReplyList, getImage, clearImageCache } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 const globalColor = '#f45a8d';
 
 const styles = StyleSheet.create({
@@ -93,6 +94,10 @@ const styles = StyleSheet.create({
     ItemSeparator: {
         height: 1,
         backgroundColor: '#FFB6C1'
+    },
+    headerRightView: {
+        flex: 1,
+        flexDirection: 'row',
     },
 });
 
@@ -222,7 +227,17 @@ class DetailsScreen extends React.Component {
     threadDetail = null;
     static navigationOptions = ({navigation}) => {
         return {
-            title: navigation.getParam('threadDetail', null).title
+            title: navigation.getParam('threadDetail', null).title,
+            headerRight: (
+                <View style={styles.headerRightView}>
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                        <Icon name={'note'} size={24} color={'#FFF'} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                        <Icon name={'options-vertical'} size={24} color={'#FFF'} />
+                    </TouchableOpacity>
+                </View>
+            )
         };
     };
 
