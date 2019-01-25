@@ -23,14 +23,33 @@ const apiRequestHeader = {
     'User-Agent': 'HavfunClient-' + appMark
 };
 
+function _fetch(fetch_promise, timeout) {
+    var abort_fn = null;
+    var abort_promise = new Promise(function(resolve, reject) {
+        abort_fn = function() {
+            reject('time out');
+        };
+    });
+    var abortable_promise = Promise.race([
+        fetch_promise,
+        abort_promise
+    ]);
+
+    setTimeout(function() {
+        abort_fn();
+    }, timeout);
+
+    return abortable_promise;
+}
+
 /**
  * 获取板块列表
  */
 async function getForumList() {
-    let response = await fetch(apiURLs.getForumList, {
+    let response = await _fetch(fetch(apiURLs.getForumList, {
         method: 'GET',
         headers: apiRequestHeader,
-    });
+    }), 16000);
     let res = await response.text();
     try {
         let resJSON = JSON.parse(res);
@@ -46,11 +65,11 @@ async function getForumList() {
  * @param {Number} page 第几页
  */
 async function getThreadList(fid, page) {
-    let response = await fetch(apiURLs.getForumThread, {
+    let response = await _fetch(fetch(apiURLs.getForumThread, {
         method: 'POST',
         headers: apiRequestHeader,
         body: 'id=' + fid + '&page=' + page
-    });
+    }), 16000);
     let res = await response.text();
     try {
         let resJSON = JSON.parse(res);
@@ -66,11 +85,11 @@ async function getThreadList(fid, page) {
  * @param {Number} page 分页
  */
 async function getReplyList(tid, page) {
-    let response = await fetch(apiURLs.getThreadReply, {
+    let response = await _fetch(fetch(apiURLs.getThreadReply, {
         method: 'POST',
         headers: apiRequestHeader,
         body: 'id=' + tid + '&page=' + page
-    });
+    }), 16000);
     let res = await response.text();
     if(res == '"该主题不存在"') {
         return { status: 'error', errmsg: '该主题不存在' };
@@ -112,7 +131,7 @@ async function getImage(imgMode, imageName) {
         var localPath = (imgMode === 'thumb' ? localDir.imageCacheThumb : localDir.imageCacheFull) + '/' + imageName.replace('/','-');
 
         if(await RNFS.exists(localPath)) {
-            console.log('Get image from cache.');
+            //console.log('Get image from cache.');
             return {
                 status: 'ok',
                 download: false,
@@ -121,12 +140,12 @@ async function getImage(imgMode, imageName) {
         }
 
         if ( !await RNFS.exists(localDir.imageCacheThumb) ) {
-            console.log('Make new thumb image dir.');
+            //console.log('Make new thumb image dir.');
             let a = await RNFS.mkdir(localDir.imageCacheThumb, { NSURLIsExcludedFromBackupKey: true });
-            console.log(a);
+            //console.log(a);
         }
         if ( !await RNFS.exists(localDir.imageCacheFull) ) {
-            console.log('Make new full image dir.');
+            //console.log('Make new full image dir.');
             await RNFS.mkdir(localDir.imageCacheFull, { NSURLIsExcludedFromBackupKey: true });
         }
         let downloadRes = await RNFS.downloadFile({

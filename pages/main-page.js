@@ -355,7 +355,8 @@ class HomeScreen extends React.Component {
                     alert('请求数据失败:' + res.errmsg);
                 }
                 this.setState({ headerLoading: false });
-            }).catch(()=>{
+            }).catch((error)=>{
+                console.log(error)
                 this.setState({ headerLoading: false });
                 alert('请求数据失败');
             });
