@@ -1,4 +1,4 @@
-import { Platform } from 'react-native'
+import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs';
 
 const apiBaseURL = 'https://adnmb1.com';
@@ -45,14 +45,22 @@ function _fetch(fetch_promise, timeout) {
 /**
  * 获取板块列表
  */
-async function getForumList() {
-    let response = await _fetch(fetch(apiURLs.getForumList, {
-        method: 'GET',
-        headers: apiRequestHeader,
-    }), 16000);
-    let res = await response.text();
+async function getForumList(force = false) {
+    let localItem = await AsyncStorage.getItem('ForumList');
+    if(localItem === null || force === true) {
+        let response = await _fetch(fetch(apiURLs.getForumList, {
+            method: 'GET',
+            headers: apiRequestHeader,
+        }), 16000);
+        localItem = await response.text();
+        await AsyncStorage.setItem('ForumList', localItem);
+        console.log('from network');
+    }
+    else {
+        console.log('from local');
+    }
     try {
-        let resJSON = JSON.parse(res);
+        let resJSON = JSON.parse(localItem);
         return { status: 'ok', res: resJSON };
     } catch (error) {
         return { status: 'error', errmsg: error };
@@ -141,8 +149,7 @@ async function getImage(imgMode, imageName) {
 
         if ( !await RNFS.exists(localDir.imageCacheThumb) ) {
             //console.log('Make new thumb image dir.');
-            let a = await RNFS.mkdir(localDir.imageCacheThumb, { NSURLIsExcludedFromBackupKey: true });
-            //console.log(a);
+            await RNFS.mkdir(localDir.imageCacheThumb, { NSURLIsExcludedFromBackupKey: true });
         }
         if ( !await RNFS.exists(localDir.imageCacheFull) ) {
             //console.log('Make new full image dir.');

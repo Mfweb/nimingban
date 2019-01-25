@@ -44,29 +44,12 @@ class LeftDrawerNavigator extends React.Component {
         super(props);
         this.state = {
             forumList: [],
+            headerLoading: false
         };
     }
 
     componentDidMount() {
-        getForumList().then((res) => {
-            if(res.status == 'ok') {
-                let tempList = Array();
-                res.res.forEach(forumGroup => {
-                    tempList.push({
-                        groupName: forumGroup.name,
-                        data: forumGroup.forums.slice()
-                    });
-                });
-                this.setState({
-                    forumList: tempList
-                });
-            }
-            else {
-                alert('获取板块列表失败,' + res.errmsg);
-            }
-        }).catch(()=>{
-            alert('获取板块列表失败');
-        });
+        this._pullDownRefresh(false);
     }
 
     _renderSectionHeader = ({section}) => {
@@ -106,12 +89,46 @@ class LeftDrawerNavigator extends React.Component {
     _listHeaderComponent = () => (
         <Image style={styles.wlp} resizeMode='contain' resizeMethod='scale' source={require('../imgs/menu-top.jpg')}/>
     );
+    _pullDownRefresh = (force) => {
+        this.setState({
+            headerLoading: true
+        }, ()=>{
+            getForumList(force).then((res) => {
+                if(res.status == 'ok') {
+                    let tempList = Array();
+                    res.res.forEach(forumGroup => {
+                        tempList.push({
+                            groupName: forumGroup.name,
+                            data: forumGroup.forums.slice()
+                        });
+                    });
+                    this.setState({
+                        forumList: tempList,
+                        headerLoading: false
+                    });
+                }
+                else {
+                    alert('获取板块列表失败,' + res.errmsg);
+                    this.setState({
+                        headerLoading: false
+                    });
+                }
+            }).catch(()=>{
+                alert('获取板块列表失败');
+                this.setState({
+                    headerLoading: false
+                });
+            });
+        });
+    }
     render() {
         return (
             <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: '#FFF'}}>
                 <View style={{backgroundColor: globalColor, top: 0, height: 45}} />       
                 
                 <SectionList
+                    onRefresh={()=>this._pullDownRefresh(true)}
+                    refreshing={this.state.headerLoading}
                     ListHeaderComponent={this._listHeaderComponent}
                     renderSectionHeader={this._renderSectionHeader}
                     renderItem={this._renderItem}
