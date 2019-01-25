@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
 import { parseDOM } from 'htmlparser2'
 
 const htmlConstStyles = StyleSheet.create({
@@ -45,14 +45,14 @@ function styleStringToObject(stringIn) {
  * @param {string} tagName 递归传递的html标签名
  * @param {object} tagAttribs 递归传递的html表情属性
  */
-function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null) {
+function _getHTMLDom(htmlJSONIn, aCallback, countKey = 0, tagName = null, tagAttribs = null) {
     let outPut = [];
     htmlJSONIn.forEach(htmlTag => {
         switch (htmlTag.type) {
             case 'text':
                 switch (tagName) {
                     case 'a':
-                        outPut.push(<Text style={htmlConstStyles.a} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
+                        outPut.push(<Text onPress={()=>aCallback(tagAttribs)} style={htmlConstStyles.a} key={htmlTag.data + countKey++}>{htmlTag.data}</Text>);
                         break;
                     case 'b':
                     case 'strong':
@@ -77,7 +77,7 @@ function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null
                 }
                 break;
             case 'tag':
-                outPut = outPut.concat(_getHTMLDom(htmlTag.children, countKey, htmlTag.name, htmlTag.attribs))
+                outPut = outPut.concat(_getHTMLDom(htmlTag.children, aCallback, countKey, htmlTag.name, htmlTag.attribs))
                 break;
             default:
                 break;
@@ -89,11 +89,12 @@ function _getHTMLDom(htmlJSONIn, countKey = 0, tagName = null, tagAttribs = null
 /**
  * 将HTM转为JSX MAP
  * @param {string} htmlTextIn HTML输入
+ * @param {function} aCallback 点击A标签的回调
  */
-function getHTMLDom(htmlTextIn) {
+function getHTMLDom(htmlTextIn, aCallback = ()=>{}) {
     let domJSON = parseDOM( escape2Html(htmlTextIn) );
     //console.log(domJSON);
-    let dom = _getHTMLDom(domJSON);
+    let dom = _getHTMLDom(domJSON, aCallback);
     return (
         <Text>{dom}</Text>
     );

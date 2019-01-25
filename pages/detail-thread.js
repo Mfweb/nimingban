@@ -352,6 +352,10 @@ class DetailsScreen extends React.Component {
         this.setState({ headerLoading: true, page: 1 }, function() {
             getReplyList(this.threadDetail.id, this.state.page).then((res) => {
                 if (res.status == 'ok') {
+                    console.log(this.props);
+                    this.props.navigation.setParams({
+                        threadDetail: res.res
+                    });
                     this.localReplyCount = 0;
                     this.loadingImages = [];
                     let tempList = Array();

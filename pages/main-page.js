@@ -140,12 +140,12 @@ class MainListItem extends React.Component {
     _onPress = () => {
         this.props.navigation.push('Details', {
             threadDetail: this.props.itemDetail
-        })
+        });
     }
     _onPressImage = () => {
         this.props.navigation.push('ImageViewer', {
             imgName: this.props.itemDetail.img + this.props.itemDetail.ext
-        })
+        });
     }
 
     componentDidMount() {
@@ -156,7 +156,19 @@ class MainListItem extends React.Component {
         //console.log(this.props.itemDetail);
         let { itemDetail } = this.props;        
         let userID = getHTMLDom(itemDetail.userid);
-        let threadContent = getHTMLDom(itemDetail.content);
+        let threadContent = getHTMLDom(itemDetail.content, (url)=>{
+            if( (url.href.indexOf('/t/') >= 0) && (
+                (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
+            ) ) {
+                let threadNo = url.href.split('/t/')[1];
+                this.props.navigation.push('Details', {
+                    threadDetail: {id: threadNo, userid: 'null', 'content': 'null'}
+                })
+            }
+            else {
+                console.log('url:' + url.href);
+            }
+        });
         //let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
         let replayCountText = itemDetail.replyCount;
         let fName = itemDetail.fname;
