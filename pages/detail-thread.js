@@ -137,14 +137,9 @@ class MainListItem extends React.Component {
     }
     render() {
         //console.log(this.props.itemDetail);
-        let { itemDetail } = this.props;
-
-        //let imgMode = itemDetail.localImage?'contain':'center';
-        let imageSource = itemDetail.localImage?{uri:itemDetail.localImage}:require('../imgs/loading.png');
-        
+        let { itemDetail } = this.props;        
         let userID = getHTMLDom(itemDetail.userid);
         let threadContent = getHTMLDom(itemDetail.content);
-
         let userIDStyle = [];
         if(itemDetail.admin == 1) {
             userIDStyle.push(styles.mainListItemUserCookieNameBigVIP);

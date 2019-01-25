@@ -11,6 +11,7 @@ const localDir = {
 };
 
 const apiURLs = {
+    timeLine: apiBaseURL + '/Api/timeline?appid=' + appMark,
     getForumList: apiBaseURL + '/Api/getForumList?appid=' + appMark,
     getForumThread: apiBaseURL + '/Api/showf?appid=' + appMark,
     getImageCDN: apiBaseURL + '/Api/getCdnPath?appid=' + appMark,
@@ -44,6 +45,7 @@ function _fetch(fetch_promise, timeout) {
 
 /**
  * 获取板块列表
+ * @param {bool} force 是否强制从网络端获取
  */
 async function getForumList(force = false) {
     let localItem = await AsyncStorage.getItem('ForumList');
@@ -54,13 +56,19 @@ async function getForumList(force = false) {
         }), 16000);
         localItem = await response.text();
         await AsyncStorage.setItem('ForumList', localItem);
-        console.log('from network');
     }
-    else {
-        console.log('from local');
-    }
+ 
     try {
         let resJSON = JSON.parse(localItem);
+        if(force === true) {
+            let forumNameList = new Object();
+            resJSON.forEach(groupItem => {
+                groupItem.forums.forEach(item=>{
+                    forumNameList[item.id.toString()] = item.name;
+                });
+            });
+            await AsyncStorage.setItem('ForumNameList', JSON.stringify(forumNameList));
+        }
         return { status: 'ok', res: resJSON };
     } catch (error) {
         return { status: 'error', errmsg: error };
@@ -73,7 +81,7 @@ async function getForumList(force = false) {
  * @param {Number} page 第几页
  */
 async function getThreadList(fid, page) {
-    let response = await _fetch(fetch(apiURLs.getForumThread, {
+    let response = await _fetch(fetch( fid==-1?apiURLs.timeLine:apiURLs.getForumThread, {
         method: 'POST',
         headers: apiRequestHeader,
         body: 'id=' + fid + '&page=' + page
@@ -81,6 +89,16 @@ async function getThreadList(fid, page) {
     let res = await response.text();
     try {
         let resJSON = JSON.parse(res);
+        if( fid == -1 ) {
+            let forumNameList = await AsyncStorage.getItem('ForumNameList');
+            if(forumNameList !== null) {
+                forumNameList = JSON.parse(forumNameList);
+                resJSON.forEach(item => {
+                    item.fname = forumNameList[item.fid.toString()];
+                });
+            }
+        }
+
         return { status: 'ok', res: resJSON };
     } catch (error) {
         return { status: 'error', errmsg: error };

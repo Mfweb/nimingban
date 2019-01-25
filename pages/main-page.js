@@ -76,6 +76,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 22
     },
+    mainListItemForumName: {
+        color: 'red',
+        fontSize: 20
+    },
     displayNone: {
         display: 'none'
     },
@@ -158,15 +162,12 @@ class MainListItem extends React.Component {
     }
     render() {
         //console.log(this.props.itemDetail);
-        let { itemDetail } = this.props;
-
-        //let imgMode = itemDetail.localImage?'contain':'center';
-        let imageSource = itemDetail.localImage?{uri:itemDetail.localImage}:require('../imgs/loading.png');
-        
+        let { itemDetail } = this.props;        
         let userID = getHTMLDom(itemDetail.userid);
         let threadContent = getHTMLDom(itemDetail.content);
         //let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
         let replayCountText = itemDetail.replyCount;
+        let fName = itemDetail.fname;
         return (
             <TouchableOpacity onPress={this._onPress}>
                 <View style={styles.mainListItem}>
@@ -192,6 +193,7 @@ class MainListItem extends React.Component {
                         </View>
 
                         <View style={styles.mainListItemHeaderL2R}>
+                            <Text style={fName ?styles.mainListItemForumName: styles.displayNone }>{fName}</Text>
                             <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
                         </View>
 
@@ -230,14 +232,14 @@ class HomeScreen extends React.Component {
             waitForInteraction: true,
         }*/
     }
-    fid = 4;
-    fname = '综合板1';
+    fid = -1;
+    fname = '时间线';
 
 
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
-            title: 'A岛(' + navigation.getParam('name', '综合板1') + ')',
+            title: 'A岛(' + navigation.getParam('name', '时间线') + ')',
             headerLeft: (
                 <TouchableHighlight style={{ marginLeft: 5 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                     <Image
@@ -250,8 +252,8 @@ class HomeScreen extends React.Component {
     }
 
     componentDidMount() {
-        this.fid = this.props.navigation.getParam('forumID', '4');
-        this.fname = this.props.navigation.getParam('name', '综合板1');
+        this.fid = this.props.navigation.getParam('forumID', '-1');
+        this.fname = this.props.navigation.getParam('name', '时间线');
 
         //clearImageCache();
         this._pullDownRefresh();
