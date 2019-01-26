@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Animated,Dimensions } from 'react-native'
 
 //loading动画颜色，粉(岛)-紫(岛)-浅蓝(芦苇)-橙(岛)
-const listProcessColorList = ['#F45A8D', '#8A2BE2', '#00BFFF', '#FF7F50'];
+const listProcessColorList = ['#FA7296', '#8A2BE2', '#00BFFF', '#FF7F50'];
 /**
  * List底部loading动画
  */

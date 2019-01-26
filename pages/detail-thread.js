@@ -4,7 +4,7 @@ import { getReplyList, getImage, clearImageCache } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-const globalColor = '#f45a8d';
+const globalColor = '#fa7296';
 
 const styles = StyleSheet.create({
     mainList: {

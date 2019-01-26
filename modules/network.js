@@ -178,7 +178,7 @@ async function getReplyList(tid, page) {
 }
 
 /**
- * 获取图片CDN（暂时是固定的）
+ * 获取图片CDN
  */
 async function getImageCDN() {
     if(imageCDNURLs == null) {

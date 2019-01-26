@@ -5,7 +5,7 @@ import { getForumList } from '../modules/network'
 import { getHTMLDom } from '../modules/html-decoder'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
-const globalColor = '#f45a8d';
+const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     wlp: {
         height: (Dimensions.get('window').width * 0.7),
@@ -159,7 +159,7 @@ class LeftDrawerNavigator extends React.Component {
                         </View>
 
                         <View style={styles.bottomToolsItem}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>this.props.navigation.navigate('UserMember')}>
                                 <Icon name={'user'} size={32} color={'#FFF'} />
                             </TouchableOpacity>
                         </View>
