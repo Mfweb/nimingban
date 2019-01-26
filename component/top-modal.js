@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, SafeAreaView, SectionList, Dimensions, TouchableOpacity } from 'react-native'
+import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, TouchableOpacity } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
@@ -49,8 +49,6 @@ const styles = StyleSheet.create({
     modalButtonView: {
         height: 48,
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
     },
     modalButton: {
         justifyContent: 'center',
@@ -65,21 +63,58 @@ class TopModal extends React.Component {
         super(props);
         this.state = {
             top: 0,
-            left: 0
+            left: 0,
+            nowOpacity: new Animated.Value(0),
+            showx: this.props.show
         }
     }
-
+    isUnMount = false;
     componentDidMount() {
+        isUnMount = false;
         this.setState({
             left: Dimensions.get('window').width / 2 - this.props.width / 2,
             top: Dimensions.get('window').height / 2 - this.props.height / 2 - 80,
         });
     }
-
- 
+    componentWillUnmount() {
+        isUnMount = true;
+    }
+    startAnime = function (mode, finish = null) {
+        if(this.isUnMount) {
+            return;
+        }
+        this.state.nowOpacity.setValue(mode==='in'?0:1);
+        Animated.timing(
+            this.state.nowOpacity,
+            {
+                toValue: mode==='in'?1:0,
+                duration: 200,
+                useNativeDriver: true,
+                stiffness: 50
+            }
+        ).start(finish);
+    }
+    componentWillReceiveProps() {
+        console.log(this.props.show);
+        if(this.props.show) {
+            this.startAnime('out', ()=>{
+                console.log('finish');
+                this.setState({
+                    showx: false
+                })
+            });
+        }
+        else {
+            this.setState({
+                showx: true
+            }, ()=>{
+                this.startAnime('in');
+            })
+        }
+    }
     render() {
         return (
-            <View style={this.props.show ? styles.modalMask : styles.displayNone}>
+            <Animated.View style={[this.state.showx ? styles.modalMask : styles.displayNone, {opacity: this.state.nowOpacity}]}>
                 <View style={ [styles.modalRoot, {
                     width: this.props.width, 
                     height: this.props.height + 90,
@@ -100,18 +135,31 @@ class TopModal extends React.Component {
                     <View style={styles.modalTitleSplitLine}></View>
                     <View style={[styles.modalButtonView, this.props.width]}>
                         <TouchableOpacity 
-                            style={[styles.modalButton, {width:this.props.width/2}]} 
+                            style={this.props.leftButtonText ?[
+                                styles.modalButton, 
+                                {
+                                    width:this.props.width / 2
+                                }]:styles.displayNone
+                            } 
                             onPress={this.props.onLeftButtonPress}>
                             <Text style={{fontSize: 20, color: globalColor}}>{this.props.leftButtonText}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity 
-                            style={[styles.modalButton, {width:this.props.width/2, backgroundColor:globalColor,borderBottomRightRadius:8}]}
+                            style={[
+                                styles.modalButton, 
+                                {
+                                    width: this.props.leftButtonText ? this.props.width/2 : this.props.width, 
+                                    backgroundColor: globalColor,
+                                    borderBottomRightRadius: 8,
+                                    borderBottomLeftRadius: this.props.leftButtonText?0:8
+                                }
+                            ]}
                             onPress={this.props.onRightButtonPress}>
                             <Text style={{fontSize: 20, color: '#FFF'}}>{this.props.rightButtonText}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </Animated.View>
         );
     }
 }

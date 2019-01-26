@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     },
     loginTitleImg: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 546 * 338
+        height: Dimensions.get('window').width / 600 * 272
     },
     userInputView: {
         flexDirection: 'row',
