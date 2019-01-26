@@ -106,7 +106,6 @@ class UserMember extends React.Component {
                 <TopModal
                     show={this.state.showModal}
                     width={280}
-                    height={200}
                     title={'输入验证码'}
                     leftButtonText={'取消'}
                     rightButtonText={'确认'}

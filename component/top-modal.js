@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, TouchableOpacity } from 'react-native'
+import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, TouchableOpacity, UIManager, findNodeHandle } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
@@ -18,16 +18,19 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height,
         position: 'absolute',
         zIndex: 9998,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     modalRoot: {
         backgroundColor: '#FFF',
         borderRadius: 8,
-        position: 'absolute',
         zIndex: 9999,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
         shadowColor: '#696969',
+        marginTop: -70
     },
     modalTitle: {
         flexDirection: 'row',
@@ -53,7 +56,7 @@ const styles = StyleSheet.create({
     modalButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 48,
+        height: 49,
     }
 });
 
@@ -63,21 +66,16 @@ class TopModal extends React.Component {
         super(props);
         this.state = {
             top: 0,
-            left: 0,
             nowOpacity: new Animated.Value(0),
-            showx: this.props.show
+            showx: false
         }
     }
     isUnMount = false;
     componentDidMount() {
-        isUnMount = false;
-        this.setState({
-            left: Dimensions.get('window').width / 2 - this.props.width / 2,
-            top: Dimensions.get('window').height / 2 - this.props.height / 2 - 80,
-        });
+        this.isUnMount = false;
     }
     componentWillUnmount() {
-        isUnMount = true;
+        this.isUnMount = true;
     }
     startAnime = function (mode, finish = null) {
         if(this.isUnMount) {
@@ -94,32 +92,45 @@ class TopModal extends React.Component {
             }
         ).start(finish);
     }
-    componentWillReceiveProps() {
-        console.log(this.props.show);
-        if(this.props.show) {
-            this.startAnime('out', ()=>{
-                console.log('finish');
+
+    componentWillReceiveProps(res) {
+        if( res.show != this.state.showx ) {
+            if(res.show) {
                 this.setState({
-                    showx: false
+                    showx: true
+                }, ()=>{
+                    this.startAnime('in');
                 })
-            });
-        }
-        else {
-            this.setState({
-                showx: true
-            }, ()=>{
-                this.startAnime('in');
-            })
+            }
+            else {
+                this.startAnime('out', ()=>{
+                    this.setState({
+                        showx: false
+                    })
+                });
+            }
         }
     }
+
+    _onLayout(e){
+        let {height} = event.nativeEvent.layout;
+        console.log(height);
+    }
+
     render() {
         return (
-            <Animated.View style={[this.state.showx ? styles.modalMask : styles.displayNone, {opacity: this.state.nowOpacity}]}>
+            <Animated.View 
+            style = {[
+                this.state.showx ? styles.modalMask : styles.displayNone, 
+                {
+                    opacity: this.state.nowOpacity
+                }
+            ]}>
                 <View style={ [styles.modalRoot, {
                     width: this.props.width, 
-                    height: this.props.height + 90,
-                    left: this.state.left,
-                    top: this.state.top}]}>
+                    height: this.props.height + 90
+                    }]}
+                    ref={(ref)=>this.modalView=ref} >
                     <View style={styles.modalTitle}>
                         <Text style={styles.modalTitleText}>
                             {this.props.title}

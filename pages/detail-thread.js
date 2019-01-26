@@ -296,21 +296,23 @@ class DetailsScreen extends React.Component {
 
     render() {
         return (
-            <FlatList
-                data={this.state.replyList}
-                extraData={this.state}
-                style={styles.mainList}
-                onRefresh={this._pullDownRefresh}
-                refreshing={this.state.headerLoading}
-                keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
-                renderItem={this._renderItem}
-                onScroll={this._onScroll}
-                ListFooterComponent={this._footerComponent}
-                ItemSeparatorComponent={this._itemSeparator}
-                onEndReachedThreshold={0.1}
-                onEndReached={this._pullUpLoading}
-                onViewableItemsChanged={this._onViewableItemsChanged}
-            />
+            <View style={{flex:1}}>
+                <FlatList
+                    data={this.state.replyList}
+                    extraData={this.state}
+                    style={styles.mainList}
+                    onRefresh={this._pullDownRefresh}
+                    refreshing={this.state.headerLoading}
+                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
+                    renderItem={this._renderItem}
+                    onScroll={this._onScroll}
+                    ListFooterComponent={this._footerComponent}
+                    ItemSeparatorComponent={this._itemSeparator}
+                    onEndReachedThreshold={0.1}
+                    onEndReached={this._pullUpLoading}
+                    onViewableItemsChanged={this._onViewableItemsChanged}
+                />
+            </View>
         );
     }
     isScroll = false;

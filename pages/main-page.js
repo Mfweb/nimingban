@@ -3,7 +3,10 @@ import { Text, View, Image, StyleSheet, FlatList, TouchableHighlight, Dimensions
 import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
+import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+
+
 const globalColor = '#fa7296';
 
 const styles = StyleSheet.create({
@@ -230,7 +233,9 @@ class HomeScreen extends React.Component {
             headerLoading: false,
             footerLoading: 0,
             threadList: Array(),
-            page: 1
+            page: 1,
+            errmsg: null,
+            errmsgModal: false
         };
         /*this.viewabilityConfig = {
             minimumViewTime: 100,
@@ -308,20 +313,38 @@ class HomeScreen extends React.Component {
     }*/
     render() {
         return (
-            <FlatList
-                data={this.state.threadList}
-                extraData={this.state}
-                style={styles.mainList}
-                onRefresh={this._pullDownRefresh}
-                refreshing={this.state.headerLoading}
-                keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
-                renderItem={this._renderItem}
-                ListFooterComponent={this._footerComponent}
-                onEndReachedThreshold={0.1}
-                onEndReached={this._pullUpLoading}
-                onViewableItemsChanged={this._onViewableItemsChanged}
-                /*viewabilityConfig={this.viewabilityConfig}*/
-            />
+            <View style={{flex:1}}>
+               <TopModal
+                    show={this.state.errmsgModal}
+                    width={280}
+                    title={'错误'}
+                    rightButtonText={'确认'}
+                    item={<Text style={{width: 280, fontSize: 20, margin: 10}}>{this.state.errmsg}</Text>}
+                    onClosePress={()=>{
+                        this.setState({
+                            errmsgModal: false
+                        });
+                    }}
+                    onRightButtonPress={()=>{
+                        this.setState({
+                            errmsgModal: false
+                        });
+                    }} />
+                <FlatList
+                    data={this.state.threadList}
+                    extraData={this.state}
+                    style={styles.mainList}
+                    onRefresh={this._pullDownRefresh}
+                    refreshing={this.state.headerLoading}
+                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
+                    renderItem={this._renderItem}
+                    ListFooterComponent={this._footerComponent}
+                    onEndReachedThreshold={0.1}
+                    onEndReached={this._pullUpLoading}
+                    onViewableItemsChanged={this._onViewableItemsChanged}
+                    /*viewabilityConfig={this.viewabilityConfig}*/
+                />
+            </View>
         );
     }
 
@@ -342,12 +365,18 @@ class HomeScreen extends React.Component {
                     });
                 }
                 else {
-                    this.setState({ footerLoading: 0 });
-                    alert('请求数据失败:' + res.errmsg);
+                    this.setState({ 
+                        errmsgModal: true,
+                        errmsg: '请求数据失败:' + res.errmsg,
+                        footerLoading: 0 
+                    });
                 }
             }).catch(()=>{
-                this.setState({ footerLoading: 0 });
-                alert('请求数据失败');
+                this.setState({ 
+                    errmsgModal: true,
+                    errmsg: '请求数据失败',
+                    footerLoading: 0 
+                });
             });
         });
     }
@@ -367,13 +396,19 @@ class HomeScreen extends React.Component {
                     });
                 }
                 else {
-                    alert('请求数据失败:' + res.errmsg);
+                    this.setState({
+                        errmsgModal: true,
+                        errmsg: '请求数据失败:' + res.errmsg,
+                    });
                 }
                 this.setState({ headerLoading: false });
             }).catch((error)=>{
                 console.log(error)
-                this.setState({ headerLoading: false });
-                alert('请求数据失败');
+                this.setState({ 
+                    errmsgModal: true,
+                    errmsg: '请求数据失败:' + error,
+                    headerLoading: false 
+                });
             });
         });
     }
