@@ -1,8 +1,14 @@
 import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs';
 
+// 主岛主地址
 const apiBaseURL = 'https://adnmb.com';
+
+// 主岛重定向地址和CDN地址，动态获取
 var apiRedirectURL = null;
+var imageCDNURLs = null;
+
+// app标示
 const appMark = 'PinkAdao';
 
 const localDir = {
@@ -24,6 +30,11 @@ const apiRequestHeader = {
     'User-Agent': 'HavfunClient-' + appMark
 };
 
+/**
+ * 为fetch增加超时
+ * @param {object} fetch_promise fetch promise
+ * @param {number} timeout 超时事件，毫秒
+ */
 function _fetch(fetch_promise, timeout) {
     var abort_fn = null;
     var abort_promise = new Promise(function(resolve, reject) {
@@ -169,8 +180,35 @@ async function getReplyList(tid, page) {
 /**
  * 获取图片CDN（暂时是固定的）
  */
-function getImageCDN() {
-    return 'https://nmbimg.fastmirror.org/'
+async function getImageCDN() {
+    if(imageCDNURLs == null) {
+        let url = await checkRedirect();
+        if(url === null) {
+            return null;
+        }
+        url += apiURLs.getImageCDN;
+        let response = await _fetch(fetch(url, {
+            method: 'GET',
+            headers: apiRequestHeader,
+            cache: 'no-cache',
+        }), 16000);
+        imageCDNURLs = await response.text();
+    }
+    if(imageCDNURLs == null) {
+        return null;
+    }
+    try{
+        let cdnList = JSON.parse(imageCDNURLs);
+        let maxRate = {url: 'https://nmbimg.fastmirror.org/', rate: 0};
+        cdnList.forEach(item => {
+            if(item.rate > maxRate.rate) {
+                maxRate = item;
+            }
+        });
+        return maxRate.url;
+    } catch(error) {
+        return null;
+    }
 }
 
 /**
@@ -191,7 +229,7 @@ async function clearImageCache() {
  */
 async function getImage(imgMode, imageName) {
     try {
-        var imgUrl = getImageCDN() + imgMode + '/' + imageName;
+        var imgUrl = await getImageCDN() + imgMode + '/' + imageName;
         var localPath = (imgMode === 'thumb' ? localDir.imageCacheThumb : localDir.imageCacheFull) + '/' + imageName.replace('/','-');
 
         if(await RNFS.exists(localPath)) {
