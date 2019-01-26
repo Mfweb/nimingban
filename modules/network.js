@@ -1,8 +1,8 @@
 import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs';
 
-const apiBaseURL = 'https://adnmb1.com';
-
+const apiBaseURL = 'https://adnmb.com';
+var apiRedirectURL = null;
 const appMark = 'PinkAdao';
 
 const localDir = {
@@ -11,11 +11,11 @@ const localDir = {
 };
 
 const apiURLs = {
-    timeLine: apiBaseURL + '/Api/timeline?appid=' + appMark,
-    getForumList: apiBaseURL + '/Api/getForumList?appid=' + appMark,
-    getForumThread: apiBaseURL + '/Api/showf?appid=' + appMark,
-    getImageCDN: apiBaseURL + '/Api/getCdnPath?appid=' + appMark,
-    getThreadReply: apiBaseURL + '/Api/thread?appid=' + appMark
+    timeLine: '/Api/timeline?appid=' + appMark,
+    getForumList: '/Api/getForumList?appid=' + appMark,
+    getForumThread: '/Api/showf?appid=' + appMark,
+    getImageCDN: '/Api/getCdnPath?appid=' + appMark,
+    getThreadReply: '/Api/thread?appid=' + appMark
 };
 
 const apiRequestHeader = {
@@ -44,15 +44,40 @@ function _fetch(fetch_promise, timeout) {
 }
 
 /**
+ * 检查并返回最新的host，
+ * redirect: 'manual' 不知道为什么不起作用，所以独立检测一下
+ */
+async function checkRedirect() {
+    if(apiRedirectURL != null) {
+        return apiRedirectURL;
+    }
+    let response = await _fetch(fetch(apiBaseURL, {
+        method: 'GET',
+        headers: apiRequestHeader,
+    }), 16000);
+    if(response.url.indexOf('/Forum')) {
+        apiRedirectURL = response.url.replace('/Forum', '');
+        return apiRedirectURL;
+    }
+    return null;
+}
+
+/**
  * 获取板块列表
  * @param {bool} force 是否强制从网络端获取
  */
 async function getForumList(force = false) {
     let localItem = await AsyncStorage.getItem('ForumList');
     if(localItem === null || force === true) {
-        let response = await _fetch(fetch(apiURLs.getForumList, {
+        let url = await checkRedirect();
+        if(url === null) {
+            return { status: 'error', errmsg: '获取A岛host失败' };
+        }
+        url += apiURLs.getForumList;
+        let response = await _fetch(fetch(url, {
             method: 'GET',
             headers: apiRequestHeader,
+            cache: 'no-cache',
         }), 16000);
         localItem = await response.text();
         await AsyncStorage.setItem('ForumList', localItem);
@@ -81,8 +106,14 @@ async function getForumList(force = false) {
  * @param {Number} page 第几页
  */
 async function getThreadList(fid, page) {
-    let response = await _fetch(fetch( fid==-1?apiURLs.timeLine:apiURLs.getForumThread, {
+    let url = await checkRedirect();
+    if(url === null) {
+        return { status: 'error', errmsg: '获取A岛host失败' };
+    }
+    url += ( (fid == -1) ? apiURLs.timeLine : apiURLs.getForumThread );
+    let response = await _fetch(fetch(url, {
         method: 'POST',
+        cache: 'no-cache',
         headers: apiRequestHeader,
         body: 'id=' + fid + '&page=' + page
     }), 16000);
@@ -111,9 +142,16 @@ async function getThreadList(fid, page) {
  * @param {Number} page 分页
  */
 async function getReplyList(tid, page) {
-    let response = await _fetch(fetch(apiURLs.getThreadReply, {
+    let url = await checkRedirect();
+    if(url === null) {
+        return { status: 'error', errmsg: '获取A岛host失败' };
+    }
+    url += apiURLs.getThreadReply;
+
+    let response = await _fetch(fetch(url, {
         method: 'POST',
         headers: apiRequestHeader,
+        cache: 'no-cache',
         body: 'id=' + tid + '&page=' + page
     }), 16000);
     let res = await response.text();
