@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, FlatList, TouchableHighlight, Dimensions, TouchableOpacity } from 'react-native'
-import { getThreadList, getImage } from '../modules/network'
+import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'

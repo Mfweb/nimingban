@@ -1,9 +1,11 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, FlatList, TextInput, Dimensions, TouchableOpacity } from 'react-native'
-import { getThreadList, getImage } from '../modules/network'
+import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity } from 'react-native'
+import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import { TopModal } from '../component/top-modal'
+
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     loginView: {
@@ -71,6 +73,9 @@ const styles = StyleSheet.create({
 class UserMember extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            showModal: false
+        }
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -88,10 +93,37 @@ class UserMember extends React.Component {
             )
         }
     }
+    
+    _onLogin = () => {
+        this.setState({
+            showModal: true
+        });
+    }
 
     render() {
         return (
             <View style={styles.loginView}>
+                <TopModal
+                    show={this.state.showModal}
+                    width={280}
+                    height={200}
+                    title={'输入验证码'}
+                    leftButtonText={'取消'}
+                    rightButtonText={'确认'}
+                    item={<Text>123123</Text>}
+                    onClosePress={()=>{
+                        this.setState({
+                            showModal: false
+                        });
+                    }}
+                    onLeftButtonPress={()=>{
+                        this.setState({
+                            showModal: false
+                        });
+                    }}
+                    onRightButtonPress={()=>{
+                        console.log('right press')
+                    }} />
                 <Image 
                 style={styles.loginTitleImg} 
                 resizeMode={'contain'} 
@@ -130,7 +162,7 @@ class UserMember extends React.Component {
                             注册
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={ [styles.toolButton, styles.loginButton] }>
+                    <TouchableOpacity style={ [styles.toolButton, styles.loginButton] } onPress={this._onLogin}>
                         <Text style={styles.loginButtonText}>
                             登录
                         </Text>

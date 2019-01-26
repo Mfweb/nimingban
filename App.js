@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, SectionList, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
 import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList } from './modules/network'
+import { getForumList } from './modules/apis'
 import { getHTMLDom } from './modules/html-decoder'
 import { ListProcessView } from './component/list-process-view'
 import { HomeScreen } from './pages/main-page'

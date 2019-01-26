@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, Button, View, TouchableOpacity, StyleSheet, Linking, WebView } from 'react-native'
 import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList, getImageCDN } from '../modules/network'
+import { getForumList, getImageCDN } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView } from '../component/list-process-view'
 import { HomeScreen } from '../pages/main-page'

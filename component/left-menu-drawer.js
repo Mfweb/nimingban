@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, SafeAreaView, SectionList, Dimensions, TouchableOpacity } from 'react-native'
 import { NavigationActions } from 'react-navigation'
-import { getForumList } from '../modules/network'
+import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 

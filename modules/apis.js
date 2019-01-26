@@ -287,4 +287,18 @@ async function getImage(imgMode, imageName) {
     }
 }
 
-export { getForumList, getThreadList, getImageCDN, getImage, clearImageCache, getReplyList};
+const apiFunctions = {
+    getImageCDN: getImageCDN, /* 获取图片CDN */
+    _fetch: _fetch, /* fetch 增加超时 */
+    checkRedirect: checkRedirect, /* 获取host */
+}
+
+export { 
+    apiFunctions, /* 一些内部函数 */
+
+    getForumList, /* 获取板块列表 */
+    getThreadList, /* 获取板块中串列表 */
+    getReplyList, /* 获取串回复列表 */
+    getImage, /* 获取串中的缩略图或原图 */
+    clearImageCache, /* 清空缩略图缓存 */
+};
