@@ -380,51 +380,43 @@ class DetailsScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        this.setState({ headerLoading: true, page: 1 }, function() {
-            getReplyList(this.threadDetail.id, this.state.page).then((res) => {
-                if (res.status == 'ok') {
-                    this.props.navigation.setParams({
-                        threadDetail: res.res
-                    });
-                    this.localReplyCount = 0;
-                    this.loadingImages = [];
-                    let tempList = Array();
-                    tempList.push({
-                        id: res.res.id,
-                        img: res.res.img,
-                        ext: res.res.ext,
-                        now: res.res.now,
-                        userid: res.res.userid,
-                        name: res.res.name,
-                        email: res.res.email,
-                        title: res.res.title,
-                        content: res.res.content,
-                        sage: res.res.sage,
-                        admin: res.res.admin,
-                    });
-                    tempList = tempList.concat(res.res.replys);
-                    this.setState({
-                        replyList: tempList,
-                        page: 2,
-                        headerLoading: false
-                    });
-                }
-                else {
-                    this.setState({
-                        replyList: [this.threadDetail, { id: '', img: '', ext: '', now: '', userid: '', name: '',email: '', title: '',
-                                content: '请求数据失败:' + res.errmsg + ',下拉刷新。', sage: '0', admin: '0',
-                        }]
-                    });
-                }
-                this.setState({ headerLoading: false });
-            }).catch(function(){
+        this.setState({ headerLoading: true, page: 1 }, async () => {
+            let res = await getReplyList(this.threadDetail.id, this.state.page);
+            if (res.status == 'ok') {
+                this.props.navigation.setParams({
+                    threadDetail: res.res
+                });
+                this.localReplyCount = 0;
+                this.loadingImages = [];
+                let tempList = Array();
+                tempList.push({
+                    id: res.res.id,
+                    img: res.res.img,
+                    ext: res.res.ext,
+                    now: res.res.now,
+                    userid: res.res.userid,
+                    name: res.res.name,
+                    email: res.res.email,
+                    title: res.res.title,
+                    content: res.res.content,
+                    sage: res.res.sage,
+                    admin: res.res.admin,
+                });
+                tempList = tempList.concat(res.res.replys);
                 this.setState({
-                    headerLoading: false,
+                    replyList: tempList,
+                    page: 2,
+                    headerLoading: false
+                });
+            }
+            else {
+                this.setState({
                     replyList: [this.threadDetail, { id: '', img: '', ext: '', now: '', userid: '', name: '',email: '', title: '',
-                            content: '请求数据失败,下拉刷新。', sage: '0', admin: '0',
+                            content: '请求数据失败:' + res.errmsg + ',下拉刷新。', sage: '0', admin: '0',
                     }]
                 });
-            });
+            }
+            this.setState({ headerLoading: false });
         });
     }
 }

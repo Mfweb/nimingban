@@ -1,11 +1,11 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity } from 'react-native'
+import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
 import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
-import { checkSession, getVerifyCode } from '../modules/user-member-api'
+import { checkSession, getVerifyCode, login, logout } from '../modules/user-member-api'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -121,7 +121,9 @@ class UserMember extends React.Component {
             errmsg: ''
         }
     }
-
+    inputUserName = ''
+    inputPassWord = ''
+    inputVcode = ''
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'A岛-登录',
@@ -148,24 +150,75 @@ class UserMember extends React.Component {
             });
         }
         else {
+            console.log('loginCheck:', sessionInfo.session);
             this.setState({
                 sessionState: sessionInfo.session,
                 checkingSession: false
             });
+            //await logout();
         }
     }
+
+    /**
+     * 登录
+     */
     _onLogin = async () => {
+        Keyboard.dismiss();
+        if(this.inputVcode.length != 5) {
+            this.setState({
+                showModal: false,
+            },()=>{
+                this.setState({
+                    errmsgModal: true,
+                    errmsg: '验证码长度错误',
+                });      
+            });
+            return;
+        }
+        this.setState({
+            showModal: false,
+            checkingSession: true
+        });
+        let loginRes = await login(this.inputUserName, this.inputPassWord, this.inputVcode);
+        if(loginRes.status != 'ok') {
+            this.setState({
+                errmsgModal: true,
+                errmsg: loginRes.errmsg
+            });
+        }
+        this.setState({
+            checkingSession: false
+        });
+    }
+    /**
+     * 开始登录（打开验证码输入窗口
+     */
+    _onLoginStart = async () => {
+        Keyboard.dismiss();
+        if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
+            this.setState({
+                errmsgModal: true,
+                errmsg: '账号格式错误',
+            });
+            return;
+        }
+        if( this.inputPassWord.length < 5 ) {
+            this.setState({
+                errmsgModal: true,
+                errmsg: '密码格式错误',
+            });
+            return; 
+        }
         this.setState({
             showModal: true
         }, ()=>{
             this._getVCode();
         });
-        /*let loginSta = await checkSession();
-        console.log('login:', loginSta);
-        let vcode = await getVerifyCode();
-        console.log(vcode);*/
     }
 
+    /**
+     * 获取验证码
+     */
     _getVCode = async () => {
         this.setState({
             modalComp: (
@@ -181,6 +234,9 @@ class UserMember extends React.Component {
             )
         }, async () => {
             let vcode = await getVerifyCode();
+            if(vcode.status != 'ok') {
+                alert(vcode.errmsg);
+            }
             this.setState({
                 modalComp: (
                     <View style={{width: 280, height: 100}}>
@@ -192,6 +248,12 @@ class UserMember extends React.Component {
                             source={ { uri: `file://${vcode.path}`} } 
                             resizeMode='contain' />
                         </TouchableOpacity>
+                        <TextInput 
+                        style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                        autoFocus={true}
+                        textAlignVertical='center'
+                        maxLength={5}
+                        onChangeText={(text) => {this.inputVcode = text;}}/>
                     </View>    
                 )
             });
@@ -220,6 +282,7 @@ class UserMember extends React.Component {
                 <TopModal
                     show={this.state.showModal}
                     width={280}
+                    top={-100}
                     title={'输入验证码'}
                     leftButtonText={'取消'}
                     rightButtonText={'确认'}
@@ -228,15 +291,15 @@ class UserMember extends React.Component {
                         this.setState({
                             showModal: false
                         });
+                        Keyboard.dismiss();
                     }}
                     onLeftButtonPress={()=>{
                         this.setState({
                             showModal: false
                         });
+                        Keyboard.dismiss();
                     }}
-                    onRightButtonPress={()=>{
-                        console.log('right press')
-                    }} />
+                    onRightButtonPress={this._onLogin} />
                 <Image 
                 style={styles.loginTitleImg} 
                 resizeMode={'contain'} 
@@ -253,7 +316,11 @@ class UserMember extends React.Component {
                     placeholder={'email'}
                     returnKeyType={'next'}
                     blurOnSubmit={false}
-                    onSubmitEditing={() => {this.secondTextInput.focus(); }}></TextInput>
+                    autoComplete={'username'}
+                    editable={!this.state.checkingSession}
+                    enablesReturnKeyAutomatically={false}
+                    onSubmitEditing={() => {this.secondTextInput.focus(); }}
+                    onChangeText={(text)=>{this.inputUserName = text;}} />
                 </View>
                 
                 <View style={styles.userInputView}>
@@ -266,7 +333,11 @@ class UserMember extends React.Component {
                     clearButtonMode={'always'}
                     placeholder={'密码'}
                     returnKeyType={'done'}
-                    secureTextEntry={true}></TextInput>
+                    autoComplete={'password'}
+                    editable={!this.state.checkingSession}
+                    enablesReturnKeyAutomatically={true}
+                    secureTextEntry={true}
+                    onChangeText={(text)=>{this.inputPassWord = text;}} />
                 </View>
 
                 <View style={styles.toolView}>
@@ -274,12 +345,12 @@ class UserMember extends React.Component {
                         style={styles.regButton}
                         textStyle={styles.regButtonText}
                         showLoading={this.state.checkingSession}
-                        onPress={this._onLogin}/>
+                        onPress={this._onLoginStart}/>
                     <UIButton text={'登录'}
                         style={styles.loginButton}
                         textStyle={styles.loginButtonText}
                         showLoading={this.state.checkingSession}
-                        onPress={this._onLogin}/>
+                        onPress={this._onLoginStart}/>
                 </View>
             </View>
         )

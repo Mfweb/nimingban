@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 5,
         shadowColor: '#696969',
-        marginTop: -70
     },
     modalTitle: {
         flexDirection: 'row',
@@ -128,6 +127,7 @@ class TopModal extends React.Component {
             ]}>
                 <View style={ [styles.modalRoot, {
                     width: this.props.width, 
+                    marginTop: this.props.top?this.props.top: -70
                     }]}
                     ref={(ref)=>this.modalView=ref} >
                     <View style={styles.modalTitle}>
