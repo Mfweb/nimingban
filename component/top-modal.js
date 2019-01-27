@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, TouchableOpacity, UIManager, findNodeHandle } from 'react-native'
+import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, TouchableOpacity } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
@@ -128,7 +128,6 @@ class TopModal extends React.Component {
             ]}>
                 <View style={ [styles.modalRoot, {
                     width: this.props.width, 
-                    height: this.props.height + 90
                     }]}
                     ref={(ref)=>this.modalView=ref} >
                     <View style={styles.modalTitle}>
@@ -140,7 +139,7 @@ class TopModal extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.modalTitleSplitLine}></View>
-                    <View style={{height: this.props.height, width: this.props.width}}>
+                    <View style={{width: this.props.width}}>
                         {this.props.item}
                     </View>
                     <View style={styles.modalTitleSplitLine}></View>

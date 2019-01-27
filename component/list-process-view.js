@@ -98,8 +98,8 @@ class ImageProcessView extends React.Component {
         return (
             <Animated.Image 
             style={{
-                height: Dimensions.get('window').width / 2.5,
-                width: Dimensions.get('window').width / 2.5,
+                height: this.props.height,
+                width: this.props.width,
                 left: 0,
                 transform: [
                     { 

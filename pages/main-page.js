@@ -131,7 +131,7 @@ class MainListImage extends React.Component {
             );
         }
         else {
-            return (<ImageProcessView />);
+            return (<ImageProcessView height={Dimensions.get('window').width / 2.5} width={Dimensions.get('window').width / 2.5}/>);
         }
     }
 }

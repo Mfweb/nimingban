@@ -291,6 +291,8 @@ const apiFunctions = {
     getImageCDN: getImageCDN, /* 获取图片CDN */
     _fetch: _fetch, /* fetch 增加超时 */
     checkRedirect: checkRedirect, /* 获取host */
+    apiRequestHeader: apiRequestHeader,
+    localDir: localDir
 }
 
 export { 
