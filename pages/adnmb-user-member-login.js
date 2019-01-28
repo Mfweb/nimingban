@@ -1,11 +1,9 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
-import { getThreadList, getImage } from '../modules/apis'
-import { getHTMLDom } from '../modules/html-decoder'
-import { ListProcessView, ImageProcessView } from '../component/list-process-view'
+import { ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
-import { checkSession, getVerifyCode, login, logout } from '../modules/user-member-api'
+import { checkSession, getVerifyCode, login } from '../modules/user-member-api'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({

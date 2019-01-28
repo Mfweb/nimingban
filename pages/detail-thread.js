@@ -1,9 +1,11 @@
-import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
-import { getReplyList, getImage, clearImageCache } from '../modules/apis'
+import React from 'react'
+import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { getReplyList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import { TopModal } from '../component/top-modal'
+
 const globalColor = '#fa7296';
 
 const styles = StyleSheet.create({
