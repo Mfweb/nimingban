@@ -1,5 +1,10 @@
 import CookieManager from 'react-native-cookies'
 
+/**
+ * 异步请求
+ * @param {string} url 请求地址
+ * @param {object} option 参数
+ */
 function _request(url, option) {
     var {
         method = 'GET',
@@ -35,7 +40,8 @@ function _request(url, option) {
             var successData = {
                 stateCode: xhr.status,
                 body: xhr.responseText,
-                headers: {}
+                headers: {},
+                responseURL: xhr.responseURL
             };
             var headersList = xhr.getAllResponseHeaders().replace(/ /g,'').split('\r\n');
             headersList.forEach(headerLine => {
@@ -66,6 +72,11 @@ function _request(url, option) {
     xhr.send(body);
 }
 
+/**
+ * 网络 Promise 对象
+ * @param {string} url 请求地址
+ * @param {object} option 参数
+ */
 function request(url, option) {
     return CookieManager.clearAll().then(() => {
         return new Promise( (resolve, reject) => {

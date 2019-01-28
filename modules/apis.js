@@ -32,30 +32,6 @@ const apiRequestHeader = {
 };
 
 /**
- * 为fetch增加超时
- * @param {object} fetch_promise fetch promise
- * @param {number} timeout 超时事件，毫秒
- */
-function _fetch(fetch_promise, timeout) {
-    var abort_fn = null;
-    var abort_promise = new Promise(function(resolve, reject) {
-        abort_fn = function() {
-            reject('time out');
-        };
-    });
-    var abortable_promise = Promise.race([
-        fetch_promise,
-        abort_promise
-    ]);
-
-    setTimeout(function() {
-        abort_fn();
-    }, timeout);
-
-    return abortable_promise;
-}
-
-/**
  * 检查并返回最新的host，
  * 免得之后30x出问题
  */
@@ -64,12 +40,18 @@ async function checkRedirect() {
         return apiRedirectURL;
     }
     console.log('get new redirect');
-    let response = await _fetch(fetch(apiBaseURL, {
+    let response = await request(apiBaseURL, {
         method: 'GET',
         headers: apiRequestHeader,
-    }), 16000);
-    if(response.url.indexOf('/Forum')) {
-        apiRedirectURL = response.url.replace('/Forum', '');
+        timeout: 16000
+    });
+
+    if(response.stateCode != 200) {
+        return null;
+    }
+
+    if(response.responseURL.indexOf('/Forum')) {
+        apiRedirectURL = response.responseURL.replace('/Forum', '');
         return apiRedirectURL;
     }
     return null;
@@ -307,7 +289,6 @@ async function getImage(imgMode, imageName) {
 
 const apiFunctions = {
     getImageCDN: getImageCDN, /* 获取图片CDN */
-    _fetch: _fetch, /* fetch 增加超时 */
     checkRedirect: checkRedirect, /* 获取host */
     apiRequestHeader: apiRequestHeader,
     localDir: localDir
