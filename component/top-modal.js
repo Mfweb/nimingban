@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     modalButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 49,
+        height: 48,
     }
 });
 
