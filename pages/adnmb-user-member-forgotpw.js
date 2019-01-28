@@ -163,8 +163,7 @@ class UserMemberForgotPassword extends React.Component {
     }
     inputUserName = ''
     inputVcode = ''
-    static navigationOptions = ({ navigation, setState }) => {
-        console.log(setState);
+    static navigationOptions = ({ navigation }) => {
         return {
             title: 'A岛-找回密码'
         }

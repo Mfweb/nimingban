@@ -195,8 +195,7 @@ class UserMemberLogin extends React.Component {
     inputUserName = ''
     inputPassWord = ''
     inputVcode = ''
-    static navigationOptions = ({ navigation, setState }) => {
-        console.log(setState);
+    static navigationOptions = ({ navigation }) => {
         return {
             title: 'A岛-登录',
             headerLeft: (

@@ -1,98 +1,98 @@
 import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs';
 import { request } from './network'
-
-// 主岛主地址
-const apiBaseURL = 'https://adnmb.com';
-
-// 主岛重定向地址和CDN地址，动态获取
-var apiRedirectURL = null;
-var imageCDNURLs = null;
-
-// app标示
-const appMark = 'PinkAdao';
-
-const localDir = {
-    imageCacheThumb: RNFS.CachesDirectoryPath + '/Cache/Image/Thumb',
-    imageCacheFull: RNFS.DocumentDirectoryPath + '/Cache/Image/Full'
-};
-
-const apiURLs = {
-    timeLine: '/Api/timeline?appid=' + appMark,
-    getForumList: '/Api/getForumList?appid=' + appMark,
-    getForumThread: '/Api/showf?appid=' + appMark,
-    getImageCDN: '/Api/getCdnPath?appid=' + appMark,
-    getThreadReply: '/Api/thread?appid=' + appMark
-};
-
-const apiRequestHeader = {
-    'content-type': 'application/x-www-form-urlencoded',
-    'X-Requested-With': 'XMLHttpRequest',
-    'User-Agent': 'HavfunClient-' + appMark
-};
+import { configNetwork, configLocal, configDynamic } from './config'
 
 /**
  * 检查并返回最新的host，
  * 免得之后30x出问题
  */
 async function checkRedirect() {
-    if(apiRedirectURL != null) {
-        return apiRedirectURL;
+    // 如果不支持30x，直接返回固定地址
+    if( !configNetwork.baseUrl[configDynamic.islandMode].useRedirect ) {
+        return configNetwork.baseUrl[configDynamic.islandMode].base;
+    }
+    // 已经拿到了跳转之后的地址
+    if(configDynamic.apiRedirectURL[configDynamic.islandMode] != null) {
+        return configDynamic.apiRedirectURL[configDynamic.islandMode];
     }
     console.log('get new redirect');
-    let response = await request(apiBaseURL, {
-        method: 'GET',
-        headers: apiRequestHeader,
-        timeout: 16000
-    });
-
+    let response = await request(configNetwork.baseUrl[configDynamic.islandMode].base);
     if(response.stateCode != 200) {
+        console.warn('get redirect error');
         return null;
     }
-
     if(response.responseURL.indexOf('/Forum')) {
-        apiRedirectURL = response.responseURL.replace('/Forum', '');
-        return apiRedirectURL;
+        configDynamic.apiRedirectURL[configDynamic.islandMode] = response.responseURL.replace('/Forum', '');
+        return configDynamic.apiRedirectURL[configDynamic.islandMode];
     }
     return null;
 }
 
 /**
+ * 拼接url
+ * @param {string} urlLink url参数
+ */
+async function getUrl(urlLink) {
+    let url = await checkRedirect();
+    return url===null?null:(url+urlLink);
+}
+
+/**
+ * 将板块名字提取出来并缓存
+ * @param {object} forumNames 板块完整列表
+ */
+async function _saveForumNameCache(forumNames) {
+    let forumNameList = new Object();
+    forumNames.forEach(groupItem => {
+        groupItem.forums.forEach(item=>{
+            forumNameList[item.id.toString()] = item.name;
+        });
+    });
+    configDynamic.forumNamecache[configDynamic.islandMode] = forumNameList;
+    await AsyncStorage.setItem(
+        configLocal.localStorageName[configDynamic.islandMode].forumNameCache, 
+        JSON.stringify(forumNameList)
+    );
+}
+
+/**
+ * 获取板块名字列表
+ */
+async function _getForumNameCache() {
+    if(configDynamic.forumNamecache[configDynamic.islandMode] == null) {
+        let localData = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].forumNameCache);
+        if(localData != null) {
+            configDynamic.forumNamecache[configDynamic.islandMode] = JSON.parse(localData);
+        }
+    }
+    return configDynamic.forumNamecache[configDynamic.islandMode];
+}
+/**
  * 获取板块列表
  * @param {bool} force 是否强制从网络端获取
  */
 async function getForumList(force = false) {
-    let localItem = await AsyncStorage.getItem('ForumList');
+    let localItem = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].forumCache);
+    // 本地没有缓存，或者需要强制获取
     if(localItem === null || force === true) {
-        let url = await checkRedirect();
+        let url = await getUrl(configNetwork.apiUrl.getForumList);
         if(url === null) {
             return { status: 'error', errmsg: '获取host失败' };
         }
-        url += apiURLs.getForumList;
-
-        let response = await request(url, {
-            method: 'GET',
-            headers: apiRequestHeader,
-            timeout: 16000
-        });
-        
+        let response = await request(url);
         if(response.stateCode != 200) {
             return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
         }
         localItem = response.body
-        await AsyncStorage.setItem('ForumList', localItem);
+        // 缓存到本地
+        await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].forumCache, localItem);
     }
  
     try {
         let resJSON = JSON.parse(localItem);
         if(force === true) {
-            let forumNameList = new Object();
-            resJSON.forEach(groupItem => {
-                groupItem.forums.forEach(item=>{
-                    forumNameList[item.id.toString()] = item.name;
-                });
-            });
-            await AsyncStorage.setItem('ForumNameList', JSON.stringify(forumNameList));
+            _saveForumNameCache(resJSON);
         }
         return { status: 'ok', res: resJSON };
     } catch (error) {
@@ -106,17 +106,14 @@ async function getForumList(force = false) {
  * @param {Number} page 第几页
  */
 async function getThreadList(fid, page) {
-    let url = await checkRedirect();
+    let url = await getUrl((fid == -1)?configNetwork.apiUrl.timeLine:configNetwork.apiUrl.getForumThread);
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    url += ( (fid == -1) ? apiURLs.timeLine : apiURLs.getForumThread );
 
     let response = await request(url, {
         method: 'POST',
-        headers: apiRequestHeader,
         body: 'id=' + fid + '&page=' + page,
-        timeout: 16000
     });
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
@@ -124,15 +121,13 @@ async function getThreadList(fid, page) {
     try {
         let resJSON = JSON.parse(response.body);
         if( fid == -1 ) {
-            let forumNameList = await AsyncStorage.getItem('ForumNameList');
+            let forumNameList = await _getForumNameCache();
             if(forumNameList !== null) {
-                forumNameList = JSON.parse(forumNameList);
                 resJSON.forEach(item => {
                     item.fname = forumNameList[item.fid.toString()];
                 });
             }
         }
-
         return { status: 'ok', res: resJSON };
     } catch (error) {
         return { status: 'error', errmsg: error };
@@ -145,17 +140,14 @@ async function getThreadList(fid, page) {
  * @param {Number} page 分页
  */
 async function getReplyList(tid, page) {
-    let url = await checkRedirect();
+    let url = await getUrl(configNetwork.apiUrl.getThreadReply);
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    url +=  apiURLs.getThreadReply;
 
     let response = await request(url, {
         method: 'POST',
-        headers: apiRequestHeader,
         body: 'id=' + tid + '&page=' + page,
-        timeout: 16000
     });
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
@@ -176,38 +168,32 @@ async function getReplyList(tid, page) {
  * 获取图片CDN
  */
 async function getImageCDN() {
-    if(imageCDNURLs == null) {
-        let url = await checkRedirect();
+    if(configDynamic.imageCDNURL[configDynamic.islandMode] == null) {
+        console.log('get new image cdn url');
+        let url = await getUrl(configNetwork.apiUrl.getImageCDN);
         if(url === null) {
             return null;
         }
-        url += apiURLs.getImageCDN;
-
-        let response = await request(url, {
-            method: 'GET',
-            headers: apiRequestHeader,
-            timeout: 16000
-        });
+        let response = await request(url);
         if(response.stateCode != 200) {
             return null;
         }
-
-        imageCDNURLs = response.body;
+        try {
+            let cdnList = JSON.parse(response.body);
+            let maxRate = {url: 'https://nmbimg.fastmirror.org/', rate: 0};
+            cdnList.forEach(item => {
+                if(item.rate > maxRate.rate) {
+                    maxRate = item;
+                }
+            });
+            configDynamic.imageCDNURL[configDynamic.islandMode] = maxRate.url;
+            return configDynamic.imageCDNURL[configDynamic.islandMode];
+        }catch(error) {
+            return null;
+        }
     }
-    if(imageCDNURLs == null) {
-        return null;
-    }
-    try{
-        let cdnList = JSON.parse(imageCDNURLs);
-        let maxRate = {url: 'https://nmbimg.fastmirror.org/', rate: 0};
-        cdnList.forEach(item => {
-            if(item.rate > maxRate.rate) {
-                maxRate = item;
-            }
-        });
-        return maxRate.url;
-    } catch(error) {
-        return null;
+    else {
+        return configDynamic.imageCDNURL[configDynamic.islandMode];
     }
 }
 
@@ -217,8 +203,9 @@ async function getImageCDN() {
 async function clearImageCache() {
     try {
         await RNFS.unlink(localDir.imageCacheThumb);
+        return true;
     }catch(error) {
-
+        return false;
     }
 }
 
@@ -230,10 +217,10 @@ async function clearImageCache() {
 async function getImage(imgMode, imageName) {
     try {
         var imgUrl = await getImageCDN() + imgMode + '/' + imageName;
-        var localPath = (imgMode === 'thumb' ? localDir.imageCacheThumb : localDir.imageCacheFull) + '/' + imageName.replace('/','-');
+        var localPath = (imgMode === 'thumb' ? configLocal.localDirectory.imageCacheThumb : configLocal.localDirectory.imageCacheFull) + '/' + imageName.replace('/','-');
 
         if(await RNFS.exists(localPath)) {
-            //console.log('Get image from cache.');
+            console.log('Get image from cache.');
             return {
                 status: 'ok',
                 download: false,
@@ -241,20 +228,18 @@ async function getImage(imgMode, imageName) {
             }
         }
 
-        if ( !await RNFS.exists(localDir.imageCacheThumb) ) {
-            //console.log('Make new thumb image dir.');
-            await RNFS.mkdir(localDir.imageCacheThumb, { NSURLIsExcludedFromBackupKey: true });
+        if ( !await RNFS.exists(configLocal.localDirectory.imageCacheThumb) ) {
+            console.log('Make new thumb image dir.');
+            await RNFS.mkdir(configLocal.localDirectory.imageCacheThumb, { NSURLIsExcludedFromBackupKey: true });
         }
-        if ( !await RNFS.exists(localDir.imageCacheFull) ) {
-            //console.log('Make new full image dir.');
-            await RNFS.mkdir(localDir.imageCacheFull, { NSURLIsExcludedFromBackupKey: true });
+        if ( !await RNFS.exists(configLocal.localDirectory.imageCacheFull) ) {
+            console.log('Make new full image dir.');
+            await RNFS.mkdir(configLocal.localDirectory.imageCacheFull, { NSURLIsExcludedFromBackupKey: true });
         }
         let downloadRes = await RNFS.downloadFile({
             fromUrl: imgUrl,
             toFile: localPath,
-            headers: {
-                'User-Agent': 'HavfunClient-' + appMark
-            },
+            headers: configNetwork.apiRequestHeader,
             background: true,
             discretionary: true,
             cacheable: true,
@@ -262,6 +247,7 @@ async function getImage(imgMode, imageName) {
 
         let downloadStaRes = await downloadRes.promise;
         if(downloadStaRes.statusCode == 200 && downloadStaRes.bytesWritten > 0) {
+            console.log('image download ok', localPath);
             return {
                 status: 'ok',
                 download: true,
@@ -269,6 +255,7 @@ async function getImage(imgMode, imageName) {
             }
         }
         else {
+            console.log('image download error',downloadStaRes.statusCode.toString());
             return {
                 status: 'error',
                 download: true,
@@ -278,6 +265,7 @@ async function getImage(imgMode, imageName) {
         }
 
     } catch (error) {
+        console.log('image download error2', error);
         return {
             status: 'error',
             download: false,
@@ -287,16 +275,8 @@ async function getImage(imgMode, imageName) {
     }
 }
 
-const apiFunctions = {
-    getImageCDN: getImageCDN, /* 获取图片CDN */
-    checkRedirect: checkRedirect, /* 获取host */
-    apiRequestHeader: apiRequestHeader,
-    localDir: localDir
-}
-
 export { 
-    apiFunctions, /* 一些内部函数 */
-
+    getUrl, /* 拼接URL */
     getForumList, /* 获取板块列表 */
     getThreadList, /* 获取板块中串列表 */
     getReplyList, /* 获取串回复列表 */

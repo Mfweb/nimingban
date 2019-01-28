@@ -1,4 +1,6 @@
 import CookieManager from 'react-native-cookies'
+import { configNetwork } from './config'
+import { saveCookie, getCookie } from './cookie-manager'
 
 /**
  * 异步请求
@@ -13,7 +15,8 @@ function _request(url, option) {
         timeout = 16000,
         onSuccess = null,
         onFail = null,
-        onFinish = null
+        onFinish = null,
+        saveCookies = false,
     } = option;
     var xhr = new XMLHttpRequest();
     xhr.timeout = timeout;
@@ -53,8 +56,25 @@ function _request(url, option) {
                     console.log(headerLine);
                 }
             });
-            onSuccess!==null?onSuccess(successData):'';
-            onFinish!==null?onFinish():'';
+            if(saveCookies) {
+                if(successData.headers.hasOwnProperty('Set-Cookie')) {
+                    saveCookie(successData.headers['Set-Cookie']).then(()=>{
+                        onSuccess!==null?onSuccess(successData):'';
+                        onFinish!==null?onFinish():'';
+                    }).catch(()=>{
+                        onSuccess!==null?onSuccess(successData):'';
+                        onFinish!==null?onFinish():'';
+                    });
+                }
+                else {
+                    onSuccess!==null?onSuccess(successData):'';
+                    onFinish!==null?onFinish():'';
+                }
+            }
+            else {
+                onSuccess!==null?onSuccess(successData):'';
+                onFinish!==null?onFinish():'';
+            }
         }
         else {
             var failData = {
@@ -77,7 +97,7 @@ function _request(url, option) {
  * @param {string} url 请求地址
  * @param {object} option 参数
  */
-function request(url, option) {
+function request(url, option = {}) {
     return CookieManager.clearAll().then(() => {
         return new Promise( (resolve, reject) => {
             option.onSuccess = (res) => {
@@ -86,6 +106,9 @@ function request(url, option) {
             option.onFail = (res) => {
                 reject(res);
             }
+            option.headers = option.headers==undefined?{}:option.headers;
+            Object.assign(option.headers, configNetwork.apiRequestHeader);
+            option.timeout = configNetwork.timeout;
             _request(url, option);
         } );
     });
