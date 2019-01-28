@@ -9,8 +9,8 @@ import { DetailsScreen } from './pages/detail-thread'
 import { ImageViewer } from './pages/image-viewer'
 import { LeftDrawerNavigator } from './component/left-menu-drawer'
 import { PinkWebView} from './pages/webwiew'
-import { UserMember } from './pages/adnmb-user-member-login'
-
+import { UserMemberLogin } from './pages/adnmb-user-member-login'
+import { UserMemberRegister } from './pages/adnmb-user-member-reg'
 const globalColor = '#fa7296';
 
 // 串浏览页面
@@ -36,8 +36,9 @@ const MainStackNavigator = createStackNavigator({
 
 // 用户系统
 const UserMemberStackNavigator = createStackNavigator({
-    //主页
-    UserMemberHome: { screen: UserMember },
+    // 用户系统登录
+    UserMemberHome: { screen: UserMemberLogin },
+    UserMemberReg: { screen: UserMemberRegister }
 }, {
     initialRouteName: 'UserMemberHome',
     //顶栏配置

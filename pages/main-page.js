@@ -319,7 +319,7 @@ class HomeScreen extends React.Component {
                     width={280}
                     title={'错误'}
                     rightButtonText={'确认'}
-                    item={<Text style={{width: 280, fontSize: 20, margin: 10}}>{this.state.errmsg}</Text>}
+                    item={<Text style={{width: 260, fontSize: 20, margin: 10}}>{this.state.errmsg}</Text>}
                     onClosePress={()=>{
                         this.setState({
                             errmsgModal: false
