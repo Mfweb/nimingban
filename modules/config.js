@@ -19,6 +19,10 @@ const configNetwork = {
         'bt': {
             base: 'https://tnmb.org',
             useRedirect: false
+        },
+        'ld': {
+            base: 'https://ldnmb.com',
+            useRedirect: false
         }
     },
     apiUrl: {
@@ -67,6 +71,11 @@ const configLocal = {
             memberCookie: 'MemberCookiesBT',
             forumCache: 'ForumListBT',
             forumNameCache: 'ForumNameListBT'
+        },
+        'ld': {
+            memberCookie: 'MemberCookiesLD',
+            forumCache: 'ForumListLD',
+            forumNameCache: 'ForumNameListLD'
         }
     }
 }
@@ -75,15 +84,18 @@ var configDynamic = {
     islandMode: 'lw',
     apiRedirectURL: {
         'lw': null,
-        'bt': null
+        'bt': null,
+        'ld': null
     },
     forumNamecache: {
         'lw': null,
-        'bt': null
+        'bt': null,
+        'ld': null
     },
     imageCDNURL: {
         'lw': null,
-        'bt': null
+        'bt': null,
+        'ld': null,
     }
 }
 
