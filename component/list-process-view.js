@@ -107,7 +107,7 @@ class ImageProcessView extends React.Component {
                     }
                 ] 
             }}
-            resizeMode='center'
+            resizeMode='contain'
             source={require('../imgs/loading.png')}>
             </Animated.Image>
         );

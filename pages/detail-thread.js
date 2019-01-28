@@ -87,6 +87,9 @@ const styles = StyleSheet.create({
         marginTop: 5,
         flex: 0,
         width: Dimensions.get('window').width / 2.5,
+        height: Dimensions.get('window').width / 2.5,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     mainListItemImage: {
         height: Dimensions.get('window').width / 2.5,
@@ -120,7 +123,7 @@ class MainListImage extends React.Component {
             );
         }
         else {
-            return (<ImageProcessView height={Dimensions.get('window').width / 2.5} width={Dimensions.get('window').width / 2.5}/>);
+            return (<ImageProcessView height={40} width={40}/>);
         }
     }
 }
