@@ -11,6 +11,7 @@ import { LeftDrawerNavigator } from './component/left-menu-drawer'
 import { PinkWebView} from './pages/webwiew'
 import { UserMemberLogin } from './pages/adnmb-user-member-login'
 import { UserMemberRegister } from './pages/adnmb-user-member-reg'
+import { UserMemberForgotPassword } from './pages/adnmb-user-member-forgotpw'
 const globalColor = '#fa7296';
 
 // 串浏览页面
@@ -38,7 +39,10 @@ const MainStackNavigator = createStackNavigator({
 const UserMemberStackNavigator = createStackNavigator({
     // 用户系统登录
     UserMemberHome: { screen: UserMemberLogin },
-    UserMemberReg: { screen: UserMemberRegister }
+    //注册
+    UserMemberReg: { screen: UserMemberRegister },
+    //忘记密码
+    UserMemberForgotPw: { screen: UserMemberForgotPassword }
 }, {
     initialRouteName: 'UserMemberHome',
     //顶栏配置

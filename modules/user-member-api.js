@@ -264,6 +264,49 @@ async function register(username, vcode) {
 }
 
 /**
+ * 找回密码
+ * @param {string} username 邮箱
+ * @param {string} vcode 验证码
+ */
+async function forgotPassword(username, vcode) {
+    let url = await apiFunctions.checkRedirect();
+    if(url == null) {
+        return {status: 'error', errmsg: '获取host失败'}
+    }
+    url += memberApiURLs.memberForgotPasswd;
+
+    let res = await request(url, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+            'cookie': await _getCookie() 
+        },
+        timeout: 16000,
+        body: `email=${username}&verify=${vcode}` 
+    });
+
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    if(res.headers.hasOwnProperty('Set-Cookie')) {
+        await _saveCookie(res.headers['Set-Cookie']);
+    }
+
+    let resText = res.body;
+    try {
+        let resJSON = JSON.parse(resText);
+        if(resJSON.status && resJSON.status == 1) {
+            return { status: 'ok' };
+        }
+        else {
+            return { status: 'error', errmsg: resJSON.info };
+        }
+    } catch (error) {
+        return { status: 'error', errmsg: resText };
+    }
+}
+/**
  * 退出登录
  */
 async function logout() {
@@ -271,4 +314,4 @@ async function logout() {
     await checkSession();
 }
 
-export { checkSession, getVerifyCode, login, register, logout };
+export { checkSession, getVerifyCode, login, register, forgotPassword, logout };
