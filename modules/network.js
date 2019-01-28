@@ -108,7 +108,7 @@ function request(url, option = {}) {
             }
             option.headers = option.headers==undefined?{}:option.headers;
             Object.assign(option.headers, configNetwork.apiRequestHeader);
-            option.timeout = configNetwork.timeout;
+            option.timeout = option.timeout==undefined? configNetwork.timeout:option.timeout;
             _request(url, option);
         } );
     });

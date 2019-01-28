@@ -215,7 +215,7 @@ class UserMemberLogin extends React.Component {
         if(sessionInfo.status != 'ok') {
             this.setState({
                 errmsgModal: true,
-                errmsg: sessionInfo.errmsg,
+                errmsg: `检查状态失败：${sessionInfo.errmsg}，可能导致无法正常登录。`,
                 checkingSession: false
             });
         }

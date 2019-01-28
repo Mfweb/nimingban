@@ -173,7 +173,7 @@ class UserMemberForgotPassword extends React.Component {
             this.setState({
                 errtitle: '错误',
                 errmsgModal: true,
-                errmsg: sessionInfo.errmsg,
+                errmsg: `检查状态失败：${sessionInfo.errmsg}。`,
                 checkingSession: false
             });
         }

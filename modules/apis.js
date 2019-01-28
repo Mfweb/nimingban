@@ -17,7 +17,12 @@ async function checkRedirect() {
         return configDynamic.apiRedirectURL[configDynamic.islandMode];
     }
     console.log('get new redirect');
-    let response = await request(configNetwork.baseUrl[configDynamic.islandMode].base);
+    try {
+        var response = await request(configNetwork.baseUrl[configDynamic.islandMode].base);
+    }catch(error){
+        return null;
+    }
+    
     if(response.stateCode != 200) {
         console.warn('get redirect error');
         return null;
@@ -80,7 +85,11 @@ async function getForumList(force = false) {
         if(url === null) {
             return { status: 'error', errmsg: '获取host失败' };
         }
-        let response = await request(url);
+        try{
+            var response = await request(url);
+        }catch(error) {
+            return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+        }
         if(response.stateCode != 200) {
             return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
         }
@@ -110,11 +119,15 @@ async function getThreadList(fid, page) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
+    try{
+        var response = await request(url, {
+            method: 'POST',
+            body: 'id=' + fid + '&page=' + page,
+        });
+    }catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
 
-    let response = await request(url, {
-        method: 'POST',
-        body: 'id=' + fid + '&page=' + page,
-    });
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }
@@ -145,14 +158,18 @@ async function getReplyList(tid, page) {
         return { status: 'error', errmsg: '获取host失败' };
     }
 
-    let response = await request(url, {
-        method: 'POST',
-        body: 'id=' + tid + '&page=' + page,
-    });
+    try {
+        var response = await request(url, {
+            method: 'POST',
+            body: 'id=' + tid + '&page=' + page,
+        });
+    }catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    console.log(response);
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }
-
     if(response.body == '"该主题不存在"') {
         return { status: 'error', errmsg: '该主题不存在' };
     }
@@ -174,7 +191,12 @@ async function getImageCDN() {
         if(url === null) {
             return null;
         }
-        let response = await request(url);
+        try{
+            var response = await request(url);
+        }
+        catch {
+            return null;
+        }
         if(response.stateCode != 200) {
             return null;
         }

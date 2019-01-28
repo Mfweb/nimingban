@@ -220,7 +220,9 @@ class DetailsScreen extends React.Component {
             headerLoading: false,
             footerLoading: 0,
             replyList: Array(),
-            page: 1
+            page: 1,
+            errmsgModal: false,
+            errmsg: ''
         };
     }
 
@@ -299,6 +301,22 @@ class DetailsScreen extends React.Component {
     render() {
         return (
             <View style={{flex:1}}>
+               <TopModal
+                    show={this.state.errmsgModal}
+                    width={280}
+                    title={'错误'}
+                    rightButtonText={'确认'}
+                    item={<Text style={{width: 260, fontSize: 20, margin: 10}}>{this.state.errmsg}</Text>}
+                    onClosePress={()=>{
+                        this.setState({
+                            errmsgModal: false
+                        });
+                    }}
+                    onRightButtonPress={()=>{
+                        this.setState({
+                            errmsgModal: false
+                        });
+                    }} />
                 <FlatList
                     data={this.state.replyList}
                     extraData={this.state}
@@ -367,13 +385,19 @@ class DetailsScreen extends React.Component {
                     }
                 }
                 else {
-                    this.setState({ footerLoading: 0 });
-                    alert('请求数据失败:' + res.errmsg);
+                    this.setState({
+                        footerLoading: 0,
+                        errmsgModal: true,
+                        errmsg: `请求数据失败:${res.errmsg}`
+                    });
                 }
             }).catch((res)=>{
-                this.setState({ footerLoading: 0 });
+                this.setState({
+                    footerLoading: 0,
+                    errmsgModal: true,
+                    errmsg: `请求数据失败:${res}`
+                });
                 console.log(res);
-                alert('请求数据失败');
             });
         });
     }
@@ -384,6 +408,7 @@ class DetailsScreen extends React.Component {
         }
         this.setState({ headerLoading: true, page: 1 }, async () => {
             let res = await getReplyList(this.threadDetail.id, this.state.page);
+            console.log(res);
             if (res.status == 'ok') {
                 this.props.navigation.setParams({
                     threadDetail: res.res
@@ -413,12 +438,11 @@ class DetailsScreen extends React.Component {
             }
             else {
                 this.setState({
-                    replyList: [this.threadDetail, { id: '', img: '', ext: '', now: '', userid: '', name: '',email: '', title: '',
-                            content: '请求数据失败:' + res.errmsg + ',下拉刷新。', sage: '0', admin: '0',
-                    }]
+                    headerLoading: false,
+                    errmsgModal: true,
+                    errmsg: `请求数据失败:${res.errmsg}`
                 });
             }
-            this.setState({ headerLoading: false });
         });
     }
 }

@@ -13,13 +13,18 @@ async function checkSession() {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    let res = await request(url, {
-        method: 'POST',
-        saveCookies: true,
-        headers: {
-            'cookie': await getCookie()
-        },
-    });
+    try {
+        var res = await request(url, {
+            method: 'POST',
+            saveCookies: true,
+            headers: {
+                'cookie': await getCookie()
+            },
+        });
+    }catch(error){
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -100,14 +105,18 @@ async function login(username, password, vcode) {
         return { status: 'error', errmsg: '获取host失败' };
     }
 
-    let res = await request(url, {
-        method: 'POST',
-        saveCookies: true,
-        headers: {
-            'cookie': await getCookie() 
-        },
-        body: `email=${username}&password=${password}&verify=${vcode}` 
-    });
+    try {
+        var res = await request(url, {
+            method: 'POST',
+            saveCookies: true,
+            headers: {
+                'cookie': await getCookie() 
+            },
+            body: `email=${username}&password=${password}&verify=${vcode}` 
+        });
+    }catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
 
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
@@ -137,14 +146,18 @@ async function register(username, vcode) {
         return { status: 'error', errmsg: '获取host失败' };
     }
 
-    let res = await request(url, {
-        method: 'POST',
-        saveCookies: true,
-        headers: {
-            'cookie': await getCookie() 
-        },
-        body: `email=${username}&agree=''&verify=${vcode}` 
-    });
+    try {
+        var res = await request(url, {
+            method: 'POST',
+            saveCookies: true,
+            headers: {
+                'cookie': await getCookie() 
+            },
+            body: `email=${username}&agree=''&verify=${vcode}` 
+        });    
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
 
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
@@ -174,14 +187,18 @@ async function forgotPassword(username, vcode) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    let res = await request(url, {
-        method: 'POST',
-        saveCookies: true,
-        headers: {
-            'cookie': await getCookie() 
-        },
-        body: `email=${username}&verify=${vcode}` 
-    });
+    try {
+        var res = await request(url, {
+            method: 'POST',
+            saveCookies: true,
+            headers: {
+                'cookie': await getCookie() 
+            },
+            body: `email=${username}&verify=${vcode}` 
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
 
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
