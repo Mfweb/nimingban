@@ -1,6 +1,7 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../component/list-process-view'
+import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { checkSession, getVerifyCode, login } from '../modules/user-member-api'
@@ -224,6 +225,15 @@ class UserMemberLogin extends React.Component {
             this.setState({
                 sessionState: sessionInfo.session,
                 checkingSession: false
+            }, () => {
+                if(sessionInfo.session === true) {
+                    this.props.navigation.reset([
+                        NavigationActions.navigate({
+                            routeName: 'UserMemberCookies'
+                        })
+                    ], 0);
+                    //UserMemberCookies
+                }
             });
             //await logout();
         }
@@ -253,12 +263,21 @@ class UserMemberLogin extends React.Component {
         if(loginRes.status != 'ok') {
             this.setState({
                 errmsgModal: true,
-                errmsg: loginRes.errmsg
+                errmsg: loginRes.errmsg,
+                checkingSession: false
             });
         }
-        this.setState({
-            checkingSession: false
-        });
+        else {
+            this.setState({
+                checkingSession: false
+            }, () => {
+                this.props.navigation.reset([
+                    NavigationActions.navigate({
+                        routeName: 'UserMemberCookies'
+                    })
+                ], 0);
+            });
+        }
     }
     /**
      * 开始登录（打开验证码输入窗口

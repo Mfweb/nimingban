@@ -1,9 +1,6 @@
-import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, SectionList, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
-import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList } from './modules/apis'
-import { getHTMLDom } from './modules/html-decoder'
-import { ListProcessView } from './component/list-process-view'
+import React from 'react'
+import { Dimensions } from 'react-native'
+import { createAppContainer, createStackNavigator, createDrawerNavigator } from 'react-navigation'
 import { HomeScreen } from './pages/main-page'
 import { DetailsScreen } from './pages/detail-thread'
 import { ImageViewer } from './pages/image-viewer'
@@ -12,6 +9,7 @@ import { PinkWebView} from './pages/webwiew'
 import { UserMemberLogin } from './pages/adnmb-user-member-login'
 import { UserMemberRegister } from './pages/adnmb-user-member-reg'
 import { UserMemberForgotPassword } from './pages/adnmb-user-member-forgotpw'
+import { UserMemberCookies } from './pages/adnmb-user-member-cookies'
 const globalColor = '#fa7296';
 
 // 串浏览页面
@@ -38,13 +36,15 @@ const MainStackNavigator = createStackNavigator({
 // 用户系统
 const UserMemberStackNavigator = createStackNavigator({
     // 用户系统登录
-    UserMemberHome: { screen: UserMemberLogin },
+    UserMemberLogin: { screen: UserMemberLogin },
     //注册
     UserMemberReg: { screen: UserMemberRegister },
     //忘记密码
-    UserMemberForgotPw: { screen: UserMemberForgotPassword }
+    UserMemberForgotPw: { screen: UserMemberForgotPassword },
+    //饼干管理
+    UserMemberCookies: { screen: UserMemberCookies }
 }, {
-    initialRouteName: 'UserMemberHome',
+    initialRouteName: 'UserMemberLogin',
     //顶栏配置
     defaultNavigationOptions: {
         headerStyle: {

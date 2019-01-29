@@ -225,4 +225,78 @@ async function logout() {
     await checkSession();
 }
 
-export { checkSession, getVerifyCode, login, register, forgotPassword, logout };
+/**
+ * 获取用户Cookie列表
+ */
+async function getUserCookies() {
+    let url = await getUrl(configNetwork.memberUrl.memberGetCookiesList);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            headers: {
+                'cookie': await getCookie() 
+            },
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    try {
+        var resJSON = JSON.parse(res.bodu);
+        return { status: 'error', errmsg: resJSON.info };
+    } catch {
+    }
+    if ( res.body.indexOf('饼干列表') <= 0 ) {
+        return { status: 'error', errmsg: '获取饼干列表失败' };
+    }
+
+    let content = res.body.replace(/ /g, '');
+    content = content.replace(/\r/g, '');
+    content = content.replace(/\n/g, '');
+
+    let info = {
+      warning: null,
+      capacity: null,
+      userIco: null
+    };
+    info.userIco = content.match(/tpl-header-list-user-ico"><imgsrc="[\s\S]*?"><\/span>/ig);
+    if(info.userIco != null) {
+      info.userIco = info.userIco[0].replace(/tpl-header-list-user-ico"><imgsrc="/g, '').replace(/"><\/span>/g, '');
+    }
+
+    info.warning = content.match(/<b>\[警告\]<\/b>[\s\S]*?<\/span>/ig);
+    if (info.warning != null) {
+      info.warning = '⚠️ [警告]' + info.warning[0].replace(/<b>\[警告\]<\/b>/g, '').replace(/<\/span>/g, '');
+    }
+
+    info.capacity = content.match(/饼干容量<bclass="am-text-primary">[\s\S]*?<\/b>/ig);
+    if (info.capacity != null) {
+      info.capacity = info.capacity[0].replace(/饼干容量<bclass="am-text-primary">/g, '').replace(/<\/b>/g, '');
+    }
+
+    let tbody = content.match(/<tbody>[\s\S]*?<\/tbody>/ig);
+    if (tbody != null) {
+      let tableRoll = tbody[0].match(/<tr>[\s\S]*?<\/tr>/ig);
+      if (tableRoll != null) {
+        let cookieList = Array();
+        for (let i = 0; i < tableRoll.length; i++) {
+          let find_td = tableRoll[i].match(/<td>[\s\S]*?<\/td>/ig);
+          if (find_td != null) {
+            cookieList.push({ id: find_td[1].replace(/(<td>)|(<\/td>)/g, ""), value: find_td[2].replace(/(<td><ahref="\#">)|(<\/a><\/td>)/g, "") });
+          }
+        }
+        return { status: 'ok', res: {cookies:cookieList,info: info} };
+      }
+      else {
+        return { status: 'ok', res: {cookies:[], info: info} };
+      }
+    }
+    else {
+        return { status: 'error', errMsg: '获取信息失败' };
+    }
+}
+export { checkSession, getVerifyCode, login, register, forgotPassword, logout, getUserCookies };
