@@ -124,7 +124,7 @@ class MainListImage extends React.Component {
     }
     render() {
         let { itemDetail } = this.props;
-        let imageSource = itemDetail.localImage?{uri:itemDetail.localImage}:require('../imgs/loading.png');
+        let imageSource = itemDetail.localImage?itemDetail.localImage:require('../imgs/loading.png');
         if(itemDetail.localImage) {
             return (
                 <Image style={itemDetail.img?styles.mainListItemImage:styles.displayNone}
@@ -288,12 +288,17 @@ class HomeScreen extends React.Component {
             let imgName = item.img + item.ext;
             //console.log(imgName);
             getImage('thumb', imgName).then((res) => {
+                let imgUrl = require('../imgs/img-error.png');
                 if(res.status == 'ok') {
-                    let tempList = this.state.threadList.slice();
-                    tempList[index].localImage = 'file://' + res.path;
-                    this.setState({ threadList: tempList });
+                    imgUrl = {uri: 'file://' + res.path};
                 }
+                let tempList = this.state.threadList.slice();
+                tempList[index].localImage = imgUrl;
+                this.setState({ threadList: tempList });
             }).catch(function() {
+                let tempList = this.state.threadList.slice();
+                tempList[index].localImage = require('../imgs/img-error.png');
+                this.setState({ threadList: tempList });
             });
         }
         return (
