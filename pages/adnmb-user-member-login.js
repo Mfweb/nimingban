@@ -304,9 +304,6 @@ class UserMemberLogin extends React.Component {
             )
         }, async () => {
             let vcode = await getVerifyCode();
-            if(vcode.status != 'ok') {
-                alert(vcode.errmsg);
-            }
             this.setState({
                 modalComp: (
                     <View style={{width: 280, height: 100}}>
@@ -315,7 +312,7 @@ class UserMemberLogin extends React.Component {
                             <Image style={{
                                 width: 280, height: 50,top: 0
                             }} 
-                            source={ { uri: `file://${vcode.path}`} } 
+                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../imgs/vcode-error.png') } 
                             resizeMode='contain' />
                         </TouchableOpacity>
                         <TextInput 
