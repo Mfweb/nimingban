@@ -58,6 +58,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
                     case 'strong':
                         outPut.push(<Text key={domKey++} style={htmlConstStyles.strong}>{htmlTag.data}</Text>);
                         break;
+                    case '<br':
                     case 'br':
                         outPut.push(<Text key={domKey++}>\r\n</Text>);
                         break;
