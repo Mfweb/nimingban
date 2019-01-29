@@ -5,6 +5,7 @@ import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
+import { converDateTime } from '../modules/date-time'
 
 const globalColor = '#fa7296';
 
@@ -149,6 +150,7 @@ class MainListItem extends React.Component {
         //console.log(this.props.itemDetail);
         let { itemDetail } = this.props;        
         let userID = getHTMLDom(itemDetail.userid);
+        let displayTime = converDateTime(itemDetail.now);
         let threadContent = getHTMLDom(itemDetail.content, (url)=>{
             if( (url.href.indexOf('/t/') >= 0) && (
                 (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
@@ -188,7 +190,7 @@ class MainListItem extends React.Component {
                             </Text>
 
                             <Text style={styles.mainListItemTime}>
-                                {itemDetail.now}
+                                {displayTime}
                             </Text>
                         </View>
                     </View>

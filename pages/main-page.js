@@ -4,6 +4,7 @@ import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
+import { converDateTime } from '../modules/date-time'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
 
@@ -180,6 +181,8 @@ class MainListItem extends React.Component {
         //let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
         let replayCountText = itemDetail.replyCount;
         let fName = itemDetail.fname;
+        let displayTime = converDateTime(itemDetail.now);
+
         return (
             <TouchableOpacity onPress={this._onPress} activeOpacity={0.5}>
                 <View style={styles.mainListItem}>
@@ -194,7 +197,7 @@ class MainListItem extends React.Component {
                             </Text>
 
                             <Text style={styles.mainListItemTime}>
-                                {itemDetail.now}
+                                {displayTime}
                             </Text>
                         </View>
                     </View>
