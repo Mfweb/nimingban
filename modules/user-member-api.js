@@ -299,4 +299,46 @@ async function getUserCookies() {
         return { status: 'error', errmsg: '获取信息失败' };
     }
 }
-export { checkSession, getVerifyCode, login, register, forgotPassword, logout, getUserCookies };
+
+
+async function deleteUserCookie(cookieid) {
+    let url = await getUrl(`${configNetwork.memberUrl.memberDeleteCookie}${cookieid}.html`);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            headers: {
+                'cookie': await getCookie() 
+            },
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    console.log(res);
+}
+
+
+async function getNewUserCookie() {
+
+}
+
+async function startVerified() {
+    
+}
+
+export {
+    checkSession,
+    getVerifyCode,
+    login,
+    register,
+    forgotPassword,
+    logout,
+    getUserCookies,
+    deleteUserCookie,
+    getNewUserCookie,
+    startVerified
+};

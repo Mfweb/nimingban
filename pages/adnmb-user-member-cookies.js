@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
+import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard,RefreshControl } from 'react-native'
 import { ImageProcessView } from '../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -50,7 +50,7 @@ class UserMemberCookies extends React.Component {
             messageModalTitle: '提示',
             messageModalContent: '',
             userCookies: [],
-            cookieListLoading: false,
+            cookieListLoading: true,
             userInfo: {
                 cookieMax: '',
                 userIcon: '',
@@ -92,26 +92,9 @@ class UserMemberCookies extends React.Component {
                 })
             ], 0);
         }
-        let userCookies = await getUserCookies();
-        if(userCookies.status != 'ok') {
-            this.setState({
-                messageModalShow: true,
-                messageModalTitle: '错误',
-                messageModalContent: userCookies.errmsg
-            });
-        }
         else {
-            this.setState({
-                userCookies: userCookies.res.cookies,
-                userInfo: {
-                    cookieMax: userCookies.res.info.capacity,
-                    userIcon: userCookies.res.info.userIco,
-                    userWarn: userCookies.res.info.warning,
-                    verified: true,
-                }
-            });
+            await this._pullDownRefreshing();
         }
-        console.log(userCookies);
     }
     _renderItem = ({item}) =>{
         console.log(item);
@@ -133,7 +116,7 @@ class UserMemberCookies extends React.Component {
                     <View style={styles.cookieColumn}>
                         <UIButton
                         text={'删除'}
-                        style={{backgroundColor: '#FFF', width: 45, height: 30}}
+                        style={{backgroundColor: '#DCDCDC', width: 45, height: 30}}
                         textStyle={{color:globalColor, fontSize: 19}}
                         showLoading={false}
                         />
@@ -171,16 +154,46 @@ class UserMemberCookies extends React.Component {
                     data={this.state.userCookies}
                     extraData={this.state}
                     style={styles.cookieList}
-                    refreshing={this.state.cookieListLoading}
                     onRefresh={this._pullDownRefreshing}
+                    refreshing={this.state.cookieListLoading}
                     keyExtractor={(item, index) => {return item.id.toString()}}
                     renderItem={this._renderItem}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.cookieListLoading}
+                            onRefresh={this._pullDownRefreshing}
+                            title="正在加载..."/>
+                    }
                 />
             </View>
         );
     }
     _pullDownRefreshing = async () => {
-
+        this.setState({
+            cookieListLoading: true
+        }, async () => {
+            let userCookies = await getUserCookies();
+            if(userCookies.status != 'ok') {
+                this.setState({
+                    cookieListLoading: false,
+                    messageModalShow: true,
+                    messageModalTitle: '错误',
+                    messageModalContent: userCookies.errmsg
+                });
+            }
+            else {
+                this.setState({
+                    cookieListLoading: false,
+                    userCookies: userCookies.res.cookies,
+                    userInfo: {
+                        cookieMax: userCookies.res.info.capacity,
+                        userIcon: userCookies.res.info.userIco,
+                        userWarn: userCookies.res.info.warning,
+                        verified: true
+                    }
+                });
+            }
+        });
     }
 }
 

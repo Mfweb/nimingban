@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native'
+import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
 import { getReplyList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
@@ -341,6 +341,12 @@ class DetailsScreen extends React.Component {
                     onEndReachedThreshold={0.1}
                     onEndReached={this._pullUpLoading}
                     onViewableItemsChanged={this._onViewableItemsChanged}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.headerLoading}
+                            onRefresh={this._pullDownRefresh}
+                            title="正在加载..."/>
+                    }
                 />
             </View>
         );
