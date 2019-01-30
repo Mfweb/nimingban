@@ -2,7 +2,9 @@ import moment from 'moment'
 import 'moment/locale/zh-cn';
 
 function converDateTime(timein) {
-    let timestamp = Date.parse(timein);
+    timein = timein.replace(/\([\s\S]*?\)/ig, ' ');
+    timestamp = moment(timein, 'YYYY-MM-DD HH:mm:ss')
+
     let diffMs = moment().diff(timestamp);
     if(diffMs < 0) {
         return '未来';
