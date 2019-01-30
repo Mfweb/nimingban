@@ -97,7 +97,7 @@ class UserMemberCookies extends React.Component {
             this.setState({
                 messageModalShow: true,
                 messageModalTitle: '错误',
-                messageModalContent: userCookies.errMsg
+                messageModalContent: userCookies.errmsg
             });
         }
         else {

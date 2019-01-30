@@ -246,7 +246,7 @@ async function getUserCookies() {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
     try {
-        var resJSON = JSON.parse(res.bodu);
+        var resJSON = JSON.parse(res.body);
         return { status: 'error', errmsg: resJSON.info };
     } catch {
     }
@@ -296,7 +296,7 @@ async function getUserCookies() {
       }
     }
     else {
-        return { status: 'error', errMsg: '获取信息失败' };
+        return { status: 'error', errmsg: '获取信息失败' };
     }
 }
 export { checkSession, getVerifyCode, login, register, forgotPassword, logout, getUserCookies };
