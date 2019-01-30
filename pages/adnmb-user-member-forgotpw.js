@@ -4,6 +4,7 @@ import { ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { checkSession, getVerifyCode, forgotPassword } from '../modules/user-member-api'
+import { UIButton } from '../component/uibutton'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -52,14 +53,6 @@ const styles = StyleSheet.create({
         paddingLeft: Dimensions.get('window').width * 0.05,
         paddingRight: Dimensions.get('window').width * 0.05,
     },
-    toolButton: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 40,
-        width: Dimensions.get('window').width / 2.5,
-        borderRadius: 8
-    },
     regButton: {
         backgroundColor: globalColor,
     },
@@ -68,39 +61,6 @@ const styles = StyleSheet.create({
         fontSize: 24
     },
 });
-
-/**
- * 粉色或白色按钮
- */
-class UIButton extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        if(this.props.showLoading) {
-            return (
-                <View style={ [styles.toolButton, {opacity: 0.3}].concat(this.props.style) } >
-                    <ImageProcessView height={25} width={25} />
-                    <Text style={this.props.textStyle}>
-                        {this.props.text}
-                    </Text>
-                </View>
-            )
-        }
-        else {
-            return (
-                <TouchableOpacity 
-                    style={ [styles.toolButton, {opacity: 1}].concat(this.props.style) } 
-                    activeOpacity={0.5}
-                    onPress={this.props.onPress}>
-                    <Text style={this.props.textStyle}>
-                        {this.props.text}
-                    </Text>
-                </TouchableOpacity>
-            )
-        }
-    }
-}
 
 /**
  * 登录相关
