@@ -46,9 +46,15 @@ class UserMemberCookies extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            messageModalShow: false,
-            messageModalTitle: '提示',
-            messageModalContent: '',
+            messageModal: {
+                show: false,
+                title: '提示',
+                content: <Text></Text>,
+                leftButtonText: '',
+                rightButtonText: '',
+                leftButtonCallBack: null,
+                rightButtonCallBack: null
+            },
             userCookies: [],
             cookieListLoading: true,
             userInfo: {
@@ -59,6 +65,7 @@ class UserMemberCookies extends React.Component {
             }
         };
     }
+
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'A岛-饼干槽',
@@ -69,20 +76,35 @@ class UserMemberCookies extends React.Component {
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                onPress={async ()=>{ 
-                    await logout();
-                    navigation.reset([
-                        NavigationActions.navigate({
-                            routeName: 'UserMemberLogin'
-                        })
-                    ], 0);
-                 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                onPress={async ()=>navigation.state.params.logout()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                     <Text style={{fontSize: 18, color:'#FFF'}}>退出登录</Text>
                 </TouchableOpacity>
             )
         }
     }
     
+    showMessageModal = async (title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null) => {
+        let closeModal = () => {
+            this.setState({
+                messageModal: {
+                    show: false
+                }
+            });
+        }
+        
+        this.setState({
+            messageModal: {
+                show: true,
+                title: title,
+                content: (<Text style={{width: 260, fontSize: 20, margin: 10}}>{content}</Text>),
+                leftButtonText: cancelButtonText,
+                rightButtonText: successButtonText,
+                leftButtonCallBack: cancelButtonCallBack == null?closeModal:cancelButtonCallBack,
+                rightButtonCallBack: successButtonCallBack == null?closeModal:successButtonCallBack
+            }
+        });
+    }
+
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok' || sessionInfo.session !== true) {
@@ -95,7 +117,31 @@ class UserMemberCookies extends React.Component {
         else {
             await this._pullDownRefreshing();
         }
+        this.props.navigation.setParams({ logout: this._logout })
     }
+
+    _logout = async () => {
+        this.showMessageModal('提示', '确认退出？', '确认', async () => {
+            await logout();
+            this.setState({
+                messageModal: {
+                    show:false
+                }
+            }, () => {
+                this.props.navigation.reset([
+                    NavigationActions.navigate({
+                        routeName: 'UserMemberLogin'
+                    })
+                ], 0);
+            });
+        }, '取消');
+    }
+
+    _deleteCookie = async (id) => {
+        console.log(id);
+        this.showMessageModal('提示', id.toString(), 'ok');
+    }
+
     _renderItem = ({item}) =>{
         console.log(item);
         return (
@@ -119,6 +165,7 @@ class UserMemberCookies extends React.Component {
                         style={{backgroundColor: '#DCDCDC', width: 45, height: 30}}
                         textStyle={{color:globalColor, fontSize: 19}}
                         showLoading={false}
+                        onPress={()=>this._deleteCookie(item.id)}
                         />
                         <UIButton
                         text={'应用'}
@@ -135,21 +182,21 @@ class UserMemberCookies extends React.Component {
         return (
             <View style={{flex: 1}}>
                <TopModal
-                    show={this.state.messageModalShow}
+                    show={this.state.messageModal.show}
                     width={280}
-                    title={ this.state.messageModalTitle }
-                    rightButtonText={'确认'}
-                    item={<Text style={{width: 260, fontSize: 20, margin: 10}}>{this.state.messageModalContent}</Text>}
+                    title={ this.state.messageModal.title }
+                    rightButtonText={this.state.messageModal.rightButtonText}
+                    leftButtonText={this.state.messageModal.leftButtonText}
+                    item={this.state.messageModal.content}
                     onClosePress={()=>{
                         this.setState({
-                            messageModalShow: false
+                            messageModal: {
+                                show: false
+                            }
                         });
                     }}
-                    onRightButtonPress={()=>{
-                        this.setState({
-                            messageModalShow: false
-                        });
-                    }} />
+                    onRightButtonPress={this.state.messageModal.rightButtonCallBack} 
+                    onLeftButtonPress={this.state.messageModal.leftButtonCallBack}/>
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}
@@ -174,11 +221,9 @@ class UserMemberCookies extends React.Component {
         }, async () => {
             let userCookies = await getUserCookies();
             if(userCookies.status != 'ok') {
+                this.showMessageModal('错误', userCookies.errmsg, '确认');
                 this.setState({
                     cookieListLoading: false,
-                    messageModalShow: true,
-                    messageModalTitle: '错误',
-                    messageModalContent: userCookies.errmsg
                 });
             }
             else {

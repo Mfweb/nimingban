@@ -222,7 +222,6 @@ async function forgotPassword(username, vcode) {
  */
 async function logout() {
     await clearCookie();
-    await checkSession();
 }
 
 /**
@@ -301,16 +300,18 @@ async function getUserCookies() {
 }
 
 
-async function deleteUserCookie(cookieid) {
+async function deleteUserCookie(cookieid, vcode) {
     let url = await getUrl(`${configNetwork.memberUrl.memberDeleteCookie}${cookieid}.html`);
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
     try {
         var res = await request(url, {
+            method: 'POST',
             headers: {
                 'cookie': await getCookie() 
             },
+            body: `verify=${vcode}`
         });
     } catch(error) {
         return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
