@@ -195,7 +195,6 @@ class UserMemberCookies extends React.Component {
         );
     }
     _renderItem = ({item}) =>{
-        console.log(item);
         return (
             <TouchableOpacity>
                 <View style={styles.cookieItem}>

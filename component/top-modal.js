@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, TouchableOpacity } from 'react-native'
+import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, Keyboard, TouchableOpacity } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
@@ -66,7 +66,7 @@ class TopModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            top: 0,
+            top: -70,
             nowOpacity: new Animated.Value(0),
             showx: false
         }
@@ -75,8 +75,43 @@ class TopModal extends React.Component {
     componentDidMount() {
         this.isUnMount = false;
     }
+    keyboardDidShowListener = null;
+    keyboardDidHideListener = null;
     componentWillUnmount() {
         this.isUnMount = true;
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+    componentWillMount() {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    }
+    modalSize = null;
+    _keyboardDidShow = (e) => {
+        if(this.modalSize != null) {
+            /*let marginTop = this.state.top;
+            
+            
+            console.log(modalBottom, keyboardTop);
+            marginTop += keyboardTop - modalBottom - 30;*/
+            let keyboardTop = Dimensions.get('window').height - e.startCoordinates.height;
+            let modalBottom = this.modalSize.y + this.modalSize.height;
+            //let modalZero = this.modalSize.y + this.modalSize.height / 2;
+            let marginTop = modalBottom - keyboardTop - 140;
+            
+            this.setState({
+                top: marginTop
+            });
+        }
+        else {
+            this.setState({top: -70});
+        }
+    }
+    _keyboardDidHide = () => {
+        this.setState({top: -70});
+    }
+    _onLayout = (res) => {
+        this.modalSize = res.nativeEvent.layout;
     }
     startAnime = function (mode, finish = null) {
         if(this.isUnMount) {
@@ -113,11 +148,6 @@ class TopModal extends React.Component {
         }
     }
 
-    _onLayout(e){
-        let {height} = event.nativeEvent.layout;
-        console.log(height);
-    }
-
     render() {
         return (
             <Animated.View 
@@ -129,8 +159,9 @@ class TopModal extends React.Component {
             ]}>
                 <View style={ [styles.modalRoot, {
                     width: this.props.width, 
-                    marginTop: this.props.top?this.props.top: -70
+                    marginTop: this.state.top
                     }]}
+                    onLayout={this._onLayout}
                     ref={(ref)=>this.modalView=ref} >
                     <View style={styles.modalTitle}>
                         <Text style={styles.modalTitleText}>
