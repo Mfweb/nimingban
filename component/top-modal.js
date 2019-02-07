@@ -51,11 +51,13 @@ const styles = StyleSheet.create({
     modalButtonView: {
         height: 48,
         flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     modalButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: 48,
+        height: 48.3,
     }
 });
 
@@ -148,7 +150,8 @@ class TopModal extends React.Component {
                             style={this.props.leftButtonText ?[
                                 styles.modalButton, 
                                 {
-                                    width:this.props.width / 2
+                                    width:this.props.width / 2,
+                                    borderBottomLeftRadius: 8,
                                 }]:styles.displayNone
                             } 
                             onPress={this.props.onLeftButtonPress}>
