@@ -44,13 +44,21 @@ const styles = StyleSheet.create({
         textAlign:'center',     
     },
     cookieMessage: {
-        padding: 2,
+        padding: 4,
         backgroundColor: '#FFE4B5',
         flex: 1,
     },
     cookieMessageText: {
         fontSize: 22,
         color: '#696969'
+    },
+    cookieUsage: {
+        paddingLeft: 8,
+        marginTop: 5
+    },
+    cookieUsageText: {
+        color: '#696969',
+        fontSize: 16
     }
 });
 
@@ -162,6 +170,15 @@ class UserMemberCookies extends React.Component {
             </View>
         );
     }
+    _footerComponent = () => {
+        return (
+            <View style={styles.cookieUsage}>
+                <Text style={styles.cookieUsageText}>
+                    饼干槽: {this.state.userInfo.cookieMax}
+                </Text>
+            </View>
+        );
+    }
     _renderItem = ({item}) =>{
         console.log(item);
         return (
@@ -226,6 +243,7 @@ class UserMemberCookies extends React.Component {
                     keyExtractor={(item, index) => {return item.id.toString()}}
                     renderItem={this._renderItem}
                     ListHeaderComponent={this._headerComponent}
+                    ListFooterComponent={this._footerComponent}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.cookieListLoading}
