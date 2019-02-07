@@ -89,11 +89,6 @@ class TopModal extends React.Component {
     modalSize = null;
     _keyboardDidShow = (e) => {
         if(this.modalSize != null) {
-            /*let marginTop = this.state.top;
-            
-            
-            console.log(modalBottom, keyboardTop);
-            marginTop += keyboardTop - modalBottom - 30;*/
             let keyboardTop = Dimensions.get('window').height - e.startCoordinates.height;
             let modalBottom = this.modalSize.y + this.modalSize.height;
             //let modalZero = this.modalSize.y + this.modalSize.height / 2;
@@ -142,7 +137,11 @@ class TopModal extends React.Component {
                 this.startAnime('out', ()=>{
                     this.setState({
                         showx: false
-                    })
+                    }, ()=>{
+                        if(this.props.closedCallback && typeof this.props.closedCallback === 'function') {
+                            this.props.closedCallback();
+                        }
+                    });
                 });
             }
         }

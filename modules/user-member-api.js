@@ -319,7 +319,18 @@ async function deleteUserCookie(cookieid, vcode) {
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
-    console.log(res);
+    let resText = res.body;
+    try {
+        let resJSON = JSON.parse(resText);
+        if(resJSON.status && resJSON.status == 1) {
+            return { status: 'ok' };
+        }
+        else {
+            return { status: 'error', errmsg: resJSON.info };
+        }
+    } catch (error) {
+        return { status: 'error', errmsg: resText };
+    }
 }
 
 

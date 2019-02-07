@@ -11,6 +11,12 @@ import { UIButton } from '../component/uibutton'
 const globalColor = '#fa7296';
 
 const styles = StyleSheet.create({
+    vcode: {
+        height: 52,
+        width:280,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     displayNone: {
         display: 'none'
     },
@@ -73,7 +79,8 @@ class UserMemberCookies extends React.Component {
                 leftButtonText: '',
                 rightButtonText: '',
                 leftButtonCallBack: null,
-                rightButtonCallBack: null
+                rightButtonCallBack: null,
+                closedCallback: null
             },
             userCookies: [],
             cookieListLoading: true,
@@ -117,14 +124,15 @@ class UserMemberCookies extends React.Component {
                 leftButtonText: cancelButtonText,
                 rightButtonText: successButtonText,
                 leftButtonCallBack: cancelButtonCallBack == null?closeModal:cancelButtonCallBack,
-                rightButtonCallBack: successButtonCallBack == null?closeModal:successButtonCallBack
+                rightButtonCallBack: successButtonCallBack == null?closeModal:successButtonCallBack,
+                closedCallback: ()=>{}
             }
         });
     }
     /**
      * 关闭信息窗口
      */
-    closeMessageModal = (callback = null) => {
+    closeMessageModal = (callback = ()=>{}) => {
         //这样关闭可以防止闪烁
         let tempObj = {
             show: false,
@@ -133,11 +141,13 @@ class UserMemberCookies extends React.Component {
             leftButtonText: this.state.messageModal.leftButtonText,
             rightButtonText: this.state.messageModal.rightButtonText,
             leftButtonCallBack: null,
-            rightButtonCallBack: null 
+            rightButtonCallBack: null,
+            closedCallback: ()=>callback()
         }
+        Keyboard.dismiss();
         this.setState({
             messageModal: tempObj
-        }, callback);
+        });
     }
 
     componentDidMount = async () => {
@@ -169,13 +179,92 @@ class UserMemberCookies extends React.Component {
             });
         }, '取消');
     }
+    inputVcode = '';
     /**
      * 删除饼干
      */
-    _deleteCookie = async (id) => {
-        console.log(id);
-        this.showMessageModal('提示', id.toString(), 'ok');
+    _deleteCookie = (id) => {
+        this.inputVcode = '';
+        this._getVCode(() => {
+            this.closeMessageModal(async ()=>{
+                if(this.inputVcode.length != 5) {
+                    this.showMessageModal('错误', '验证码输入错误', '确认');
+                }
+                else {
+                    let deleteRes = await deleteUserCookie(id, this.inputVcode);
+                    if(deleteRes.status != 'ok') {
+                        this.showMessageModal('错误', deleteRes.errmsg, '确认');
+                    }
+                    else {
+                        this._pullDownRefreshing();
+                    }
+                }
+            });
+        });
     }
+
+    /**
+     * 获取验证码
+     */
+    _getVCode = (checkCallback) => {
+        this.setState({
+            messageModal: {
+                show: true,
+                title: '输入验证码',
+                content: (
+                <View style={{width: 280, height: 100}}>
+                    <TouchableOpacity 
+                    style={styles.vcode}
+                    onPress={()=>this._getVCode(checkCallback)}>
+                        <ImageProcessView 
+                        height={25} 
+                        width={25} />
+                    </TouchableOpacity>
+                </View>
+                ),
+                leftButtonText: '取消',
+                rightButtonText: '确认',
+                leftButtonCallBack: ()=>this.closeMessageModal(),
+                rightButtonCallBack: ()=>checkCallback(),
+                closedCallback: null
+            }
+        }, async () => {
+            let vcode = await getVerifyCode();
+            let tempObj = {
+                show: true,
+                title: '输入验证码',
+                content: (
+                <View style={{width: 280, height: 100}}>
+                    <TouchableOpacity style={styles.vcode}
+                    onPress={()=>this._getVCode(this.state.messageModal.rightButtonCallBack)}>
+                        <Image style={{
+                            width: 280, height: 50,top: 0
+                        }} 
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../imgs/vcode-error.png') } 
+                        resizeMode='contain' />
+                    </TouchableOpacity>
+                    <TextInput 
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    autoFocus={true}
+                    textAlignVertical='center'
+                    maxLength={5}
+                    returnKeyType={'done'}
+                    onSubmitEditing={()=>checkCallback()}
+                    onChangeText={(text) => {this.inputVcode = text;}}/>
+                </View>    
+                ),
+                leftButtonText: '取消',
+                rightButtonText: '确认',
+                leftButtonCallBack: this.state.messageModal.leftButtonCallBack,
+                rightButtonCallBack: this.state.messageModal.rightButtonCallBack,
+                closedCallback: null
+            };
+            this.setState({
+                messageModal: tempObj
+            });
+        });
+    }
+
     _headerComponent = () => {
         return (
             <View style={this.state.userInfo.userWarn?styles.cookieMessage:styles.displayNone}>
@@ -239,15 +328,10 @@ class UserMemberCookies extends React.Component {
                     rightButtonText={this.state.messageModal.rightButtonText}
                     leftButtonText={this.state.messageModal.leftButtonText}
                     item={this.state.messageModal.content}
-                    onClosePress={()=>{
-                        this.setState({
-                            messageModal: {
-                                show: false
-                            }
-                        });
-                    }}
+                    onClosePress={()=>this.closeMessageModal()}
                     onRightButtonPress={this.state.messageModal.rightButtonCallBack} 
-                    onLeftButtonPress={this.state.messageModal.leftButtonCallBack}/>
+                    onLeftButtonPress={this.state.messageModal.leftButtonCallBack}
+                    closedCallback={this.state.messageModal.closedCallback}/>
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}
