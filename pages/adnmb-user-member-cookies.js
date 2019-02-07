@@ -103,14 +103,11 @@ class UserMemberCookies extends React.Component {
         }
     }
     
+    /**
+     * 显示一个信息窗口
+     */
     showMessageModal = async (title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null) => {
-        let closeModal = () => {
-            this.setState({
-                messageModal: {
-                    show: false
-                }
-            });
-        }
+        let closeModal = ()=>{this.closeMessageModal()};
         
         this.setState({
             messageModal: {
@@ -123,6 +120,24 @@ class UserMemberCookies extends React.Component {
                 rightButtonCallBack: successButtonCallBack == null?closeModal:successButtonCallBack
             }
         });
+    }
+    /**
+     * 关闭信息窗口
+     */
+    closeMessageModal = (callback = null) => {
+        //这样关闭可以防止闪烁
+        let tempObj = {
+            show: false,
+            title: this.state.messageModal.title,
+            content: this.state.messageModal.content,
+            leftButtonText: this.state.messageModal.leftButtonText,
+            rightButtonText: this.state.messageModal.rightButtonText,
+            leftButtonCallBack: null,
+            rightButtonCallBack: null 
+        }
+        this.setState({
+            messageModal: tempObj
+        }, callback);
     }
 
     componentDidMount = async () => {
@@ -139,15 +154,13 @@ class UserMemberCookies extends React.Component {
         }
         this.props.navigation.setParams({ logout: this._logout })
     }
-
+    /**
+     * 退出登录
+     */
     _logout = async () => {
         this.showMessageModal('提示', '确认退出？', '确认', async () => {
             await logout();
-            this.setState({
-                messageModal: {
-                    show:false
-                }
-            }, () => {
+            this.closeMessageModal(() => {
                 this.props.navigation.reset([
                     NavigationActions.navigate({
                         routeName: 'UserMemberLogin'
@@ -156,7 +169,9 @@ class UserMemberCookies extends React.Component {
             });
         }, '取消');
     }
-
+    /**
+     * 删除饼干
+     */
     _deleteCookie = async (id) => {
         console.log(id);
         this.showMessageModal('提示', id.toString(), 'ok');
