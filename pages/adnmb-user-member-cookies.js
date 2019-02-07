@@ -11,6 +11,9 @@ import { UIButton } from '../component/uibutton'
 const globalColor = '#fa7296';
 
 const styles = StyleSheet.create({
+    displayNone: {
+        display: 'none'
+    },
     cookieList: {
         backgroundColor: '#DCDCDC',
     },
@@ -39,6 +42,15 @@ const styles = StyleSheet.create({
         color: globalColor,
         fontSize: 22,
         textAlign:'center',     
+    },
+    cookieMessage: {
+        padding: 2,
+        backgroundColor: '#FFE4B5',
+        flex: 1,
+    },
+    cookieMessageText: {
+        fontSize: 22,
+        color: '#696969'
     }
 });
 
@@ -141,7 +153,15 @@ class UserMemberCookies extends React.Component {
         console.log(id);
         this.showMessageModal('提示', id.toString(), 'ok');
     }
-
+    _headerComponent = () => {
+        return (
+            <View style={this.state.userInfo.userWarn?styles.cookieMessage:styles.displayNone}>
+                <Text style={styles.cookieMessageText}>
+                {this.state.userInfo.userWarn}
+                </Text>
+            </View>
+        );
+    }
     _renderItem = ({item}) =>{
         console.log(item);
         return (
@@ -205,6 +225,7 @@ class UserMemberCookies extends React.Component {
                     refreshing={this.state.cookieListLoading}
                     keyExtractor={(item, index) => {return item.id.toString()}}
                     renderItem={this._renderItem}
+                    ListHeaderComponent={this._headerComponent}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.cookieListLoading}
