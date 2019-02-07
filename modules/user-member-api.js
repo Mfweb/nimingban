@@ -299,7 +299,11 @@ async function getUserCookies() {
     }
 }
 
-
+/**
+ * 删除一个用户饼干
+ * @param {number} cookieid 饼干ID
+ * @param {string} vcode 验证码
+ */
 async function deleteUserCookie(cookieid, vcode) {
     let url = await getUrl(`${configNetwork.memberUrl.memberDeleteCookie}${cookieid}.html`);
     if(url === null) {
@@ -333,9 +337,41 @@ async function deleteUserCookie(cookieid, vcode) {
     }
 }
 
-
-async function getNewUserCookie() {
-
+/**
+ * 获取一个新用户饼干
+ * @param {string} vcode 验证码
+ */
+async function getNewUserCookie(vcode) {
+    let url = await getUrl(configNetwork.memberUrl.memberGetNewCookie);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            method: 'POST',
+            headers: {
+                'cookie': await getCookie() 
+            },
+            body: `verify=${vcode}`
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    let resText = res.body;
+    try {
+        let resJSON = JSON.parse(resText);
+        if(resJSON.status && resJSON.status == 1) {
+            return { status: 'ok' };
+        }
+        else {
+            return { status: 'error', errmsg: resJSON.info };
+        }
+    } catch (error) {
+        return { status: 'error', errmsg: resText };
+    }
 }
 
 async function startVerified() {
