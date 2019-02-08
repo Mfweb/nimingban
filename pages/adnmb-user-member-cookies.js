@@ -7,6 +7,7 @@ import { TopModal } from '../component/top-modal'
 import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie } from '../modules/user-member-api'
 import { FlatList } from 'react-native-gesture-handler';
 import { UIButton } from '../component/uibutton'
+import { ActionSheet } from '../component/action-sheet'
 
 const globalColor = '#fa7296';
 
@@ -82,6 +83,15 @@ class UserMemberCookies extends React.Component {
                 rightButtonCallBack: null,
                 closedCallback: null
             },
+            actionSheet: {
+                show: false,
+                top: 0,
+                left: 0,
+                title: '',
+                items: [],
+                closedCallback: null,
+                onItemPress: null
+            },
             userCookies: [],
             cookieListLoading: true,
             userInfo: {
@@ -103,8 +113,8 @@ class UserMemberCookies extends React.Component {
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                onPress={async ()=>navigation.state.params.logout()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Text style={{fontSize: 18, color:'#FFF'}}>退出登录</Text>
+                onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <Icon name={'options-vertical'} size={24} color={'#FFF'} />
                 </TouchableOpacity>
             )
         }
@@ -149,7 +159,23 @@ class UserMemberCookies extends React.Component {
             messageModal: tempObj
         });
     }
-
+    /**
+     * 关闭ActionSheet
+     */
+    closeActionSheet = (callback = ()=>{}) => {
+        let tempObj = {
+            show: false,
+            top: this.state.actionSheet.top,
+            left: this.state.actionSheet.left,
+            title: this.state.actionSheet.title,
+            items: this.state.actionSheet.items,
+            closedCallback: ()=>callback(),
+            onItemPress: null
+        }
+        this.setState({
+            actionSheet: tempObj
+        });
+    }
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok' || sessionInfo.session !== true) {
@@ -162,7 +188,36 @@ class UserMemberCookies extends React.Component {
         else {
             await this._pullDownRefreshing();
         }
-        this.props.navigation.setParams({ logout: this._logout })
+        this.props.navigation.setParams({ showRightMenu: this._showRightMenu })
+    }
+
+    _showRightMenu = () => {
+        this.setState({
+            actionSheet: {
+                show: true,
+                top: 0,
+                left: Dimensions.get('window').width,
+                title: '详细菜单',
+                items: [
+                    '获取新饼干',
+                    '实名认证',
+                    '退出登录'
+                ],
+                onItemPress:(index) => {
+                    this.closeActionSheet(()=>{
+                        switch(index) {
+                            case 0:
+                            break;
+                            case 1:
+                            break;
+                            case 2:
+                            this._logout();
+                            break;
+                        }
+                    });
+                }
+            }
+        });
     }
     /**
      * 退出登录
@@ -332,6 +387,15 @@ class UserMemberCookies extends React.Component {
                     onRightButtonPress={this.state.messageModal.rightButtonCallBack} 
                     onLeftButtonPress={this.state.messageModal.leftButtonCallBack}
                     closedCallback={this.state.messageModal.closedCallback}/>
+                <ActionSheet 
+                    show={this.state.actionSheet.show}
+                    top={this.state.actionSheet.top}
+                    left={this.state.actionSheet.left}
+                    title={this.state.actionSheet.title}
+                    items={this.state.actionSheet.items}
+                    onItemPress={this.state.actionSheet.onItemPress}
+                    closedCallback={this.state.actionSheet.closedCallback}
+                    onClosePress={()=>this.closeActionSheet()}/>
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}
