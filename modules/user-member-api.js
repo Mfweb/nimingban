@@ -374,6 +374,68 @@ async function getNewUserCookie(vcode) {
     }
 }
 
+/**
+ * 获取实名认证信息
+ */
+async function getVerifiedInfo() {
+    let url = await getUrl(configNetwork.memberUrl.memberGetCertifiedStatus);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            headers: {
+                'cookie': await getCookie() 
+            },
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    var resText = res.body;
+    console.log(res);
+    try {
+        let resJSON = JSON.parse(resText);
+        return { status: 'error', errmsg: resJSON.info };
+    } catch (error) {
+        if(resText.indexOf('实名状态') > 0) {
+            resText = resText.replace(/ /g, '').replace(/\r/g, '').replace(/\n/g, '');
+            let certStatus = {
+                statusString: '错误',
+                phoneNumber: '错误',
+                statusBool: false
+            };
+            let cert_status = resText.split('实名状态')[1].match(/<b>[\s\S]*?<\/b>/i);
+            if (cert_status != null) {
+              certStatus.statusString = cert_status[0].replace(/(<b>)|(<\/b>)/ig, '');
+            }
+            else {
+              certStatus.statusString = '状态错误';
+            }
+            if (resText.indexOf('已绑定手机') > 0) {//手机认证已经成功的
+                let phoneContent = resText.split('已绑定手机')[1].replace(/(><)/g, "").match(/>[\s\S]*?</i);
+                if (phoneContent != null) {
+                    phoneContent = phoneContent[0].replace(/(>)|(<)/ig, "");
+                    if (phoneContent != null) {
+                        certStatus.phoneNumber = phoneContent;
+                    }
+                }
+                certStatus.statusBool = true;
+            }
+            else if (resText.indexOf('绑定手机') > 0) {//未进行手机实名认证
+                certStatus.phoneNumber = '未认证';
+                certStatus.statusBool = false;
+            }
+            return { status: 'ok', info: certStatus }
+        }
+        else {
+            return { status: 'error', errmsg: '获取实名状态错误' };
+        }
+    }
+}
+
 async function startVerified() {
     
 }
@@ -388,5 +450,6 @@ export {
     getUserCookies,
     deleteUserCookie,
     getNewUserCookie,
-    startVerified
+    startVerified,
+    getVerifiedInfo
 };

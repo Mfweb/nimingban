@@ -4,7 +4,7 @@ import { ImageProcessView } from '../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
-import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie } from '../modules/user-member-api'
+import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo } from '../modules/user-member-api'
 import { FlatList } from 'react-native-gesture-handler';
 import { UIButton } from '../component/uibutton'
 import { ActionSheet } from '../component/action-sheet'
@@ -210,6 +210,7 @@ class UserMemberCookies extends React.Component {
                             this._getNewCookie();
                             break;
                             case 1:
+                            this._getVerifiedInfo();
                             break;
                             case 2:
                             this._logout();
@@ -219,6 +220,14 @@ class UserMemberCookies extends React.Component {
                 }
             }
         });
+    }
+
+    /**
+     * 获取名认证信息
+     */
+    _getVerifiedInfo = async () => {
+        let info = await getVerifiedInfo();
+        console.log(info);
     }
     /**
      * 退出登录
