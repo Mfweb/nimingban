@@ -200,13 +200,14 @@ class UserMemberCookies extends React.Component {
                 title: '详细菜单',
                 items: [
                     '获取新饼干',
-                    '实名认证',
+                    '实名认证信息',
                     '退出登录'
                 ],
                 onItemPress:(index) => {
                     this.closeActionSheet(()=>{
                         switch(index) {
                             case 0:
+                            this._getNewCookie();
                             break;
                             case 1:
                             break;
@@ -257,7 +258,28 @@ class UserMemberCookies extends React.Component {
             });
         });
     }
-
+    /**
+     * 获取新饼干
+     */
+    _getNewCookie = () => {
+        this.inputVcode = '';
+        this._getVCode(() => {
+            this.closeMessageModal(async ()=>{
+                if(this.inputVcode.length != 5) {
+                    this.showMessageModal('错误', '验证码输入错误', '确认');
+                }
+                else {
+                    let deleteRes = await getNewUserCookie(this.inputVcode);
+                    if(deleteRes.status != 'ok') {
+                        this.showMessageModal('错误', deleteRes.errmsg, '确认');
+                    }
+                    else {
+                        this._pullDownRefreshing();
+                    }
+                }
+            });
+        });
+    }
     /**
      * 获取验证码
      */
