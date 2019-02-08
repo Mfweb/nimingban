@@ -225,14 +225,56 @@ class UserMemberCookies extends React.Component {
     /**
      * 获取名认证信息
      */
-    _getVerifiedInfo = async () => {
-        let info = await getVerifiedInfo();
-        console.log(info);
+    _getVerifiedInfo = () => {
+        this.setState({
+            messageModal: {
+                show: true,
+                title: '正在获取',
+                content: (
+                <View style={{width: 280, height: 100, justifyContent: 'center', alignItems: 'center'}}>
+                    <ImageProcessView 
+                    height={25} 
+                    width={25} />
+                </View>
+                ),
+                rightButtonText: '确认',
+                rightButtonCallBack: ()=>this.closeMessageModal(),
+                closedCallback: null
+            }
+        }, async ()=>{
+            let info = await getVerifiedInfo();
+            if(info.status == 'error') {
+                this.showMessageModal('获取错误', info.errmsg, '确认');
+            }
+            else {
+                this.setState({
+                    messageModal: {
+                        show: true,
+                        title: '实名信息',
+                        content: (
+                        <View style={{width: 280, height: 100, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 22, color:'#696969'}}>
+                                {info.info.statusString}
+                            </Text>
+                            <Text style={{fontSize: 22, color:'#696969'}}>
+                                {info.info.phoneNumber}
+                            </Text>
+                        </View>
+                        ),
+                        rightButtonText: '确认',
+                        rightButtonCallBack: ()=>this.closeMessageModal(),
+                        closedCallback: null
+                    }
+                });
+            }
+        });
+        
+        
     }
     /**
      * 退出登录
      */
-    _logout = async () => {
+    _logout = () => {
         this.showMessageModal('提示', '确认退出？', '确认', async () => {
             await logout();
             this.closeMessageModal(() => {

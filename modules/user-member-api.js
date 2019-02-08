@@ -395,7 +395,6 @@ async function getVerifiedInfo() {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
     var resText = res.body;
-    console.log(res);
     try {
         let resJSON = JSON.parse(resText);
         return { status: 'error', errmsg: resJSON.info };
