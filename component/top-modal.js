@@ -68,6 +68,7 @@ class TopModal extends React.Component {
         this.state = {
             top: -70,
             nowOpacity: new Animated.Value(0),
+            nowScale: new Animated.Value(0.1),
             showx: false
         }
     }
@@ -108,20 +109,32 @@ class TopModal extends React.Component {
     _onLayout = (res) => {
         this.modalSize = res.nativeEvent.layout;
     }
-    startAnime = function (mode, finish = null) {
+    startAnime = function (mode, finish = ()=>{}) {
         if(this.isUnMount) {
             return;
         }
         this.state.nowOpacity.setValue(mode==='in'?0:1);
-        Animated.timing(
-            this.state.nowOpacity,
-            {
-                toValue: mode==='in'?1:0,
-                duration: 200,
-                useNativeDriver: true,
-                stiffness: 50
-            }
-        ).start(finish);
+        this.state.nowScale.setValue(mode==='in'?0.1:1.0);
+        Animated.parallel([
+            Animated.timing(
+                this.state.nowOpacity,
+                {
+                    toValue: mode==='in'?1:0,
+                    duration: 200,
+                    useNativeDriver: true,
+                    stiffness: 50
+                }
+            ),
+            Animated.timing(
+                this.state.nowScale,
+                {
+                    toValue: mode==='in'?1.0:0.1,
+                    duration: 200,
+                    useNativeDriver: true,
+                    friction: 2
+                }
+            )
+        ]).start(finish);
     }
 
     componentWillReceiveProps(res) {
@@ -156,9 +169,14 @@ class TopModal extends React.Component {
                     opacity: this.state.nowOpacity
                 }
             ]}>
-                <View style={ [styles.modalRoot, {
+                <Animated.View style={ [styles.modalRoot, {
                     width: this.props.width, 
-                    marginTop: this.state.top
+                    marginTop: this.state.top,
+                    transform: [
+                        { 
+                            scale: this.state.nowScale 
+                        }
+                    ]
                     }]}
                     onLayout={this._onLayout}
                     ref={(ref)=>this.modalView=ref} >
@@ -201,7 +219,7 @@ class TopModal extends React.Component {
                             <Text style={{fontSize: 20, color: '#FFF'}}>{this.props.rightButtonText}</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </Animated.View>
             </Animated.View>
         );
     }
