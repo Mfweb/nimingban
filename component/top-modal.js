@@ -38,8 +38,9 @@ const styles = StyleSheet.create({
         height: 40
     },
     modalTitleText: {
-        fontSize: 24,
-        marginLeft: 4
+        fontSize: 22,
+        marginLeft: 4,
+        color: '#696969'
     },
     modalTitleSplitLine: {
         height: 1,
