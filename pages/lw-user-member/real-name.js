@@ -155,7 +155,6 @@ class UIWaitSuccess extends React.Component {
 
     render() {
         let {authMessage} = this.props;
-        console.log(authMessage);
         return(
             <View style={[styles.authView].concat(this.props.style)}>
                 <View style={styles.authMessageView}>
@@ -285,6 +284,12 @@ class RealNameAuth extends React.Component {
                     <Icon name={'menu'} size={24} color={'#FFF'} />
                 </TouchableOpacity>
             ),
+            headerRight: (
+                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
+                    onPress={async ()=>navigation.state.params.logout()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <Text style={{fontSize: 18, color:'#FFF'}}>退出登录</Text>
+                </TouchableOpacity>
+            )
         }
     }
     
@@ -298,6 +303,9 @@ class RealNameAuth extends React.Component {
                 checkingSession: false
             });
         }
+        this.props.navigation.setParams({ logout: ()=>{
+            this.showMessageModal('确认', '确认退出登录?', '确认', this._logout, '取消');
+        } })
     }
     /**
      * 显示一个信息窗口
@@ -341,6 +349,7 @@ class RealNameAuth extends React.Component {
      * 退出登录
      */
     _logout = () => {
+        Keyboard.dismiss();
         logout().then(()=>{
             this.props.navigation.reset([
                 NavigationActions.navigate({
@@ -395,7 +404,6 @@ class RealNameAuth extends React.Component {
                         this.showMessageModal('错误', rnInfo.errmsg, '确认');
                     }
                     else {
-                        console.log(rnInfo.msg);
                         this.setState({
                             waitingSuccess: true,
                             authMessage: rnInfo.msg
