@@ -1,10 +1,10 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
-import { ImageProcessView } from '../component/list-process-view'
+import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../component/top-modal'
-import { checkSession, getVerifyCode, register } from '../modules/user-member-api'
-import { UIButton } from '../component/uibutton'
+import { TopModal } from '../../component/top-modal'
+import { checkSession, getVerifyCode, register } from '../../modules/user-member-api'
+import { UIButton } from '../../component/uibutton'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -234,7 +234,7 @@ class UserMemberRegister extends React.Component {
                             <Image style={{
                                 width: 280, height: 50,top: 0
                             }} 
-                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../imgs/vcode-error.png') } 
+                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
                             resizeMode='contain' />
                         </TouchableOpacity>
                         <TextInput 
@@ -297,7 +297,7 @@ class UserMemberRegister extends React.Component {
                 <Image 
                 style={styles.memberTitleImg} 
                 resizeMode={'contain'} 
-                source={require('../imgs/member-title.png')} />
+                source={require('../../imgs/member-title.png')} />
                 <UIReg
                     checkingSession={this.state.checkingSession}
                     onUserNameInput={(text)=>{this.inputUserName = text;}}

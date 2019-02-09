@@ -435,8 +435,104 @@ async function getVerifiedInfo() {
     }
 }
 
-async function startVerified() {
-    
+/**
+ * 开始进入实名认证
+ * @param {string} mobile 手机号
+ * @param {string} countryID 国家号
+ * @param {string} vcode 验证码
+ */
+async function startVerified(mobile, countryID, vcode) {
+    let url = await getUrl(configNetwork.memberUrl.memberStartMobileCert);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            method: 'POST',
+            headers: {
+                'cookie': await getCookie() 
+            },
+            body: `verify=${vcode}&mobile_country_id=${countryID}&mobile=${mobile}`
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    var resText = res.body;
+    try {
+        let resJSON = JSON.parse(resText);
+        return { status: 'error', errmsg: resJSON.info };
+    } catch (error) {
+        if(resText.indexOf('本次的验证码') > 0) {
+            resText = resText.replace(/\r/g, "").replace(/\n/g, "");
+            let bodyMatch = resText.match(/<form[\s\S]*?>[\s\S]*?<\/form>/ig);
+            if(bodyMatch != null) {
+                bodyMatch = bodyMatch[0].replace(/tpl-form-maintext">[\s\D]*<b>/ig, "Sdata\"><b>").replace(/ /ig, '');
+                var info = {
+                    authMobile: '错误',
+                    authCode: '错误',
+                    expireDate: '未知',
+                    yourMobile: '错误'
+                };
+
+                let authMobile = bodyMatch.match(/发送下面的验证码到\<b\>(\+)*([0-9])+/ig);
+                if(authMobile) {
+                    info.authMobile = authMobile[0].replace(/发送下面的验证码到\<b\>/ig, '');
+                }
+
+                let authCode = bodyMatch.match(/本次的验证码.*(\<b\>){1}([0-9]){5}/ig);
+                if(authCode) {
+                    info.authCode = authCode[0].substring(authCode[0].length - 5);
+                }
+
+                let expireDate = bodyMatch.match(/过期时间.*(\<b\>){1}\d{4}\-\d{2}\-\d{2}/ig);
+                let expireTime = bodyMatch.match(/过期时间.*(\<b\>){1}.*\d{2}:\d{2}:\d{2}/ig);
+                if(expireDate && expireTime) {
+                    info.expireDate = expireDate[0].substring(expireDate[0].length - 10) + ' ' + expireTime[0].substring(expireTime[0].length - 8);
+                }
+
+                let yourMobile = bodyMatch.match(/(您的手机\<){1}.*(\>\+){1}\d+/ig);
+                if(yourMobile) {
+                    info.yourMobile = yourMobile[0].replace(/(您的手机\<){1}.*(\>\+){1}/ig, '+');
+                }
+                return { status: 'ok', msg: info };
+            }
+            else {
+                return { status: 'error', errmsg: '未知错误 2' };
+            }
+        }
+        else {
+            console.error(resText);
+            return { status: 'error', errmsg: '未知错误' };
+        }
+    }
+}
+
+/**
+ * 检查实名认证短信
+ */
+async function checkVerifiedSMS() {
+    let url = await getUrl(configNetwork.memberUrl.memberMobileCheck);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            method: 'GET',
+            headers: {
+                'cookie': await getCookie() 
+            },
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    var resText = res.body;
+    return { status: 'ok', msg: resText };
 }
 
 export {
@@ -450,5 +546,6 @@ export {
     deleteUserCookie,
     getNewUserCookie,
     startVerified,
-    getVerifiedInfo
+    getVerifiedInfo,
+    checkVerifiedSMS
 };

@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
         position: 'absolute',
-        zIndex: 9998,
+        zIndex: 998,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     modalRoot: {
         backgroundColor: '#FFF',
         borderRadius: 8,
-        zIndex: 9999,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,

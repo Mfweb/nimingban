@@ -1,13 +1,13 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard,RefreshControl } from 'react-native'
-import { ImageProcessView } from '../component/list-process-view'
+import { Text, View, Image, StyleSheet, Picker, TextInput, Dimensions, TouchableOpacity, Keyboard, RefreshControl } from 'react-native'
+import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../component/top-modal'
-import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo } from '../modules/user-member-api'
+import { TopModal } from '../../component/top-modal'
+import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo } from '../../modules/user-member-api'
 import { FlatList } from 'react-native-gesture-handler';
-import { UIButton } from '../component/uibutton'
-import { ActionSheet } from '../component/action-sheet'
+import { UIButton } from '../../component/uibutton'
+import { ActionSheet } from '../../component/action-sheet'
 
 const globalColor = '#fa7296';
 
@@ -191,6 +191,42 @@ class UserMemberCookies extends React.Component {
         this.props.navigation.setParams({ showRightMenu: this._showRightMenu })
     }
 
+    /**
+     * 打开实名认证页面
+     */
+    _showRealName = () => {
+        this.props.navigation.reset([
+            NavigationActions.navigate({
+                routeName: 'UserMemberAugh'
+            })
+        ], 0);
+        /*let selectList = [];
+        for(let i = 0; i < countryCodeList.length; i++) {
+            selectList.push(<Picker.Item label={countryCodeList[i]} value={i} />);
+        }
+        this.setState({
+            messageModal: {
+                show: true,
+                title: '实名认证',
+                content: (
+                <View style={{width: 280}}>
+                    <Picker 
+                        selectedValue={0}
+                        mode={'dropdown'}
+                    >
+                        {selectList}
+                    </Picker>
+                </View>
+                ),
+                rightButtonText: '确认',
+                rightButtonCallBack: ()=>this.closeMessageModal(),
+                closedCallback: null
+            }
+        });*/
+    }
+    /**
+     * 显示右侧菜单
+     */
     _showRightMenu = () => {
         this.setState({
             actionSheet: {
@@ -368,7 +404,7 @@ class UserMemberCookies extends React.Component {
                         <Image style={{
                             width: 280, height: 50,top: 0
                         }} 
-                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../imgs/vcode-error.png') } 
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
                         resizeMode='contain' />
                     </TouchableOpacity>
                     <TextInput 
@@ -495,10 +531,15 @@ class UserMemberCookies extends React.Component {
         }, async () => {
             let userCookies = await getUserCookies();
             if(userCookies.status != 'ok') {
-                this.showMessageModal('错误', userCookies.errmsg, '确认');
                 this.setState({
                     cookieListLoading: false,
                 });
+                if(userCookies.errmsg == '本页面需要实名后才可访问_(:з」∠)_') {
+                    this._showRealName();
+                }
+                else {
+                    this.showMessageModal('错误', userCookies.errmsg, '确认');
+                }
             }
             else {
                 this.setState({

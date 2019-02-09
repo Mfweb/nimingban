@@ -60,7 +60,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
                         break;
                     case '<br':
                     case 'br':
-                        outPut.push(<Text key={domKey++}>\r\n</Text>);
+                        outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
                         break;
                     case 'font':
                         if(tagAttribs.hasOwnProperty('style') ) {
@@ -76,6 +76,12 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
                         else {
                             outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
                         }
+                        break;
+                    case 'div':
+                    case 'form':
+                    case 'label':
+                        outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
                         break;
                     default:
                         console.warn('Unknow HTML tag:' + tagName);

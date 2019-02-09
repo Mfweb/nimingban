@@ -6,10 +6,11 @@ import { DetailsScreen } from './pages/detail-thread'
 import { ImageViewer } from './pages/image-viewer'
 import { LeftDrawerNavigator } from './component/left-menu-drawer'
 import { PinkWebView} from './pages/webwiew'
-import { UserMemberLogin } from './pages/adnmb-user-member-login'
-import { UserMemberRegister } from './pages/adnmb-user-member-reg'
-import { UserMemberForgotPassword } from './pages/adnmb-user-member-forgotpw'
-import { UserMemberCookies } from './pages/adnmb-user-member-cookies'
+import { UserMemberLogin } from './pages/lw-user-member/login'
+import { UserMemberRegister } from './pages/lw-user-member/reg'
+import { UserMemberForgotPassword } from './pages/lw-user-member/forgotpw'
+import { UserMemberCookies } from './pages/lw-user-member/cookies'
+import { RealNameAuth } from './pages/lw-user-member/real-name'
 const globalColor = '#fa7296';
 
 // 串浏览页面
@@ -42,7 +43,9 @@ const UserMemberStackNavigator = createStackNavigator({
     //忘记密码
     UserMemberForgotPw: { screen: UserMemberForgotPassword },
     //饼干管理
-    UserMemberCookies: { screen: UserMemberCookies }
+    UserMemberCookies: { screen: UserMemberCookies },
+    //实名认证
+    UserMemberAugh: { screen: RealNameAuth }
 }, {
     initialRouteName: 'UserMemberLogin',
     //顶栏配置

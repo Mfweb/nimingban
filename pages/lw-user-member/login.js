@@ -1,10 +1,11 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
-import { ImageProcessView } from '../component/list-process-view'
+import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
+import { ImageProcessView } from '../../component/list-process-view'
+import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../component/top-modal'
-import { checkSession, getVerifyCode, forgotPassword } from '../modules/user-member-api'
-import { UIButton } from '../component/uibutton'
+import { TopModal } from '../../component/top-modal'
+import { checkSession, getVerifyCode, login } from '../../modules/user-member-api'
+import { UIButton } from '../../component/uibutton'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -14,11 +15,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    memberView: {
+    loginView: {
         height: Dimensions.get('window').height,
         backgroundColor: '#F5F5F5'
     },
-    memberTitleImg: {
+    loginTitleImg: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').width / 600 * 272
     },
@@ -47,31 +48,40 @@ const styles = StyleSheet.create({
     toolView: {
         marginTop: 20,
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         width: Dimensions.get('window').width,
         paddingLeft: Dimensions.get('window').width * 0.05,
         paddingRight: Dimensions.get('window').width * 0.05,
     },
     regButton: {
-        backgroundColor: globalColor,
+        backgroundColor: '#FFF',
     },
     regButtonText: {
-        color: '#FFF',
+        color: globalColor,
         fontSize: 24
     },
+    loginButton: {
+        backgroundColor: globalColor,
+    },
+    loginButtonText: {
+        color: '#FFF',
+        fontSize: 24
+    }
 });
 
 /**
  * 登录相关
  */
-class UIReg extends React.Component {
+class UILogin extends React.Component {
     constructor(props) {
         super(props);
         //props:
         //checkingSession
         //onUserNameInput
+        //onPasswordInput
         //onRegisterButtonPress
+        //onLoginButtonPress
     }
 
     render() {
@@ -86,27 +96,50 @@ class UIReg extends React.Component {
                     clearButtonMode={'always'}
                     keyboardType={'email-address'}
                     placeholder={'email'}
-                    returnKeyType={'done'}
+                    returnKeyType={'next'}
                     blurOnSubmit={false}
                     autoComplete={'username'}
                     editable={!this.props.checkingSession}
                     enablesReturnKeyAutomatically={false}
+                    onSubmitEditing={() => {this.secondTextInput.focus(); }}
                     onChangeText={this.props.onUserNameInput} />
+                </View>
+                
+                <View style={styles.userInputView}>
+                    <Icon name={'lock'} size={24} color={globalColor} />
+                    <View style={styles.splitLine}></View>
+                    <TextInput 
+                    ref={(input) => { this.secondTextInput = input; }}
+                    style={styles.userInputText}
+                    autoCapitalize={'none'}
+                    clearButtonMode={'always'}
+                    placeholder={'密码'}
+                    returnKeyType={'done'}
+                    autoComplete={'password'}
+                    editable={!this.props.checkingSession}
+                    enablesReturnKeyAutomatically={true}
+                    secureTextEntry={true}
+                    onChangeText={this.props.onPasswordInput} />
                 </View>
 
                 <View style={styles.toolView}>
-                    <UIButton text={'找回密码'}
+                    <UIButton text={'注册'}
                         style={styles.regButton}
                         textStyle={styles.regButtonText}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onRegisterButtonPress}/>
+                    <UIButton text={'登录'}
+                        style={styles.loginButton}
+                        textStyle={styles.loginButtonText}
+                        showLoading={this.props.checkingSession}
+                        onPress={this.props.onLoginButtonPress}/>
                 </View>
             </View>
         );
     }
 }
 
-class UserMemberForgotPassword extends React.Component {
+class UserMemberLogin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -115,15 +148,26 @@ class UserMemberForgotPassword extends React.Component {
             checkingSession: true,
             sessionState: false,
             errmsgModal: false,
-            errmsg: '',
-            errtitle: '错误'
+            errmsg: ''
         }
     }
     inputUserName = ''
+    inputPassWord = ''
     inputVcode = ''
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'A岛-找回密码'
+            title: 'A岛-登录',
+            headerLeft: (
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={navigation.openDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                </TouchableOpacity>
+            ),
+            headerRight: (
+                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
+                onPress={()=>{ navigation.push('UserMemberForgotPw') }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <Text style={{fontSize: 18, color:'#FFF'}}>忘记密码</Text>
+                </TouchableOpacity>
+            )
         }
     }
     
@@ -131,9 +175,8 @@ class UserMemberForgotPassword extends React.Component {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
             this.setState({
-                errtitle: '错误',
                 errmsgModal: true,
-                errmsg: `检查状态失败：${sessionInfo.errmsg}。`,
+                errmsg: `检查状态失败：${sessionInfo.errmsg}，可能导致无法正常登录。`,
                 checkingSession: false
             });
         }
@@ -142,22 +185,30 @@ class UserMemberForgotPassword extends React.Component {
             this.setState({
                 sessionState: sessionInfo.session,
                 checkingSession: false
+            }, () => {
+                if(sessionInfo.session === true) {
+                    this.props.navigation.reset([
+                        NavigationActions.navigate({
+                            routeName: 'UserMemberCookies'
+                        })
+                    ], 0);
+                    //UserMemberCookies
+                }
             });
             //await logout();
         }
     }
 
     /**
-     * 注册
+     * 登录
      */
-    _onReg = async () => {
+    _onLogin = async () => {
         Keyboard.dismiss();
         if(this.inputVcode.length != 5) {
             this.setState({
                 showModal: false,
             },()=>{
                 this.setState({
-                    errtitle: '错误',
                     errmsgModal: true,
                     errmsg: '验证码长度错误',
                 });      
@@ -168,37 +219,44 @@ class UserMemberForgotPassword extends React.Component {
             showModal: false,
             checkingSession: true
         });
-        let regRes = await forgotPassword(this.inputUserName, this.inputVcode);
-        if(regRes.status != 'ok') {
+        let loginRes = await login(this.inputUserName, this.inputPassWord, this.inputVcode);
+        if(loginRes.status != 'ok') {
             this.setState({
-                errtitle: '错误',
                 errmsgModal: true,
-                errmsg: regRes.errmsg
+                errmsg: loginRes.errmsg,
+                checkingSession: false
             });
         }
         else {
             this.setState({
-                errtitle: '完成',
-                errmsgModal: true,
-                errmsg: '邮件已发送，请检查邮箱。'
+                checkingSession: false
+            }, () => {
+                this.props.navigation.reset([
+                    NavigationActions.navigate({
+                        routeName: 'UserMemberCookies'
+                    })
+                ], 0);
             });
         }
-        this.setState({
-            checkingSession: false
-        });
     }
     /**
-     * 开始注册（打开验证码输入窗口
+     * 开始登录（打开验证码输入窗口
      */
-    _onRegStart = async () => {
+    _onLoginStart = async () => {
         Keyboard.dismiss();
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
             this.setState({
-                errtitle: '错误',
                 errmsgModal: true,
                 errmsg: '账号格式错误',
             });
             return;
+        }
+        if( this.inputPassWord.length < 5 ) {
+            this.setState({
+                errmsgModal: true,
+                errmsg: '密码格式错误',
+            });
+            return; 
         }
         this.setState({
             showModal: true
@@ -233,7 +291,7 @@ class UserMemberForgotPassword extends React.Component {
                             <Image style={{
                                 width: 280, height: 50,top: 0
                             }} 
-                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../imgs/vcode-error.png') } 
+                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
                             resizeMode='contain' />
                         </TouchableOpacity>
                         <TextInput 
@@ -242,7 +300,7 @@ class UserMemberForgotPassword extends React.Component {
                         textAlignVertical='center'
                         maxLength={5}
                         returnKeyType={'done'}
-                        onSubmitEditing={this._onReg}
+                        onSubmitEditing={this._onLogin}
                         onChangeText={(text) => {this.inputVcode = text;}}/>
                     </View>    
                 )
@@ -251,17 +309,13 @@ class UserMemberForgotPassword extends React.Component {
     }
     render() {
         return (
-            <View style={styles.memberView}>
+            <View style={styles.loginView}>
                <TopModal
                     show={this.state.errmsgModal}
                     width={280}
-                    title={this.state.errtitle}
+                    title={'错误'}
                     rightButtonText={'确认'}
-                    item={
-                        <View style={{width: 260,  margin: 10}}>
-                            <Text style={{fontSize: 20}}>{this.state.errmsg}</Text>
-                        </View>
-                    }
+                    item={<Text style={{width: 260, fontSize: 20, margin: 10}}>{this.state.errmsg}</Text>}
                     onClosePress={()=>{
                         this.setState({
                             errmsgModal: false
@@ -292,19 +346,21 @@ class UserMemberForgotPassword extends React.Component {
                         });
                         Keyboard.dismiss();
                     }}
-                    onRightButtonPress={this._onReg} />
+                    onRightButtonPress={this._onLogin} />
                 <Image 
-                style={styles.memberTitleImg} 
+                style={styles.loginTitleImg} 
                 resizeMode={'contain'} 
-                source={require('../imgs/member-title.png')} />
-                <UIReg
+                source={require('../../imgs/member-title.png')} />
+                <UILogin
                     checkingSession={this.state.checkingSession}
                     onUserNameInput={(text)=>{this.inputUserName = text;}}
-                    onRegisterButtonPress={this._onRegStart}
+                    onPasswordInput={(text)=>{this.inputPassWord = text;}}
+                    onRegisterButtonPress={()=>{ this.props.navigation.push('UserMemberReg') }}
+                    onLoginButtonPress={this._onLoginStart}
                 />
             </View>
         )
     }
 }
 
-export { UserMemberForgotPassword };
+export { UserMemberLogin };
