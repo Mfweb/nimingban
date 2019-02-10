@@ -107,7 +107,7 @@ class UserMemberCookies extends React.Component {
         return {
             title: 'A岛-饼干槽',
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={navigation.openDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                     <Icon name={'menu'} size={24} color={'#FFF'} />
                 </TouchableOpacity>
             ),
