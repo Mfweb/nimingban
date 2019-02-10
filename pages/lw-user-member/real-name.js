@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, Clipboard, Linking } from 'react-native'
+import { Text, Button, View, Image, StyleSheet, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, Clipboard, Linking } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -140,7 +140,9 @@ const styles = StyleSheet.create({
     },
 });
 
-
+/**
+ * 等待验证完成
+ */
 class UIWaitSuccess extends React.Component {
     constructor(props) {
         super(props);
@@ -192,6 +194,10 @@ class UIWaitSuccess extends React.Component {
                         showLoading={this.props.checkingSession}
                         onPress={()=>{Linking.openURL(`sms:${authMessage.authMobile}&body=${authMessage.authCode}`);}}/>
                 </View>
+                <Button
+                    style={{marginTop: 10}}
+                    onPress={this.props.onCancel}
+                    title={'返回重填'}/>
             </View>
         );
     }
@@ -384,6 +390,14 @@ class RealNameAuth extends React.Component {
         }
     }
     /**
+     * 取消实名认证，重填信息
+     */
+    _cancelRNA = ()=>{
+        this.setState({
+            waitingSuccess: false,
+        });
+    }
+    /**
      * 开始实名认证
      */
     _startRealNameAuth = () => {
@@ -538,7 +552,8 @@ class RealNameAuth extends React.Component {
                 <UIWaitSuccess
                     style={this.state.waitingSuccess?{}:{display:'none'}}
                     authMessage={this.state.authMessage}
-                    onPressSend={this._checkRealNameAuth}/>
+                    onPressSend={this._checkRealNameAuth}
+                    onCancel={this._cancelRNA}/>
             </View>
         )
     }
