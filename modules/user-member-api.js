@@ -2,7 +2,7 @@ import { AsyncStorage,Platform } from 'react-native'
 import RNFS from 'react-native-fs';
 import { getUrl } from './apis'
 import { request } from './network'
-import { saveCookie, getCookie, clearCookie } from './cookie-manager'
+import { setUserCookieFromString, getCookie, clearCookie } from './cookie-manager'
 import { configNetwork, configLocal, configDynamic } from './config'
 
 /**
@@ -234,6 +234,7 @@ async function getUserCookies() {
     }
     try {
         var res = await request(url, {
+            saveCookies: true,
             headers: {
                 'cookie': await getCookie() 
             },
@@ -312,6 +313,7 @@ async function deleteUserCookie(cookieid, vcode) {
     try {
         var res = await request(url, {
             method: 'POST',
+            saveCookies: true,
             headers: {
                 'cookie': await getCookie() 
             },
@@ -349,6 +351,7 @@ async function getNewUserCookie(vcode) {
     try {
         var res = await request(url, {
             method: 'POST',
+            saveCookies: true,
             headers: {
                 'cookie': await getCookie() 
             },
@@ -384,6 +387,7 @@ async function getVerifiedInfo() {
     }
     try {
         var res = await request(url, {
+            saveCookies: true,
             headers: {
                 'cookie': await getCookie() 
             },
@@ -449,6 +453,7 @@ async function startVerified(mobile, countryID, vcode) {
     try {
         var res = await request(url, {
             method: 'POST',
+            saveCookies: true,
             headers: {
                 'cookie': await getCookie() 
             },
@@ -549,6 +554,7 @@ async function changePassword(oldpw, newpw, newpw2) {
     try {
         var res = await request(url, {
             method: 'POST',
+            saveCookies: true,
             headers: {
                 'cookie': await getCookie() 
             },
@@ -574,6 +580,42 @@ async function changePassword(oldpw, newpw, newpw2) {
     }
 }
 
+/**
+ * 获取并应用一个用户饼干
+ * @param {string} id 饼干id
+ */
+async function getEnableUserCookie(id) {
+    let url = await getUrl(`${configNetwork.memberUrl.memberGetCookieDetail}${id}.html`);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            method: 'GET',
+            headers: {
+                'cookie': await getCookie() 
+            }
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }//setUserCookieFromString
+    if(res.headers.hasOwnProperty('Set-Cookie')) {
+        let sta = await setUserCookieFromString(res.headers['Set-Cookie']);
+        if(sta === true) {
+            return { status: 'ok' };
+        }
+        else {
+            return { status: 'error', errmsg: `获取饼干错误` };
+        }
+    }
+    else {
+        return { status: 'error', errmsg: `获取饼干错误` };
+    }
+}
+
 export {
     checkSession,
     getVerifyCode,
@@ -587,5 +629,6 @@ export {
     startVerified,
     getVerifiedInfo,
     checkVerifiedSMS,
-    changePassword
+    changePassword,
+    getEnableUserCookie
 };

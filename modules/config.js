@@ -65,17 +65,20 @@ const configLocal = {
         'lw': {
             memberCookie: 'MemberCookiesLW',
             forumCache: 'ForumListLW',
-            forumNameCache: 'ForumNameListLW'
+            forumNameCache: 'ForumNameListLW',
+            userCookie: 'UserCookieLW'
         },
         'bt': {
             memberCookie: 'MemberCookiesBT',
             forumCache: 'ForumListBT',
-            forumNameCache: 'ForumNameListBT'
+            forumNameCache: 'ForumNameListBT',
+            userCookie: 'UserCookieBT'
         },
         'ld': {
             memberCookie: 'MemberCookiesLD',
             forumCache: 'ForumListLD',
-            forumNameCache: 'ForumNameListLD'
+            forumNameCache: 'ForumNameListLD',
+            userCookie: 'UserCookieLD'
         }
     }
 }

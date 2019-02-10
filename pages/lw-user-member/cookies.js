@@ -4,7 +4,7 @@ import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
-import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo } from '../../modules/user-member-api'
+import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo, getEnableUserCookie } from '../../modules/user-member-api'
 import { FlatList } from 'react-native-gesture-handler';
 import { UIButton } from '../../component/uibutton'
 import { ActionSheet } from '../../component/action-sheet'
@@ -244,6 +244,19 @@ class UserMemberCookies extends React.Component {
             });
         }, '取消');
     }
+
+    /**
+     * 获取并应用一个饼干
+     */
+    _enableCookie = async (id) => {
+        let sta = await getEnableUserCookie(id);
+        if(sta.status == 'ok') {
+            this.showMessageModal('提示', '应用成功', '确认');
+        }
+        else {
+            this.showMessageModal('提示', sta.errmsg, '确认');
+        }
+    }
     inputVcode = '';
     /**
      * 删除饼干
@@ -398,6 +411,7 @@ class UserMemberCookies extends React.Component {
                         style={{backgroundColor: globalColor, width: 45, height: 30}}
                         textStyle={{color:'#FFF', fontSize: 19}}
                         showLoading={false}
+                        onPress={()=>this._enableCookie(item.id)}
                         />
                     </View>
                 </View>

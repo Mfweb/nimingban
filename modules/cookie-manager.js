@@ -84,4 +84,24 @@ async function getCookie() {
     return __systemJSONCache;
 }
 
-export { saveCookie, getCookie, clearCookie }
+/**
+ * 从原始数据获取并应用一个饼干
+ * @param {string} rawString 原始数据
+ */
+async function setUserCookieFromString(rawString) {
+    let cookieLine = _cookieStrToJson(rawString);
+    if(cookieLine == null) {
+        return false;
+    }
+
+    if(cookieLine.hasOwnProperty('userhash')) {
+        await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookie, `userhash=${cookieLine['userhash']}`);
+        console.log(await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie));
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+export { saveCookie, getCookie, clearCookie, setUserCookieFromString }
