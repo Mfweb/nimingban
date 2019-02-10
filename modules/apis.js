@@ -2,6 +2,7 @@ import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs';
 import { request } from './network'
 import { configNetwork, configLocal, configDynamic } from './config'
+import { getUserCookie } from './cookie-manager'
 
 /**
  * 检查并返回最新的host，
@@ -122,6 +123,9 @@ async function getThreadList(fid, page) {
     try{
         var response = await request(url, {
             method: 'POST',
+            headers: {
+                'cookie': await getUserCookie() 
+            },
             body: 'id=' + fid + '&page=' + page,
         });
     }catch(error) {
@@ -161,6 +165,9 @@ async function getReplyList(tid, page) {
     try {
         var response = await request(url, {
             method: 'POST',
+            headers: {
+                'cookie': await getUserCookie() 
+            },
             body: 'id=' + tid + '&page=' + page,
         });
     }catch(error) {

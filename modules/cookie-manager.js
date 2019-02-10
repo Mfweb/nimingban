@@ -2,6 +2,7 @@ import { AsyncStorage } from 'react-native'
 import { configNetwork, configLocal, configDynamic } from './config'
 
 var __systemJSONCache = null;
+var __userCookieCache = null;
 /**
  * 将cookie字符串转为object
  * @param {string} cookieStr set-cookie格式的cookie字符串
@@ -104,4 +105,15 @@ async function setUserCookieFromString(rawString) {
     }
 }
 
-export { saveCookie, getCookie, clearCookie, setUserCookieFromString }
+/**
+ * 获取用户饼干
+ */
+async function getUserCookie() {
+    if(__userCookieCache !== null) {
+        console.log('cookie:', __userCookieCache);
+        return __userCookieCache;
+    }
+    __userCookieCache = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
+    return __userCookieCache;
+}
+export { saveCookie, getCookie, clearCookie, setUserCookieFromString, getUserCookie }
