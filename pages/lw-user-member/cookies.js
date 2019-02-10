@@ -384,38 +384,36 @@ class UserMemberCookies extends React.Component {
     }
     _renderItem = ({item}) =>{
         return (
-            <TouchableOpacity>
-                <View style={styles.cookieItem}>
-                    <View style={styles.cookieColumn}>
-                        <Text style={styles.cookieIDText}>
-                            {item.id}
-                        </Text>
-                    </View>
-
-                    <View style={styles.cookieColumn}>
-                        <Text style={styles.cookieText}>
-                            {item.value}
-                        </Text>
-                    </View>
-
-                    <View style={styles.cookieColumn}>
-                        <UIButton
-                        text={'删除'}
-                        style={{backgroundColor: '#DCDCDC', width: 45, height: 30}}
-                        textStyle={{color:globalColor, fontSize: 19}}
-                        showLoading={false}
-                        onPress={()=>this._deleteCookie(item.id)}
-                        />
-                        <UIButton
-                        text={'应用'}
-                        style={{backgroundColor: globalColor, width: 45, height: 30}}
-                        textStyle={{color:'#FFF', fontSize: 19}}
-                        showLoading={false}
-                        onPress={()=>this._enableCookie(item.id)}
-                        />
-                    </View>
+            <View style={styles.cookieItem}>
+                <View style={styles.cookieColumn}>
+                    <Text style={styles.cookieIDText}>
+                        {item.id}
+                    </Text>
                 </View>
-            </TouchableOpacity>
+
+                <View style={styles.cookieColumn}>
+                    <Text style={styles.cookieText}>
+                        {item.value}
+                    </Text>
+                </View>
+
+                <View style={styles.cookieColumn}>
+                    <UIButton
+                    text={'删除'}
+                    style={{backgroundColor: '#DCDCDC', width: 45, height: 30}}
+                    textStyle={{color:globalColor, fontSize: 19}}
+                    showLoading={false}
+                    onPress={()=>this._deleteCookie(item.id)}
+                    />
+                    <UIButton
+                    text={'应用'}
+                    style={{backgroundColor: globalColor, width: 45, height: 30}}
+                    textStyle={{color:'#FFF', fontSize: 19}}
+                    showLoading={false}
+                    onPress={()=>this._enableCookie(item.id)}
+                    />
+                </View>
+            </View>
         );
     }
     render() {
