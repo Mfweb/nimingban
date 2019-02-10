@@ -132,10 +132,11 @@ class LeftDrawerNavigator extends React.Component {
     }
     render() {
         return (
-            <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: '#FFF'}}>
+            <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: globalColor}}>
                 <View style={{backgroundColor: globalColor, top: 0, height: 45}} />       
                 
                 <SectionList
+                    style={{backgroundColor: '#FFF'}}
                     onRefresh={()=>this._pullDownRefresh(true)}
                     refreshing={this.state.headerLoading}
                     ListHeaderComponent={this._listHeaderComponent}
