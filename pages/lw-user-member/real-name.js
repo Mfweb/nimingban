@@ -7,8 +7,8 @@ import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, startVerified, logout, checkVerifiedSMS } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { getHTMLDom } from '../../modules/html-decoder'
+import { globalColor, styles } from './user-member-styles'
 
-const globalColor = '#fa7296';
 const countryCodeList = [
     '中国 - +86', '美国 - +1', '加拿大 - +1', '香港 - +852', '澳门 - +853', '台湾 - +886', '马来西亚 - +60', '印度尼西亚 - +62',
     '新加坡 - +65', '泰国 - +66', '日本 - +81', '韩国 - +82', '越南 - +84', '哈萨克斯坦 - +7', '塔吉克斯坦 - +7', '土耳其 - +90', '印度 - +91',
@@ -22,123 +22,6 @@ const countryCodeList = [
     '澳大利亚 - +61', '新西兰 - +64', '关岛 - +671', '斐济 - +679', '圣诞岛 - +619164', '夏威夷 - +1808', '阿拉斯加 - +1907', '格陵兰岛 - +299',
     '牙买加 - +1876', '南极洲 - +64672'
 ]
-
-const styles = StyleSheet.create({
-    vcode: {
-        height: 52,
-        width:280,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    loginView: {
-        height: Dimensions.get('window').height,
-        backgroundColor: '#F5F5F5'
-    },
-    loginTitleImg: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 600 * 272
-    },
-
-    userInputView: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        height: 50,
-        width: Dimensions.get('window').width,
-        marginTop: 2,
-        backgroundColor: '#FFF',
-        paddingLeft: 10
-    },
-    splitLine: {
-        marginLeft: 5,
-        marginRight: 5,
-        width: 1,
-        height: 30,
-        backgroundColor: globalColor
-    },
-    countryCode: {
-        width: 60,
-        height: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    countryCodeText: {
-        fontSize: 20,
-        height: 20,
-        color: '#696969',
-        textAlign: 'center'
-    },
-    userInputText: {
-        height: 20,
-        fontSize: 20,
-        flex: 1,
-    },
-    
-    toolView: {
-        marginTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: Dimensions.get('window').width,
-        paddingLeft: Dimensions.get('window').width * 0.05,
-        paddingRight: Dimensions.get('window').width * 0.05,
-    },
-    loginButton: {
-        backgroundColor: globalColor,
-    },
-    loginButtonText: {
-        color: '#FFF',
-        fontSize: 24
-    },
-
-    authView: {
-        padding: 2,
-    },
-    authMessageView: {
-        margin: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    authMessageText: {
-        fontSize: 22,
-        color: '#696969',
-        marginBottom: 4
-    },
-    authMessageRowTitle: {
-        fontSize: 24,
-        color: '#696969'
-    },
-    authMessageMobile: {
-        fontSize: 24,
-        color: globalColor
-    },
-    authMessageCode: {
-        fontSize: 24,
-        color: globalColor
-    },
-    authMessageYourMobile: {
-        fontSize: 24,
-        color: globalColor
-    },
-    authMessageExpireDate: {
-        fontSize: 24,
-        color: globalColor
-    },
-
-    authToolsView: {
-        marginTop: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around'
-    },
-    authToolsActBtn: {
-        backgroundColor: globalColor,
-    },
-    authToolsActBtnText: {
-        color: '#FFF',
-        fontSize: 23
-    },
-});
 
 /**
  * 等待验证完成
@@ -229,7 +112,7 @@ class UIRealName extends React.Component {
                         </Text>
                     </TouchableOpacity>
                     <TextInput 
-                    style={styles.userInputText}
+                    style={styles.realNameUserInputText}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'phone-pad'}
@@ -243,7 +126,7 @@ class UIRealName extends React.Component {
                     onChangeText={this.props.onPhoneInput} />
                 </View>
                 
-                <View style={styles.toolView}>
+                <View style={styles.toolView1Btn}>
                     <UIButton text={'开始认证'}
                         style={styles.loginButton}
                         textStyle={styles.loginButtonText}

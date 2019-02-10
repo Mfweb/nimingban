@@ -5,62 +5,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, forgotPassword } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-
-const globalColor = '#fa7296';
-const styles = StyleSheet.create({
-    vcode: {
-        height: 52,
-        width:280,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    memberView: {
-        height: Dimensions.get('window').height,
-        backgroundColor: '#F5F5F5'
-    },
-    memberTitleImg: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 600 * 272
-    },
-    userInputView: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        height: 50,
-        width: Dimensions.get('window').width,
-        marginTop: 2,
-        backgroundColor: '#FFF',
-        paddingLeft: 10
-    },
-    splitLine: {
-        marginLeft: 5,
-        marginRight: 5,
-        width: 1,
-        height: 30,
-        backgroundColor: globalColor
-    },
-    userInputText: {
-        width: Dimensions.get('window').width - 50,
-        height: 20,
-        fontSize: 20,
-    },
-    toolView: {
-        marginTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: Dimensions.get('window').width,
-        paddingLeft: Dimensions.get('window').width * 0.05,
-        paddingRight: Dimensions.get('window').width * 0.05,
-    },
-    regButton: {
-        backgroundColor: globalColor,
-    },
-    regButtonText: {
-        color: '#FFF',
-        fontSize: 24
-    },
-});
+import { globalColor, styles } from './user-member-styles'
 
 /**
  * 登录相关
@@ -94,10 +39,10 @@ class UIReg extends React.Component {
                     onChangeText={this.props.onUserNameInput} />
                 </View>
 
-                <View style={styles.toolView}>
+                <View style={styles.toolView1Btn}>
                     <UIButton text={'找回密码'}
-                        style={styles.regButton}
-                        textStyle={styles.regButtonText}
+                        style={styles.pinkButton}
+                        textStyle={styles.pinkButtonText}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onRegisterButtonPress}/>
                 </View>

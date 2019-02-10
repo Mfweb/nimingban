@@ -8,66 +8,7 @@ import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, 
 import { FlatList } from 'react-native-gesture-handler';
 import { UIButton } from '../../component/uibutton'
 import { ActionSheet } from '../../component/action-sheet'
-
-const globalColor = '#fa7296';
-
-const styles = StyleSheet.create({
-    vcode: {
-        height: 52,
-        width:280,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    displayNone: {
-        display: 'none'
-    },
-    cookieList: {
-        backgroundColor: '#DCDCDC',
-    },
-    cookieColumn: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center'
-    },
-    cookieItem: {
-        paddingLeft: 10,
-        paddingRight: 10,
-        flexDirection: 'row',
-        height: 40,
-        backgroundColor: '#FFF',
-        marginTop: 10,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    cookieIDText: {
-        color: globalColor,
-        fontSize: 22,
-        textAlign:'center',
-    },
-    cookieText: {
-        color: globalColor,
-        fontSize: 22,
-        textAlign:'center',     
-    },
-    cookieMessage: {
-        padding: 4,
-        backgroundColor: '#FFE4B5',
-        flex: 1,
-    },
-    cookieMessageText: {
-        fontSize: 22,
-        color: '#696969'
-    },
-    cookieUsage: {
-        paddingLeft: 8,
-        marginTop: 5
-    },
-    cookieUsageText: {
-        color: '#696969',
-        fontSize: 16
-    }
-});
+import { globalColor, styles } from './user-member-styles'
 
 class UserMemberCookies extends React.Component {
     constructor(props) {
