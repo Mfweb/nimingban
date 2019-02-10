@@ -11,6 +11,7 @@ import { UserMemberRegister } from './pages/lw-user-member/reg'
 import { UserMemberForgotPassword } from './pages/lw-user-member/forgotpw'
 import { UserMemberCookies } from './pages/lw-user-member/cookies'
 import { RealNameAuth } from './pages/lw-user-member/real-name'
+import { UserMemberChangePassword } from './pages/lw-user-member/change-password'
 const globalColor = '#fa7296';
 
 // 串浏览页面
@@ -45,7 +46,9 @@ const UserMemberStackNavigator = createStackNavigator({
     //饼干管理
     UserMemberCookies: { screen: UserMemberCookies },
     //实名认证
-    UserMemberAugh: { screen: RealNameAuth }
+    UserMemberAugh: { screen: RealNameAuth },
+    //修改密码
+    UserMemberChangePassword: {screen: UserMemberChangePassword}
 }, {
     initialRouteName: 'UserMemberLogin',
     //顶栏配置

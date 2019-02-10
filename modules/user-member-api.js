@@ -535,6 +535,45 @@ async function checkVerifiedSMS() {
     return { status: 'ok', msg: resText };
 }
 
+/**
+ * 修改密码
+ * @param {string} oldpw 旧密码
+ * @param {string} newpw 新密码
+ * @param {string} newpw2 新密码2
+ */
+async function changePassword(oldpw, newpw, newpw2) {
+    let url = await getUrl(configNetwork.memberUrl.memberChangePassword);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    try {
+        var res = await request(url, {
+            method: 'POST',
+            headers: {
+                'cookie': await getCookie() 
+            },
+            body: `oldpwd=${oldpw}&pwd=${newpw}&repwd=${newpw2}`
+        });
+    } catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(res.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
+    }
+    let resText = res.body;
+    try {
+        let resJSON = JSON.parse(resText);
+        if(resJSON.status && resJSON.status == 1) {
+            return { status: 'ok' };
+        }
+        else {
+            return { status: 'error', errmsg: resJSON.info };
+        }
+    } catch (error) {
+        return { status: 'error', errmsg: resText };
+    }
+}
+
 export {
     checkSession,
     getVerifyCode,
@@ -547,5 +586,6 @@ export {
     getNewUserCookie,
     startVerified,
     getVerifiedInfo,
-    checkVerifiedSMS
+    checkVerifiedSMS,
+    changePassword
 };

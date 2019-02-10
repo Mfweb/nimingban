@@ -200,29 +200,6 @@ class UserMemberCookies extends React.Component {
                 routeName: 'UserMemberAugh'
             })
         ], 0);
-        /*let selectList = [];
-        for(let i = 0; i < countryCodeList.length; i++) {
-            selectList.push(<Picker.Item label={countryCodeList[i]} value={i} />);
-        }
-        this.setState({
-            messageModal: {
-                show: true,
-                title: '实名认证',
-                content: (
-                <View style={{width: 280}}>
-                    <Picker 
-                        selectedValue={0}
-                        mode={'dropdown'}
-                    >
-                        {selectList}
-                    </Picker>
-                </View>
-                ),
-                rightButtonText: '确认',
-                rightButtonCallBack: ()=>this.closeMessageModal(),
-                closedCallback: null
-            }
-        });*/
     }
     /**
      * 显示右侧菜单
@@ -237,6 +214,7 @@ class UserMemberCookies extends React.Component {
                 items: [
                     '获取新饼干',
                     '实名认证信息',
+                    '修改密码',
                     '退出登录'
                 ],
                 onItemPress:(index) => {
@@ -249,6 +227,9 @@ class UserMemberCookies extends React.Component {
                             this._getVerifiedInfo();
                             break;
                             case 2:
+                            this.props.navigation.push('UserMemberChangePassword')
+                            break;
+                            case 3:
                             this._logout();
                             break;
                         }
