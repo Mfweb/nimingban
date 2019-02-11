@@ -5,6 +5,7 @@ import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
 import { converDateTime } from '../modules/date-time'
+import { getUserCookie } from '../modules/cookie-manager'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
 
@@ -264,7 +265,7 @@ class HomeScreen extends React.Component {
             ),
             headerRight: (
                 <View style={styles.headerRightView}>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.newThread} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'note'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
@@ -281,9 +282,35 @@ class HomeScreen extends React.Component {
 
         //clearImageCache();
         this._pullDownRefresh();
-        this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer })
+        this.props.navigation.setParams({
+            openLDrawer: this.props.navigation.openDrawer,
+            newThread: this._newThread
+        });
     }
 
+    _newThread = () => {
+        if(this.fid == '-1') {
+            this.setState({ 
+                errmsgModal: true,
+                errmsg: '时间线不能发串，请在左侧选择要发串的板块。',
+                footerLoading: 0 
+            });
+            return;
+        }
+        if(!getUserCookie()) {
+            this.setState({ 
+                errmsgModal: true,
+                errmsg: '你还没有饼干，请在饼干管理器中选择饼干。',
+                footerLoading: 0 
+            });
+            return;
+        }
+        this.props.navigation.push('NewPostScreen', {
+            mode: 2,
+            fname: this.fname,
+            fid: this.fid
+        });
+    }
     loadingImages = Array();
     _renderItem = ({ item, index }) => {
         if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {

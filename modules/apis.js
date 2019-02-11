@@ -305,7 +305,7 @@ async function getImage(imgMode, imageName) {
 }
 
 /**
- * 回复一个串
+ * 回复或发一个串
  * @param {string} tid 要回复的ID
  * @param {string} content 内容
  * @param {string} name 名字
@@ -314,8 +314,8 @@ async function getImage(imgMode, imageName) {
  * @param {string} img 图片地址
  * @param {bool} waterMark 是否增加水印
  */
-async function replyThread(tid, content, name="", email="", title="", img = null, waterMark = false) {
-    let url = await getUrl(configNetwork.apiUrl.replyThread);
+async function replyNewThread(mode, tid, content, name="", email="", title="", img = null, waterMark = false) {
+    let url = await getUrl(mode == 1 ? configNetwork.apiUrl.replyThread : configNetwork.apiUrl.newThread);
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
@@ -330,6 +330,7 @@ async function replyThread(tid, content, name="", email="", title="", img = null
                 },
                 body: {
                     resto: tid,
+                    fid: tid,
                     name: name,
                     email: email,
                     title: title,
@@ -344,7 +345,7 @@ async function replyThread(tid, content, name="", email="", title="", img = null
                 headers: {
                     'cookie': await getUserCookie() 
                 },
-                body: `resto=${tid}&name=${name}&email=${email}&title=${title}&content=${content}&water=${waterMark}`,
+                body: `resto=${tid}&fid=${tid}&name=${name}&email=${email}&title=${title}&content=${content}&water=${waterMark}`,
             });
         }
     }catch(error) {
@@ -374,5 +375,5 @@ export {
     getReplyList, /* 获取串回复列表 */
     getImage, /* 获取串中的缩略图或原图 */
     clearImageCache, /* 清空缩略图缓存 */
-    replyThread
+    replyNewThread
 };

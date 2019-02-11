@@ -2,7 +2,7 @@ import React from 'react'
 import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
-import { replyThread } from '../modules/apis'
+import { replyNewThread } from '../modules/apis'
 import { ActionSheet } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-picker';
 const globalColor = '#fa7296';
@@ -121,14 +121,24 @@ class NewPostScreen extends React.Component {
         }
     }
     static navigationOptions = ({ navigation }) => {
-        const { params = {} } = navigation.state;
+        //const { params = {} } = navigation.state;
         return {
-            title: navigation.getParam('mode', 0)==1?`回复 No.${navigation.getParam('replyId', '0')}`:'发串'
+            title: navigation.getParam('mode', 1) == 1 ? 
+                `回复 No.${navigation.getParam('replyId', '0')}`
+                :
+                `发串 (${navigation.getParam('fname', '错误')})`
         }
     }
+    replyId = 0;
+    mode = 1;
+    fid = 0;
     keyboardWillShowListener = null;
     keyboardWillHideListener = null;
     componentDidMount() {
+        this.replyId = this.props.navigation.getParam('replyId', '0');
+        this.mode = this.props.navigation.getParam('mode', 1);
+        this.fid = this.props.navigation.getParam('fid', 1);
+
         this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
         this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     }
@@ -228,8 +238,9 @@ class NewPostScreen extends React.Component {
             this.showMessageModal('错误', '请输入内容', '确认');
             return;
         }
-        let res = await replyThread(
-            this.props.navigation.getParam('replyId', '0'),
+        let res = await replyNewThread(
+            this.mode,
+            this.mode == 1 ? this.replyId: this.fid,
             this.state.inputText,
             '','','',
             this.state.selectdeImage?this.state.selectdeImage.uri:null,
