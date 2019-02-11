@@ -304,6 +304,49 @@ async function getImage(imgMode, imageName) {
     }
 }
 
+/**
+ * 回复一个串
+ * @param {string} tid 要回复的ID
+ * @param {string} content 内容
+ * @param {string} name 名字
+ * @param {string} email 邮箱
+ * @param {string} title 标题
+ * @param {string} img 图片地址
+ * @param {bool} waterMark 是否增加水印
+ */
+async function replyThread(tid, content, name="", email="", title="", img = null, waterMark = false) {
+    let url = await getUrl(configNetwork.apiUrl.replyThread);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+
+    try {
+        var response = await request(url, {
+            method: 'POST',
+            headers: {
+                'cookie': await getUserCookie() 
+            },
+            body: `resto=${tid}&name=${name}&email=${email}&title=${title}&content=${content}&water=${waterMark}`,
+        });
+    }catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    console.log(response);
+    if(response.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
+    }
+    try {
+        let resJSON = JSON.parse(response.body);
+        if(resJSON.status == 0) {
+            return { status: 'error', errmsg: resJSON.info };
+        }
+        else {
+            return { status: 'ok', res: resJSON };
+        }
+    } catch (error) {
+        return { status: 'error', errmsg: error };
+    }
+}
 export { 
     getUrl, /* 拼接URL */
     getForumList, /* 获取板块列表 */
@@ -311,4 +354,5 @@ export {
     getReplyList, /* 获取串回复列表 */
     getImage, /* 获取串中的缩略图或原图 */
     clearImageCache, /* 清空缩略图缓存 */
+    replyThread
 };

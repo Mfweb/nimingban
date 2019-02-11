@@ -235,11 +235,12 @@ class DetailsScreen extends React.Component {
     localReplyCount = 0;
     threadDetail = null;
     static navigationOptions = ({navigation}) => {
+        const { params = {} } = navigation.state;
         return {
             title: navigation.getParam('threadDetail', null).title,
             headerRight: (
                 <View style={styles.headerRightView}>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <TouchableOpacity onPress={params.replyThread} style={{ marginRight: 8, marginTop: 2 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'note'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
@@ -254,7 +255,10 @@ class DetailsScreen extends React.Component {
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
         poID = this.threadDetail.userid;
         this._pullDownRefresh();
-        this.props.navigation.setParams({ openLDrawer: this.props.navigation.openDrawer });
+        this.props.navigation.setParams({ 
+            openLDrawer: this.props.navigation.openDrawer,
+            replyThread: this._replyThread
+        });
         this.isUnMount = false;
         this.localReplyCount = 0;
         this.setState({
@@ -263,6 +267,13 @@ class DetailsScreen extends React.Component {
     }
     componentWillUnmount() {
         this.isUnMount = true;
+    }
+
+    _replyThread = () => {
+        this.props.navigation.push('NewPostScreen', {
+            mode: 1,
+            replyId: this.threadDetail.id
+        });
     }
 
     loadingImages = Array();

@@ -30,7 +30,8 @@ const configNetwork = {
         getForumList: `/Api/getForumList?appid=${configBase.appMark}`,
         getForumThread: `/Api/showf?appid=${configBase.appMark}`,
         getImageCDN: `/Api/getCdnPath?appid=${configBase.appMark}`,
-        getThreadReply: `/Api/thread?appid=${configBase.appMark}`
+        getThreadReply: `/Api/thread?appid=${configBase.appMark}`,
+        replyThread: `/Home/Forum/doReplyThread.html?appid=${configBase.appMark}`
     },
     memberUrl: {
         getVerifyCode: "/Member/User/Index/verify.html", //请求验证码

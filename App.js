@@ -12,6 +12,7 @@ import { UserMemberForgotPassword } from './pages/lw-user-member/forgotpw'
 import { UserMemberCookies } from './pages/lw-user-member/cookies'
 import { RealNameAuth } from './pages/lw-user-member/real-name'
 import { UserMemberChangePassword } from './pages/lw-user-member/change-password'
+import { NewPostScreen } from './pages/new-post'
 const globalColor = '#fa7296';
 
 // 串浏览页面
@@ -19,11 +20,13 @@ const MainStackNavigator = createStackNavigator({
     //主页
     Home: { screen: HomeScreen },
     //串内容
-    Details: { screen: DetailsScreen, headerBackTitle: '返回' },
+    Details: { screen: DetailsScreen },
+    //回串&发新串
+    NewPostScreen: {screen: NewPostScreen},
     //图片预览
-    ImageViewer: { screen: ImageViewer, headerBackTitle: '返回' },
+    ImageViewer: { screen: ImageViewer },
     //Web
-    WebView: { screen: PinkWebView, headerBackTitle: '返回' }
+    WebView: { screen: PinkWebView }
 }, {
     initialRouteName: 'Home',
     //顶栏配置

@@ -97,7 +97,7 @@ async function setUserCookieFromString(rawString) {
 
     if(cookieLine.hasOwnProperty('userhash')) {
         await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookie, `userhash=${cookieLine['userhash']}`);
-        console.log(await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie));
+        __userCookieCache = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
         return true;
     }
     else {
