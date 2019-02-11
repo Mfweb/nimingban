@@ -4,6 +4,7 @@ import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import { Header } from 'react-navigation';
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -66,7 +67,7 @@ class TopModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            top: -70,
+            top: -Header.HEIGHT,
             nowOpacity: new Animated.Value(0),
             nowScale: new Animated.Value(0.1),
             showx: false
@@ -76,19 +77,19 @@ class TopModal extends React.Component {
     componentDidMount() {
         this.isUnMount = false;
     }
-    keyboardDidShowListener = null;
-    keyboardDidHideListener = null;
+    keyboardWillShowListener = null;
+    keyboardWillHideListener = null;
     componentWillUnmount() {
         this.isUnMount = true;
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
+        this.keyboardWillShowListener.remove();
+        this.keyboardWillHideListener.remove();
     }
     componentWillMount() {
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow.bind(this));
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
+        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     }
     modalSize = null;
-    _keyboardDidShow = (e) => {
+    _keyboardWillShow = (e) => {
         if(this.modalSize != null) {
             let keyboardTop = Dimensions.get('window').height - e.startCoordinates.height;
             let modalBottom = this.modalSize.y + this.modalSize.height;
@@ -100,11 +101,11 @@ class TopModal extends React.Component {
             });
         }
         else {
-            this.setState({top: -70});
+            this.setState({top: -Header.HEIGHT});
         }
     }
-    _keyboardDidHide = () => {
-        this.setState({top: -70});
+    _keyboardWillHide = () => {
+        this.setState({top: -Header.HEIGHT});
     }
     _onLayout = (res) => {
         this.modalSize = res.nativeEvent.layout;
