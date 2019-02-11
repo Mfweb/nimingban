@@ -190,7 +190,6 @@ class ActionSheet extends React.Component {
                 top: this.props.top - Header.HEIGHT - res.nativeEvent.layout.height - 8,
                 arrorTop: this.props.top - Header.HEIGHT - 8
             });
-            console.log(this.props.top - res.nativeEvent.layout.height);
         }
         else {
             this.setState({
@@ -199,7 +198,6 @@ class ActionSheet extends React.Component {
                 arrorTop: this.props.top - Header.HEIGHT - 8
             });  
         }
-        console.log(res.nativeEvent.layout);
     }
     render() {
         let items = [];

@@ -26,6 +26,14 @@ const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "
 "⊂彡☆))∀`)", "(´∀((☆ミつ"];
 
 const styles = StyleSheet.create({
+    displayNone: {
+        display: 'none'
+    },
+    selectedImg: {
+        height: 35,
+        width: 35,
+        borderRadius: 3
+    },
     pageView: {
         flex: 1
     },
@@ -68,6 +76,17 @@ const styles = StyleSheet.create({
     emoticonText: {
         fontSize: 20,
         color: '#696969'
+    },
+    toolsButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        width: 50
+    },
+    deleteImage: {
+        position: 'absolute',
+        top: 0,
+        left: 0
     }
 });
 
@@ -77,6 +96,8 @@ class NewPostScreen extends React.Component {
         this.state = {
             bottomHeight: 0,
             inputText: '',
+            imageWatermark: false,
+            selectdeImage: null,
             messageModal: {
                 show: false,
                 title: '提示',
@@ -209,13 +230,57 @@ class NewPostScreen extends React.Component {
         }
         let res = await replyThread(
             this.props.navigation.getParam('replyId', '0'),
-            this.state.inputText);
+            this.state.inputText,
+            '','','',
+            this.state.selectdeImage?this.state.selectdeImage.uri:null,
+            this.state.imageWatermark);
         if(res.status == 'ok') {
             this.props.navigation.goBack();
         }
         else {
             this.showMessageModal('错误', res.errmsg, '确认');
         }
+    }
+
+    /**
+     * 将图片显示在工具栏上
+     * @param {object} imgData 选择或拍照的数据
+     */
+    _selectImageHandle(imgData) {
+        if(imgData.error) {
+            this.showMessageModal('错误', imgData.error, '确认');
+        }
+        else {
+            this.showMessageModal('提示', '图片添加水印？', '是', ()=>{
+                this.closeMessageModal(()=>{
+                    this.setState({
+                        imageWatermark: true,
+                        selectdeImage: {uri: imgData.uri}
+                    });
+                });
+            }, '否', ()=>{
+                this.closeMessageModal(()=>{
+                    this.setState({
+                        imageWatermark: true,
+                        selectdeImage: {uri: imgData.uri}
+                    });
+                });
+            });
+        }
+    }
+    /**
+     * 预览图片
+     */
+    _viewImage = () => {
+        console.log('view image');
+    }
+    /**
+     * 去掉图片
+     */
+    _removeImage = () => {
+        this.setState({
+            selectdeImage: null
+        });
     }
     /**
      * 选择图片
@@ -235,7 +300,37 @@ class NewPostScreen extends React.Component {
                     '芦苇娘(未实现)'
                 ],
                 onItemPress:(index) => {
-
+                    this.closeActionSheet(()=>{
+                        switch (index) {
+                            case 0:
+                                ImagePicker.launchCamera({
+                                    cameraType: 'back',
+                                    mediaType: 'photo',
+                                    //allowsEditing: true,
+                                }, (response) => {
+                                    if(!response.didCancel) {
+                                        this._selectImageHandle(response);
+                                    }
+                                });
+                                break;
+                            case 1:
+                                ImagePicker.launchImageLibrary({
+                                    mediaType: 'photo',
+                                    //allowsEditing: true,
+                                }, (response) => {
+                                    if(!response.didCancel) {
+                                        this._selectImageHandle(response);
+                                    }
+                                });
+                                break;
+                            case 2:
+                                this.showMessageModal('错误', '未实现', '确认');
+                                break;
+                            case 3:
+                                this.showMessageModal('错误', '未实现', '确认');
+                                break;
+                        }
+                    });
                 }
             }
         });
@@ -304,20 +399,28 @@ class NewPostScreen extends React.Component {
                         />
                 </View>
                 <View style={styles.toolsView}>
-                    <TouchableOpacity onPress={this._openEmoticon}>
-                    <Icon name={'emotsmile'} size={24} color={'#FFF'} />
+                    <TouchableOpacity style={styles.toolsButton} onPress={this._openEmoticon}>
+                        <Icon name={'emotsmile'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={this._selectImage}>
+                    <TouchableOpacity style={this.state.selectdeImage?styles.displayNone:styles.toolsButton} onPress={this._selectImage}>
                     <Icon name={'picture'} size={24} color={'#FFF'} />
+                        <Image resizeMode='cover' source={this.state.selectdeImage} style={this.state.selectdeImage?styles.selectedImg:styles.displayNone}/>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={this._clearInput}>
-                    <Icon name={'trash'} size={24} color={'#FFF'} />
+                    <TouchableOpacity style={this.state.selectdeImage?styles.toolsButton:styles.displayNone} onPress={this._viewImage}>
+                        <Image resizeMode='cover' source={this.state.selectdeImage} style={styles.selectedImg}/>
+                        <TouchableOpacity onPress={this._removeImage} style={styles.deleteImage}>
+                            <Icon name={'close'} size={14} color={'red'} />
+                        </TouchableOpacity>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={this._startSend}>
-                    <Icon name={'paper-plane'} size={24} color={'#FFF'} />
+                    <TouchableOpacity style={styles.toolsButton} onPress={this._clearInput}>
+                        <Icon name={'trash'} size={24} color={'#FFF'} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.toolsButton} onPress={this._startSend}>
+                        <Icon name={'paper-plane'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
                 </View>
             </View>

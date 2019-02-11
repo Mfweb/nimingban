@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs';
-import { request } from './network'
+import { request, uploadFile } from './network'
 import { configNetwork, configLocal, configDynamic } from './config'
 import { getUserCookie } from './cookie-manager'
 
@@ -321,14 +321,34 @@ async function replyThread(tid, content, name="", email="", title="", img = null
     }
 
     try {
-        var response = await request(url, {
-            method: 'POST',
-            headers: {
-                'cookie': await getUserCookie() 
-            },
-            body: `resto=${tid}&name=${name}&email=${email}&title=${title}&content=${content}&water=${waterMark}`,
-        });
+        var response = null;
+        if(img){
+            response = await uploadFile(url, img, 'image', {
+                method: 'POST',
+                headers: {
+                    'cookie': await getUserCookie() 
+                },
+                body: {
+                    resto: tid,
+                    name: name,
+                    email: email,
+                    title: title,
+                    content: content,
+                    water: waterMark
+                }
+            });
+        }
+        else {
+            response = await request(url, {
+                method: 'POST',
+                headers: {
+                    'cookie': await getUserCookie() 
+                },
+                body: `resto=${tid}&name=${name}&email=${email}&title=${title}&content=${content}&water=${waterMark}`,
+            });
+        }
     }catch(error) {
+        console.log(error);
         return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
     }
     console.log(response);
