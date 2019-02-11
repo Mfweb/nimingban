@@ -1,6 +1,7 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, Keyboard, TouchableOpacity } from 'react-native'
+import { Text, View, Image, StyleSheet, Animated, UIManager, Dimensions, findNodeHandle, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import { Header } from 'react-navigation';
 
 const globalColor = '#fa7296';
 
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         textAlign: 'center'
     },
-    arrowView: {
+    topArrowView: {
         position: 'absolute',
         zIndex: 9996,
         width: 0,
@@ -69,6 +70,24 @@ const styles = StyleSheet.create({
 
         borderBottomWidth: 10,
         borderBottomColor: '#F5F5F5',
+    },
+    bottomArrorView: {
+        position: 'absolute',
+        zIndex: 9996,
+        width: 0,
+        height: 0,
+        left: Dimensions.get('window').width * 0.025 + 4,
+        borderTopWidth: 10,
+        borderTopColor: '#F5F5F5',
+
+        borderRightWidth: 10,
+        borderRightColor: 'transparent',
+
+        borderLeftWidth: 10,
+        borderLeftColor: 'transparent',
+
+        borderBottomWidth: 8,
+        borderBottomColor: 'transparent',
     }
 });
 
@@ -89,7 +108,10 @@ class ActionSheet extends React.Component {
         this.state = {
             showx: false,
             nowOpacity: new Animated.Value(0),
-            arrowTranslate: new Animated.Value(0)
+            arrowTranslate: new Animated.Value(0),
+            invert: false,
+            top: 0,
+            arrorTop: 0
         }
     }
     isUnmount = false;
@@ -106,7 +128,7 @@ class ActionSheet extends React.Component {
                     showx: true
                 }, ()=>{
                     this.startAnime('in');
-                })
+                });
             }
             else {
                 this.startAnime('out', ()=>{
@@ -132,6 +154,7 @@ class ActionSheet extends React.Component {
 
         this.state.nowOpacity.setValue(mode==='in'?0:1);
         this.state.arrowTranslate.setValue(mode==='in'?0:arrowLeft);
+
         Animated.parallel([
             Animated.timing(
                 this.state.nowOpacity,
@@ -159,7 +182,25 @@ class ActionSheet extends React.Component {
             this.props.onItemPress(index);
         }
     }
-
+    _onLayout = (res) => {
+        if(Dimensions.get('window').height - 70 - this.props.top < res.nativeEvent.layout.height) {
+            //下面放不开了，倒置显示
+            this.setState({
+                invert: true,
+                top: this.props.top - Header.HEIGHT - res.nativeEvent.layout.height - 8,
+                arrorTop: this.props.top - Header.HEIGHT - 8
+            });
+            console.log(this.props.top - res.nativeEvent.layout.height);
+        }
+        else {
+            this.setState({
+                invert: false,
+                top: this.props.top - Header.HEIGHT + 8,
+                arrorTop: this.props.top - Header.HEIGHT - 8
+            });  
+        }
+        console.log(res.nativeEvent.layout);
+    }
     render() {
         let items = [];
         for(let i = 0; i < this.props.items.length; i++) {
@@ -182,10 +223,11 @@ class ActionSheet extends React.Component {
                     opacity: this.state.nowOpacity
                 }
             ]}>
-                <Animated.View style={[
-                    styles.arrowView, 
+                <Animated.View 
+                style={[
+                    this.state.invert?styles.bottomArrorView:styles.topArrowView, 
                     {
-                        top: this.props.top - 8, 
+                        top: this.state.arrorTop, 
                         transform: [
                             { 
                                 translateX: this.state.arrowTranslate 
@@ -195,7 +237,7 @@ class ActionSheet extends React.Component {
                 ]}/>
 
                 <TouchableOpacity style={styles.modalMaskTouch} activeOpacity={1} onPress={this.props.onClosePress}>
-                    <View style={[styles.body, {top: this.props.top + 10}]}>
+                    <View ref='window' onLayout={this._onLayout} style={[styles.body, {top: this.state.top}]}>
                         <View style={styles.title}>
                             <Text style={styles.titleText}>
                                 {this.props.title}

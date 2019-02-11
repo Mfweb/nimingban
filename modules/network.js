@@ -114,4 +114,31 @@ function request(url, option = {}) {
     });
 } 
 
+/**
+ * 上传图片
+ * @param {string} url 地址
+ * @param {string} image 图片地址
+ * @param {object} option 参数
+ */
+function _uploadFile(url, imagePath, imageKeyName, option) {
+    var {
+        method = 'GET',
+        headers = [],
+        body = '',
+        timeout = 16000,
+        onSuccess = null,
+        onFail = null,
+        onFinish = null,
+        saveCookies = false,
+    } = option;
+    let formData = new FormData();  
+    let file = {
+        uri: imagePath,
+        type: 'multipart/form-data',
+        name: imagePath.substring(imagePath.lastIndexOf('/')+1)
+    };
+    formData.append(imageKeyName, file);
+    let xhr = new XMLHttpRequest();
+}
+
 export { request }

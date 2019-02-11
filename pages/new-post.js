@@ -3,6 +3,8 @@ import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, 
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { replyThread } from '../modules/apis'
+import { ActionSheet } from '../component/action-sheet'
+import ImagePicker from 'react-native-image-picker';
 const globalColor = '#fa7296';
 const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "(=ﾟωﾟ)=",
 "| ω・´)", "|-` )", "|д` )", "|ー` )", "|∀` )",
@@ -86,6 +88,15 @@ class NewPostScreen extends React.Component {
                 closedCallback: null,
                 width: 280
             },
+            actionSheet: {
+                show: false,
+                top: 0,
+                left: 0,
+                title: '',
+                items: [],
+                closedCallback: null,
+                onItemPress: null
+            },
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -145,6 +156,23 @@ class NewPostScreen extends React.Component {
         });
     }
     /**
+     * 关闭ActionSheet
+     */
+    closeActionSheet = (callback = ()=>{}) => {
+        let tempObj = {
+            show: false,
+            top: this.state.actionSheet.top,
+            left: this.state.actionSheet.left,
+            title: this.state.actionSheet.title,
+            items: this.state.actionSheet.items,
+            closedCallback: ()=>callback(),
+            onItemPress: null
+        }
+        this.setState({
+            actionSheet: tempObj
+        });
+    }
+    /**
      * 键盘打开或改变
      */
     _keyboardWillShow = (e) => {
@@ -189,7 +217,29 @@ class NewPostScreen extends React.Component {
             this.showMessageModal('错误', res.errmsg, '确认');
         }
     }
+    /**
+     * 选择图片
+     */
+    _selectImage = () => {
+        Keyboard.dismiss();
+        this.setState({
+            actionSheet: {
+                show: true,
+                top: Dimensions.get('window').height - 50,
+                left: Dimensions.get('window').width / 3 - 12 + 12,
+                title: '选择图片',
+                items: [
+                    '相机',
+                    '从相册选择',
+                    '涂鸦(未实现)',
+                    '芦苇娘(未实现)'
+                ],
+                onItemPress:(index) => {
 
+                }
+            }
+        });
+    }
     /**
      * 打开颜文字输入
      */
@@ -233,6 +283,15 @@ class NewPostScreen extends React.Component {
                     onRightButtonPress={this.state.messageModal.rightButtonCallBack} 
                     onLeftButtonPress={this.state.messageModal.leftButtonCallBack}
                     closedCallback={this.state.messageModal.closedCallback}/>
+                <ActionSheet 
+                    show={this.state.actionSheet.show}
+                    top={this.state.actionSheet.top}
+                    left={this.state.actionSheet.left}
+                    title={this.state.actionSheet.title}
+                    items={this.state.actionSheet.items}
+                    onItemPress={this.state.actionSheet.onItemPress}
+                    closedCallback={this.state.actionSheet.closedCallback}
+                    onClosePress={()=>this.closeActionSheet()}/>
                 <View style={styles.inputView}>
                     <TextInput
                         value={this.state.inputText}
@@ -249,7 +308,7 @@ class NewPostScreen extends React.Component {
                     <Icon name={'emotsmile'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={this._selectImage}>
                     <Icon name={'picture'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
 

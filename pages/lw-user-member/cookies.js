@@ -9,6 +9,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { UIButton } from '../../component/uibutton'
 import { ActionSheet } from '../../component/action-sheet'
 import { globalColor, styles } from './user-member-styles'
+import { Header } from 'react-navigation';
 
 class UserMemberCookies extends React.Component {
     constructor(props) {
@@ -149,7 +150,7 @@ class UserMemberCookies extends React.Component {
         this.setState({
             actionSheet: {
                 show: true,
-                top: 0,
+                top: Header.HEIGHT,
                 left: Dimensions.get('window').width,
                 title: '详细菜单',
                 items: [
