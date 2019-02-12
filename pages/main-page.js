@@ -152,8 +152,10 @@ class MainListItem extends React.Component {
         super(props);
     }
     _onPress = () => {
-        this.props.navigation.push('Details', {
-            threadDetail: this.props.itemDetail
+        requestAnimationFrame(()=>{
+            this.props.navigation.navigate('Details', {
+                threadDetail: this.props.itemDetail
+            });
         });
     }
     _onPressImage = () => {
@@ -404,32 +406,34 @@ class HomeScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd) {
             return;
         }
-        this.setState({ footerLoading: 1 }, async function() {
-            getThreadList(this.fid, this.state.page).then((res) => {
-                if (res.status == 'ok') {
-                    let nextPage = this.state.page + 1;
-                    var tempList = this.state.threadList.slice()
-                    tempList = tempList.concat(res.res);
-                    this.setState({
-                        threadList: tempList,
-                        page: nextPage,
-                        footerLoading: 0,
-                        loadEnd: res.res.length == 0? true: false,
-                        footerMessage: res.res.length == 0?`加载完成 ${this.state.threadList.length}`:''
-                    });
-                }
-                else {
+        requestAnimationFrame(() => {
+            this.setState({ footerLoading: 1 }, async function() {
+                getThreadList(this.fid, this.state.page).then((res) => {
+                    if (res.status == 'ok') {
+                        let nextPage = this.state.page + 1;
+                        var tempList = this.state.threadList.slice()
+                        tempList = tempList.concat(res.res);
+                        this.setState({
+                            threadList: tempList,
+                            page: nextPage,
+                            footerLoading: 0,
+                            loadEnd: res.res.length == 0? true: false,
+                            footerMessage: res.res.length == 0?`加载完成 ${this.state.threadList.length}`:''
+                        });
+                    }
+                    else {
+                        this.setState({ 
+                            errmsgModal: true,
+                            errmsg: '请求数据失败:' + res.errmsg,
+                            footerLoading: 0 
+                        });
+                    }
+                }).catch(()=>{
                     this.setState({ 
                         errmsgModal: true,
-                        errmsg: '请求数据失败:' + res.errmsg,
+                        errmsg: '请求数据失败',
                         footerLoading: 0 
                     });
-                }
-            }).catch(()=>{
-                this.setState({ 
-                    errmsgModal: true,
-                    errmsg: '请求数据失败',
-                    footerLoading: 0 
                 });
             });
         });
@@ -439,30 +443,32 @@ class HomeScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        this.setState({ headerLoading: true, page: 1 }, function() {
-            getThreadList(this.fid, this.state.page).then((res) => {
-                if (res.status == 'ok') {
-                    this.loadingImages = [];
-                    this.setState({
-                        threadList: res.res,
-                        page: 2,
-                        headerLoading: false,
-                        loadEnd: false
-                    });
-                }
-                else {
-                    this.setState({
+        requestAnimationFrame(() => {
+            this.setState({ headerLoading: true, page: 1 }, function() {
+                getThreadList(this.fid, this.state.page).then((res) => {
+                    if (res.status == 'ok') {
+                        this.loadingImages = [];
+                        this.setState({
+                            threadList: res.res,
+                            page: 2,
+                            headerLoading: false,
+                            loadEnd: false
+                        });
+                    }
+                    else {
+                        this.setState({
+                            errmsgModal: true,
+                            errmsg: '请求数据失败:' + res.errmsg,
+                        });
+                    }
+                    this.setState({ headerLoading: false });
+                }).catch((error)=>{
+                    console.log(error)
+                    this.setState({ 
                         errmsgModal: true,
-                        errmsg: '请求数据失败:' + res.errmsg,
+                        errmsg: '请求数据失败:' + error,
+                        headerLoading: false 
                     });
-                }
-                this.setState({ headerLoading: false });
-            }).catch((error)=>{
-                console.log(error)
-                this.setState({ 
-                    errmsgModal: true,
-                    errmsg: '请求数据失败:' + error,
-                    headerLoading: false 
                 });
             });
         });

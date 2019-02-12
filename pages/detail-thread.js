@@ -379,73 +379,74 @@ class DetailsScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd ) {
             return;
         }
-        console.log('getting:' + this.state.page);
-        this.setState({ footerLoading: 1 }, async function() {
-            getReplyList(this.threadDetail.id, this.state.page).then((res) => {
-                if(this.isUnMount) {
-                    return;
-                }
-                if (res.status == 'ok') {
-                    //这一页是空的，到底了
-                    if( ((res.res.replys.length == 1) && (res.res.replys[0].id == 9999999))
-                        || (res.res.replys.length == 0) ) {
-                        console.log('end');
-                        this.setState({
-                            footerLoading: 0,
-                            loadEnd: true,
-                            footerMessage: `加载完成,点击再次加载 ${this.state.replyList.length-1}/${res.res.replyCount}`
-                        });
+        requestAnimationFrame(()=>{
+            this.setState({ footerLoading: 1 }, async function() {
+                getReplyList(this.threadDetail.id, this.state.page).then((res) => {
+                    if(this.isUnMount) {
+                        return;
                     }
-                    else {
-                        //非第一页广告去掉
-                        if( res.res.replys[0].id == 9999999 ) {
-                            res.res.replys.splice(0, 1);
-                        }
-                        //计算上次拉到哪里
-                        let cpCount = (this.localReplyCount > 0) ? (res.res.replys.length - this.localReplyCount) : res.res.replys.length;
-                        console.log(cpCount);
-                        //本页是否填满
-                        var nextPage = this.state.page + (res.res.replys.length >= 19 ? 1 : 0);
-                        var tempList = this.state.replyList.slice()
-                        var pageLength = res.res.replys.length;
-                        if(cpCount > 0) {
-                            res.res.replys.splice(0, this.localReplyCount);
-                            //console.log(res.res.replys);
-                            tempList = tempList.concat(res.res.replys);
-                        }
-                        else {
+                    if (res.status == 'ok') {
+                        //这一页是空的，到底了
+                        if( ((res.res.replys.length == 1) && (res.res.replys[0].id == 9999999))
+                            || (res.res.replys.length == 0) ) {
+                            console.log('end');
                             this.setState({
+                                footerLoading: 0,
                                 loadEnd: true,
-                                footerMessage: `加载完成,点击再次加载 ${tempList.length-1}/${res.res.replyCount}`
+                                footerMessage: `加载完成,点击再次加载 ${this.state.replyList.length-1}/${res.res.replyCount}`
                             });
                         }
-                        this.setState({
-                            replyList: tempList,
-                            page: nextPage,
-                            footerLoading: 0
-                        }, ()=>{console.log('replay count:' + this.state.replyList.length.toString());});
-                        if(pageLength >= 19) {
-                            this.localReplyCount = 0;
-                        }
                         else {
-                            this.localReplyCount = pageLength;
+                            //非第一页广告去掉
+                            if( res.res.replys[0].id == 9999999 ) {
+                                res.res.replys.splice(0, 1);
+                            }
+                            //计算上次拉到哪里
+                            let cpCount = (this.localReplyCount > 0) ? (res.res.replys.length - this.localReplyCount) : res.res.replys.length;
+                            console.log(cpCount);
+                            //本页是否填满
+                            var nextPage = this.state.page + (res.res.replys.length >= 19 ? 1 : 0);
+                            var tempList = this.state.replyList.slice()
+                            var pageLength = res.res.replys.length;
+                            if(cpCount > 0) {
+                                res.res.replys.splice(0, this.localReplyCount);
+                                //console.log(res.res.replys);
+                                tempList = tempList.concat(res.res.replys);
+                            }
+                            else {
+                                this.setState({
+                                    loadEnd: true,
+                                    footerMessage: `加载完成,点击再次加载 ${tempList.length-1}/${res.res.replyCount}`
+                                });
+                            }
+                            this.setState({
+                                replyList: tempList,
+                                page: nextPage,
+                                footerLoading: 0
+                            }, ()=>{console.log('replay count:' + this.state.replyList.length.toString());});
+                            if(pageLength >= 19) {
+                                this.localReplyCount = 0;
+                            }
+                            else {
+                                this.localReplyCount = pageLength;
+                            }
                         }
                     }
-                }
-                else {
+                    else {
+                        this.setState({
+                            footerLoading: 0,
+                            errmsgModal: true,
+                            errmsg: `请求数据失败:${res.errmsg}`
+                        });
+                    }
+                }).catch((res)=>{
                     this.setState({
                         footerLoading: 0,
                         errmsgModal: true,
-                        errmsg: `请求数据失败:${res.errmsg}`
+                        errmsg: `请求数据失败:${res}`
                     });
-                }
-            }).catch((res)=>{
-                this.setState({
-                    footerLoading: 0,
-                    errmsgModal: true,
-                    errmsg: `请求数据失败:${res}`
+                    console.log(res);
                 });
-                console.log(res);
             });
         });
     }
@@ -454,47 +455,48 @@ class DetailsScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        this.setState({ headerLoading: true, page: 1 }, async () => {
-            let res = await getReplyList(this.threadDetail.id, this.state.page);
-            console.log(res);
-            if (res.status == 'ok') {
-                this.props.navigation.setParams({
-                    threadDetail: res.res
-                });
-                this.localReplyCount = res.res.replys.length >= 19? 0: res.res.replys.length;
-                if(res.res.replys.length > 0 && res.res.replys[0].id==9999999 && this.localReplyCount > 0) {
-                    this.localReplyCount --;
+        requestAnimationFrame(() => {
+            this.setState({ headerLoading: true, page: 1 }, async () => {
+                let res = await getReplyList(this.threadDetail.id, this.state.page);
+                if (res.status == 'ok') {
+                    this.props.navigation.setParams({
+                        threadDetail: res.res
+                    });
+                    this.localReplyCount = res.res.replys.length >= 19? 0: res.res.replys.length;
+                    if(res.res.replys.length > 0 && res.res.replys[0].id==9999999 && this.localReplyCount > 0) {
+                        this.localReplyCount --;
+                    }
+                    this.loadingImages = [];
+                    let tempList = Array();
+                    tempList.push({
+                        id: res.res.id,
+                        img: res.res.img,
+                        ext: res.res.ext,
+                        now: res.res.now,
+                        userid: res.res.userid,
+                        name: res.res.name,
+                        email: res.res.email,
+                        title: res.res.title,
+                        content: res.res.content,
+                        sage: res.res.sage,
+                        admin: res.res.admin,
+                    });
+                    tempList = tempList.concat(res.res.replys);
+                    this.setState({
+                        replyList: tempList,
+                        page: tempList.length >= 19?2:1,
+                        headerLoading: false,
+                        loadEnd: false
+                    });
                 }
-                this.loadingImages = [];
-                let tempList = Array();
-                tempList.push({
-                    id: res.res.id,
-                    img: res.res.img,
-                    ext: res.res.ext,
-                    now: res.res.now,
-                    userid: res.res.userid,
-                    name: res.res.name,
-                    email: res.res.email,
-                    title: res.res.title,
-                    content: res.res.content,
-                    sage: res.res.sage,
-                    admin: res.res.admin,
-                });
-                tempList = tempList.concat(res.res.replys);
-                this.setState({
-                    replyList: tempList,
-                    page: tempList.length >= 19?2:1,
-                    headerLoading: false,
-                    loadEnd: false
-                });
-            }
-            else {
-                this.setState({
-                    headerLoading: false,
-                    errmsgModal: true,
-                    errmsg: `请求数据失败:${res.errmsg}`
-                });
-            }
+                else {
+                    this.setState({
+                        headerLoading: false,
+                        errmsgModal: true,
+                        errmsg: `请求数据失败:${res.errmsg}`
+                    });
+                }
+            });
         });
     }
 }
