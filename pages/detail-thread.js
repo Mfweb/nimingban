@@ -386,6 +386,7 @@ class DetailsScreen extends React.Component {
                     return;
                 }
                 if (res.status == 'ok') {
+                    //这一页是空的，到底了
                     if( ((res.res.replys.length == 1) && (res.res.replys[0].id == 9999999))
                         || (res.res.replys.length == 0) ) {
                         console.log('end');
@@ -396,13 +397,18 @@ class DetailsScreen extends React.Component {
                         });
                     }
                     else {
+                        //非第一页广告去掉
                         if( res.res.replys[0].id == 9999999 ) {
                             res.res.replys.splice(0, 1);
                         }
+                        //计算上次拉到哪里
                         let cpCount = (this.localReplyCount > 0) ? (res.res.replys.length - this.localReplyCount) : res.res.replys.length;
+                        console.log(cpCount);
+                        //本页是否填满
+                        var nextPage = this.state.page + (res.res.replys.length >= 19 ? 1 : 0);
+                        var tempList = this.state.replyList.slice()
+                        var pageLength = res.res.replys.length;
                         if(cpCount > 0) {
-                            var nextPage = this.state.page + 1;
-                            var tempList = this.state.replyList.slice()
                             res.res.replys.splice(0, this.localReplyCount);
                             //console.log(res.res.replys);
                             tempList = tempList.concat(res.res.replys);
@@ -410,7 +416,7 @@ class DetailsScreen extends React.Component {
                         else {
                             this.setState({
                                 loadEnd: true,
-                                footerMessage: `加载完成,点击再次加载 ${this.state.replyList.length-1}/${this.state.replyList[0].replyCount}`
+                                footerMessage: `加载完成,点击再次加载 ${tempList.length-1}/${res.res.replyCount}`
                             });
                         }
                         this.setState({
@@ -418,11 +424,11 @@ class DetailsScreen extends React.Component {
                             page: nextPage,
                             footerLoading: 0
                         }, ()=>{console.log('replay count:' + this.state.replyList.length.toString());});
-                        if(res.res.replys.length >= 19) {
+                        if(pageLength >= 19) {
                             this.localReplyCount = 0;
                         }
                         else {
-                            this.localReplyCount = (res.res.replys[0].id == 9999999) ? (res.res.replys.length - 1) : (res.res.replys.length + 1);
+                            this.localReplyCount = pageLength;
                         }
                     }
                 }
@@ -474,7 +480,7 @@ class DetailsScreen extends React.Component {
                 tempList = tempList.concat(res.res.replys);
                 this.setState({
                     replyList: tempList,
-                    page: 2,
+                    page: tempList.length >= 19?2:1,
                     headerLoading: false
                 });
             }
