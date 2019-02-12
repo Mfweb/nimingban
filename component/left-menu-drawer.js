@@ -4,7 +4,7 @@ import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-
+import { Header } from 'react-navigation';
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     wlp: {
@@ -44,6 +44,20 @@ const styles = StyleSheet.create({
     },
     bottomToolsItem: {
 
+    },
+    titleView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    titleImage: {
+        width: 30,
+        height: 30,
+        marginRight: 10
+    },
+    titleText: {
+        fontSize: 25,
+        color: '#FFF'
     }
 });
 
@@ -133,7 +147,14 @@ class LeftDrawerNavigator extends React.Component {
     render() {
         return (
             <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: globalColor}}>
-                <View style={{backgroundColor: globalColor, top: 0, height: 45}} />       
+                <View style={{backgroundColor: globalColor, top: 0, height: Header.HEIGHT}}>
+                    <SafeAreaView style={[styles.titleView, {height: Header.HEIGHT}]}>
+                        <Image source={require('../imgs/lw.png')} style={styles.titleImage} resizeMode={'center'}></Image>
+                        <Text style={styles.titleText}>
+                            A岛匿名版
+                        </Text>
+                    </SafeAreaView>
+                </View>       
                 
                 <SectionList
                     style={{backgroundColor: '#FFF'}}
