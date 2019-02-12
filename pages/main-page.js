@@ -118,6 +118,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
+    footerMessage: {
+        color: '#696969',
+        fontSize: 18,
+        textAlign: 'center',
+        padding: 8
+    }
 });
 
 class MainListImage extends React.Component {
@@ -242,7 +248,9 @@ class HomeScreen extends React.Component {
             threadList: Array(),
             page: 1,
             errmsg: null,
-            errmsgModal: false
+            errmsgModal: false,
+            loadEnd: false,
+            footerMessage: ''
         };
         /*this.viewabilityConfig = {
             minimumViewTime: 100,
@@ -337,7 +345,7 @@ class HomeScreen extends React.Component {
 
     _footerComponent = () => {
         if(this.state.footerLoading == 0) {
-            return (<View style={{height: 8}}></View>);
+            return (<Text style={styles.footerMessage}>{this.state.footerMessage}</Text>);
         }
         else {
             let windowWidth = Dimensions.get('window').width;
@@ -393,7 +401,7 @@ class HomeScreen extends React.Component {
     }
 
     _pullUpLoading = () => {
-        if (this.state.footerLoading != 0 || this.state.headerLoading) {
+        if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd) {
             return;
         }
         this.setState({ footerLoading: 1 }, async function() {
@@ -405,7 +413,9 @@ class HomeScreen extends React.Component {
                     this.setState({
                         threadList: tempList,
                         page: nextPage,
-                        footerLoading: 0
+                        footerLoading: 0,
+                        loadEnd: res.res.length == 0? true: false,
+                        footerMessage: res.res.length == 0?`加载完成 ${this.state.threadList.length}`:''
                     });
                 }
                 else {

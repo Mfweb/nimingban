@@ -105,6 +105,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
+    footerMessage: {
+        color: '#696969',
+        fontSize: 18,
+        textAlign: 'center',
+        padding: 8
+    }
 });
 
 var poID = '';
@@ -227,7 +233,9 @@ class DetailsScreen extends React.Component {
             replyList: Array(),
             page: 1,
             errmsgModal: false,
-            errmsg: ''
+            errmsg: '',
+            loadEnd: false,
+            footerMessage: ''
         };
     }
 
@@ -309,7 +317,11 @@ class DetailsScreen extends React.Component {
 
     _footerComponent = () => {
         if(this.state.footerLoading == 0) {
-            return (<View style={{height: 8}}></View>);
+            return (
+                <TouchableOpacity onPress={()=>{ this.setState({loadEnd: false}, this._pullUpLoading); }}>
+                    <Text style={styles.footerMessage}>{this.state.footerMessage}</Text>
+                </TouchableOpacity>
+            );
         }
         else {
             let windowWidth = Dimensions.get('window').width;
@@ -346,7 +358,7 @@ class DetailsScreen extends React.Component {
                     refreshing={this.state.headerLoading}
                     keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
                     renderItem={this._renderItem}
-                    onScroll={this._onScroll}
+                    //onScroll={this._onScroll}
                     ListFooterComponent={this._footerComponent}
                     ItemSeparatorComponent={this._itemSeparator}
                     onEndReachedThreshold={0.1}
@@ -362,18 +374,12 @@ class DetailsScreen extends React.Component {
             </View>
         );
     }
-    isScroll = false;
-    _onScroll = (re) => {
-        this.isScroll = true;
-        //console.log(re);
-        //console.log('is scroll');
-    }
+
     _pullUpLoading = () => {
-        if (this.state.footerLoading != 0 || this.state.headerLoading || !this.isScroll ) {
+        if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd ) {
             return;
         }
         console.log('getting:' + this.state.page);
-        this.isScroll = false;
         this.setState({ footerLoading: 1 }, async function() {
             getReplyList(this.threadDetail.id, this.state.page).then((res) => {
                 if(this.isUnMount) {
@@ -382,8 +388,11 @@ class DetailsScreen extends React.Component {
                 if (res.status == 'ok') {
                     if( ((res.res.replys.length == 1) && (res.res.replys[0].id == 9999999))
                         || (res.res.replys.length == 0) ) {
+                        console.log('end');
                         this.setState({
-                            footerLoading: 0
+                            footerLoading: 0,
+                            loadEnd: true,
+                            footerMessage: `加载完成,点击再次加载 ${this.state.replyList.length-1}/${res.res.replyCount}`
                         });
                     }
                     else {
@@ -397,6 +406,12 @@ class DetailsScreen extends React.Component {
                             res.res.replys.splice(0, this.localReplyCount);
                             //console.log(res.res.replys);
                             tempList = tempList.concat(res.res.replys);
+                        }
+                        else {
+                            this.setState({
+                                loadEnd: true,
+                                footerMessage: `加载完成,点击再次加载 ${this.state.replyList.length-1}/${this.state.replyList[0].replyCount}`
+                            });
                         }
                         this.setState({
                             replyList: tempList,
