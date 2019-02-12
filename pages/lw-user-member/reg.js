@@ -2,6 +2,7 @@ import React from 'react'
 import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, register } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
@@ -15,8 +16,12 @@ class UIReg extends React.Component {
         super(props);
         //props:
         //checkingSession
+        //agreeTerms
         //onUserNameInput
         //onRegisterButtonPress
+        //onEnterTermsPress
+        //onTermsPress
+        //onPrivacyPolicyPress
     }
 
     render() {
@@ -38,7 +43,24 @@ class UIReg extends React.Component {
                     enablesReturnKeyAutomatically={false}
                     onChangeText={this.props.onUserNameInput} />
                 </View>
-
+                <View style={styles.regPolicyView}>
+                    <TouchableOpacity onPress={this.props.onEnterTermsPress}>
+                        <MaterialIcons
+                            style={styles.regPolicyIcon}
+                            name={this.props.agreeTerms?'check-box':'check-box-outline-blank'}
+                            size={32}
+                            color={globalColor}/>
+                    </TouchableOpacity>
+                    <Text style={styles.regPolicyText}>我已阅读并同意</Text>
+                    <TouchableOpacity onPress={this.props.onTermsPress}>
+                        <Text style={styles.regPolicyTextHightL}>服务条款</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.regPolicyText}>和</Text>
+                    <TouchableOpacity onPress={this.props.onPrivacyPolicyPress}>
+                        <Text style={styles.regPolicyTextHightL}>隐私政策</Text>
+                    </TouchableOpacity>
+                </View>
+                
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'立即注册'}
                         style={styles.pinkButton}
@@ -61,7 +83,8 @@ class UserMemberRegister extends React.Component {
             sessionState: false,
             errmsgModal: false,
             errmsg: '',
-            errtitle: '错误'
+            errtitle: '错误',
+            agreeTerms: false
         }
     }
     inputUserName = ''
@@ -137,6 +160,14 @@ class UserMemberRegister extends React.Component {
      */
     _onRegStart = async () => {
         Keyboard.dismiss();
+        if( this.state.agreeTerms !== true ) {
+            this.setState({
+                errtitle: '错误',
+                errmsgModal: true,
+                errmsg: '请先同意服务条款和隐私政策'
+            });
+            return;
+        }
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
             this.setState({
                 errtitle: '错误',
@@ -194,6 +225,25 @@ class UserMemberRegister extends React.Component {
             });
         });
     }
+
+        //onEnterTermsPress
+        //onTermsPress
+        //onPrivacyPolicyPress
+    _onEnterTermsPress = () => {
+        this.setState({
+            agreeTerms: !this.state.agreeTerms
+        });
+    }
+    _onTermsPress = () => {
+        this.props.navigation.push('WebView', {
+            URL: 'https://adnmb.com/Home/Mobile.html'
+        });
+    }
+    _onPrivacyPolicyPress = () => {
+        this.props.navigation.push('WebView', {
+            URL: 'https://adnmb.com/m/t/11689471'
+        });
+    }
     render() {
         return (
             <View style={styles.memberView}>
@@ -246,6 +296,10 @@ class UserMemberRegister extends React.Component {
                     checkingSession={this.state.checkingSession}
                     onUserNameInput={(text)=>{this.inputUserName = text;}}
                     onRegisterButtonPress={this._onRegStart}
+                    agreeTerms={this.state.agreeTerms}
+                    onEnterTermsPress={this._onEnterTermsPress}
+                    onTermsPress={this._onTermsPress}
+                    onPrivacyPolicyPress={this._onPrivacyPolicyPress}
                 />
             </View>
         )

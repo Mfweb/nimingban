@@ -51,7 +51,9 @@ const UserMemberStackNavigator = createStackNavigator({
     //实名认证
     UserMemberAugh: { screen: RealNameAuth },
     //修改密码
-    UserMemberChangePassword: {screen: UserMemberChangePassword}
+    UserMemberChangePassword: {screen: UserMemberChangePassword},
+    //Web
+    WebView: { screen: PinkWebView }
 }, {
     initialRouteName: 'UserMemberLogin',
     //顶栏配置

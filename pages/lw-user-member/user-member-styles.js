@@ -198,6 +198,24 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 23
     },
+    regPolicyView: {
+        marginTop: 10,
+        width: ScreenWidth,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    regPolicyIcon: {
+
+    },
+    regPolicyText: {
+        fontSize: 22
+    },
+    regPolicyTextHightL: {
+        fontSize: 22,
+        color: globalColor,
+        textDecorationLine: 'underline'
+    }
 });
 
 export {globalColor, styles}

@@ -37,6 +37,8 @@ const configNetwork = {
     memberUrl: {
         getVerifyCode: "/Member/User/Index/verify.html", //请求验证码
 
+        memberGetTerms: "https://amember.mfweb.top/adao/member/getterms.php",//获取服务条款
+
         memberLogin: "/Member/User/Index/login.html",//登录
         memberLogout: "/Member/User/Index/logout.html",//退出登录
     
