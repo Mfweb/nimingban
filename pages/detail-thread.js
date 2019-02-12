@@ -461,7 +461,10 @@ class DetailsScreen extends React.Component {
                 this.props.navigation.setParams({
                     threadDetail: res.res
                 });
-                this.localReplyCount = 0;
+                this.localReplyCount = res.res.replys.length >= 19? 0: res.res.replys.length;
+                if(res.res.replys.length > 0 && res.res.replys[0].id==9999999 && this.localReplyCount > 0) {
+                    this.localReplyCount --;
+                }
                 this.loadingImages = [];
                 let tempList = Array();
                 tempList.push({
@@ -481,7 +484,8 @@ class DetailsScreen extends React.Component {
                 this.setState({
                     replyList: tempList,
                     page: tempList.length >= 19?2:1,
-                    headerLoading: false
+                    headerLoading: false,
+                    loadEnd: false
                 });
             }
             else {
