@@ -446,7 +446,8 @@ class HomeScreen extends React.Component {
                     this.setState({
                         threadList: res.res,
                         page: 2,
-                        headerLoading: false
+                        headerLoading: false,
+                        loadEnd: false
                     });
                 }
                 else {
