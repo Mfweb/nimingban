@@ -154,7 +154,19 @@ class MainListItem extends React.Component {
     _onPress = () => {
         requestAnimationFrame(()=>{
             this.props.navigation.navigate('Details', {
-                threadDetail: this.props.itemDetail
+                threadDetail: {
+                    id: this.props.itemDetail.id,
+                    img: this.props.itemDetail.img,
+                    ext: this.props.itemDetail.ext,
+                    now: this.props.itemDetail.now,
+                    userid: this.props.itemDetail.userid,
+                    name: this.props.itemDetail.name,
+                    email: this.props.itemDetail.email,
+                    title: this.props.itemDetail.title,
+                    content: this.props.itemDetail.content,
+                    sage: this.props.itemDetail.sage,
+                    admin: this.props.itemDetail.admin,
+                }
             });
         });
     }
