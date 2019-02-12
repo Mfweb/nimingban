@@ -149,7 +149,7 @@ class LeftDrawerNavigator extends React.Component {
             <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: globalColor}}>
                 <View style={{backgroundColor: globalColor, top: 0, height: Header.HEIGHT}}>
                     <SafeAreaView style={[styles.titleView, {height: Header.HEIGHT}]}>
-                        <Image source={require('../imgs/lw.png')} style={styles.titleImage} resizeMode={'center'}></Image>
+                        <Image source={require('../imgs/lw.png')} style={styles.titleImage} resizeMode={'contain'}></Image>
                         <Text style={styles.titleText}>
                             A岛匿名版
                         </Text>
