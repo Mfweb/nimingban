@@ -131,11 +131,15 @@ class MainListImage extends React.Component {
         super(props);
     }
     render() {
-        let { itemDetail } = this.props;
-        let imageSource = itemDetail.localImage?itemDetail.localImage:require('../imgs/loading.png');
-        if(itemDetail.localImage) {
+        if(this.props.localUri) {
+            // 图片已经下载到本地了
+            let imageSource = this.props.localUri
+            ?
+            this.props.localUri
+            :
+            require('../imgs/loading.png');
             return (
-                <Image style={itemDetail.img?styles.mainListItemImage:styles.displayNone}
+                <Image style={this.props.imgUri ? styles.mainListItemImage : styles.displayNone}
                 source={ imageSource } 
                 resizeMode='contain'
                 />
@@ -150,9 +154,16 @@ class MainListImage extends React.Component {
 class MainListItem extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            displayData:{},
+            imgLocalUri: null,
+            imgUri: null
+        }
     }
     _onPress = () => {
+        console.log('touch');
         requestAnimationFrame(()=>{
+            console.log('requestAnimationFrame');
             this.props.navigation.navigate('Details', {
                 threadDetail: {
                     id: this.props.itemDetail.id,
@@ -175,16 +186,26 @@ class MainListItem extends React.Component {
             imgName: this.props.itemDetail.img + this.props.itemDetail.ext
         });
     }
-
     componentDidMount() {
+        this._updateData(this.props.itemDetail);
     }
     componentWillUnmount() {
     }
-    render() {
-        //console.log(this.props.itemDetail);
-        let { itemDetail } = this.props;        
-        let userID = getHTMLDom(itemDetail.userid);
-        let threadContent = getHTMLDom(itemDetail.content, (url)=>{
+    componentWillReceiveProps(res) {
+        this._updateImage(res.itemDetail.localImage);
+    }
+    _updateImage = (localUri) => {
+        if(this.state.imgLocalUri != localUri) {
+            this.setState({
+                imgLocalUri: localUri
+            });
+        }
+    }
+
+    _updateData = (itemDetail)=>{
+        let displayData = {};
+        displayData['userID'] = getHTMLDom(itemDetail.userid);
+        displayData['threadContent'] = getHTMLDom(itemDetail.content, (url)=>{
             if( (url.href.indexOf('/t/') >= 0) && (
                 (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
             ) ) {
@@ -205,17 +226,24 @@ class MainListItem extends React.Component {
             }
         });
         //let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
-        let replayCountText = itemDetail.replyCount;
-        let fName = itemDetail.fname;
-        let displayTime = converDateTime(itemDetail.now);
-
+        displayData['replayCountText'] = itemDetail.replyCount;
+        displayData['fName'] = itemDetail.fname;
+        displayData['displayTime'] = converDateTime(itemDetail.now);
+        this.setState({
+            displayData: displayData,
+            imgLocalUri: null,
+            imgUri: itemDetail.img
+        });
+    }
+    render() {
+        let { itemDetail } = this.props;
         return (
             <TouchableOpacity onPress={this._onPress} activeOpacity={0.5}>
                 <View style={styles.mainListItem}>
                     <View style={styles.mainListItemHeader}>
                         <View style={styles.mainListItemHeaderL1}>
                             <Text style={itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName}>
-                                {userID}
+                                {this.state.displayData['userID']}
                             </Text>
 
                             <Text style={styles.mainListItemTid}>
@@ -223,7 +251,7 @@ class MainListItem extends React.Component {
                             </Text>
 
                             <Text style={styles.mainListItemTime}>
-                                {displayTime}
+                                {this.state.displayData['displayTime']}
                             </Text>
                         </View>
                     </View>
@@ -234,23 +262,25 @@ class MainListItem extends React.Component {
                         </View>
 
                         <View style={styles.mainListItemHeaderL2R}>
-                            <Text style={fName ?styles.mainListItemForumName: styles.displayNone }>{fName}</Text>
+                            <Text style={this.state.displayData['fName'] ?styles.mainListItemForumName: styles.displayNone }>{this.state.displayData['fName']}</Text>
                             <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
                         </View>
 
                     </View>
 
                     <Text style={styles.mainListItemContent}>
-                        {threadContent}
+                        {this.state.displayData['threadContent']}
                     </Text>
                     <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage} activeOpacity={0.5}>
-                        <MainListImage itemDetail={itemDetail} />
+                    <MainListImage 
+                        localUri={this.state.imgLocalUri}
+                        imgUri={this.state.imgUri}/>
                     </TouchableOpacity>
 
 
                     <View style={styles.mainListItemBottom}>
                         <Icon name={'bubble'} size={24} color={globalColor} />
-                        <Text style={styles.mainListReplayCountText}>{replayCountText}</Text>
+                        <Text style={styles.mainListReplayCountText}>{this.state.displayData['replayCountText']}</Text>
                     </View>
                 </View>
             </TouchableOpacity>

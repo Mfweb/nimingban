@@ -119,11 +119,15 @@ class MainListImage extends React.Component {
         super(props);
     }
     render() {
-        let { itemDetail } = this.props;
-        let imageSource = itemDetail.localImage?itemDetail.localImage:require('../imgs/loading.png');
-        if(itemDetail.localImage) {
+        if(this.props.localUri) {
+            // 图片已经下载到本地了
+            let imageSource = this.props.localUri
+            ?
+            this.props.localUri
+            :
+            require('../imgs/loading.png');
             return (
-                <Image style={itemDetail.img?styles.mainListItemImage:styles.displayNone}
+                <Image style={this.props.imgUri ? styles.mainListItemImage : styles.displayNone}
                 source={ imageSource } 
                 resizeMode='contain'
                 />
@@ -138,6 +142,11 @@ class MainListImage extends React.Component {
 class MainListItem extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            displayData:{},
+            imgLocalUri: null,
+            imgUri: null
+        }
     }
     _onPress = () => {
 
@@ -147,17 +156,29 @@ class MainListItem extends React.Component {
             imgName: this.props.itemDetail.img + this.props.itemDetail.ext
         })
     }
-
     componentDidMount() {
+        this._updateData(this.props.itemDetail);
+    }
+    
+    componentWillReceiveProps(res) {
+        this._updateImage(res.itemDetail.localImage);
     }
     componentWillUnmount() {
     }
-    render() {
+    _updateImage = (localUri) => {
+        if(this.state.imgLocalUri != localUri) {
+            this.setState({
+                imgLocalUri: localUri
+            });
+        }
+    }
+    _updateData = (itemDetail) => {
+        let displayData = {};
         //console.log(this.props.itemDetail);
-        let { itemDetail } = this.props;        
-        let userID = getHTMLDom(itemDetail.userid);
-        let displayTime = converDateTime(itemDetail.now);
-        let threadContent = getHTMLDom(itemDetail.content, (url)=>{
+        displayData['userID'] = getHTMLDom(itemDetail.userid);
+        displayData['displayTime'] = converDateTime(itemDetail.now);
+
+        displayData['threadContent'] = getHTMLDom(itemDetail.content, (url)=>{
             if( (url.href.indexOf('/t/') >= 0) && (
                 (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
             ) ) {
@@ -177,23 +198,31 @@ class MainListItem extends React.Component {
                 });
             }
         });
-        let userIDStyle = [];
+        displayData['userIDStyle'] = [];
         if(itemDetail.admin == 1) {
-            userIDStyle.push(styles.mainListItemUserCookieNameBigVIP);
+            displayData['userIDStyle'].push(styles.mainListItemUserCookieNameBigVIP);
         }
         else {
-            userIDStyle.push(styles.mainListItemUserCookieName);
+            displayData['userIDStyle'].push(styles.mainListItemUserCookieName);
         }
         if(itemDetail.userid == poID){
-            userIDStyle.push(styles.mainListItemUserCookieNamePO);
+            displayData['userIDStyle'].push(styles.mainListItemUserCookieNamePO);
         }
+        this.setState({
+            displayData: displayData,
+            imgLocalUri: null,
+            imgUri: itemDetail.img
+        });
+    }
+    render() {
+        let { itemDetail } = this.props;
         return (
             <TouchableOpacity onPress={this._onPress} activeOpacity={0.8}>
                 <View style={styles.mainListItem}>
                     <View style={styles.mainListItemHeader}>
                         <View style={styles.mainListItemHeaderL1}>
-                            <Text style={userIDStyle}>
-                                {userID}
+                            <Text style={this.state.displayData['userIDStyle']}>
+                                {this.state.displayData['userID']}
                             </Text>
 
                             <Text style={styles.mainListItemTid}>
@@ -201,7 +230,7 @@ class MainListItem extends React.Component {
                             </Text>
 
                             <Text style={styles.mainListItemTime}>
-                                {displayTime}
+                                {this.state.displayData['displayTime']}
                             </Text>
                         </View>
                     </View>
@@ -218,10 +247,12 @@ class MainListItem extends React.Component {
                     </View>
 
                     <Text style={styles.mainListItemContent}>
-                        {threadContent}
+                        {this.state.displayData['threadContent']}
                     </Text>
                     <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage}>
-                        <MainListImage itemDetail={itemDetail} />
+                        <MainListImage 
+                            localUri={this.state.imgLocalUri}
+                            imgUri={this.state.imgUri}/>
                     </TouchableOpacity>
                 </View>
             </TouchableOpacity>
@@ -263,7 +294,9 @@ class DetailsScreen extends React.Component {
             )
         };
     };
-
+    componentWillMount() {
+        
+    }
     componentDidMount() {
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
         poID = this.threadDetail.userid;
@@ -409,7 +442,6 @@ class DetailsScreen extends React.Component {
                             }
                             //计算上次拉到哪里
                             let cpCount = (this.localReplyCount > 0) ? (res.res.replys.length - this.localReplyCount) : res.res.replys.length;
-                            console.log(cpCount);
                             //本页是否填满
                             var nextPage = this.state.page + (res.res.replys.length >= 19 ? 1 : 0);
                             var tempList = this.state.replyList.slice()
