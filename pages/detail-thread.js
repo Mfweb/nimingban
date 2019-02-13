@@ -163,7 +163,12 @@ class MainListItem extends React.Component {
             ) ) {
                 let threadNo = url.href.split('/t/')[1];
                 this.props.navigation.push('Details', {
-                    threadDetail: {id: threadNo, userid: 'null', 'content': 'null'}
+                    threadDetail: {
+                        id: threadNo, 
+                        userid: 'null', 
+                        content: 'null',
+                        now: '2099-12-12 12:12:12'
+                    }
                 })
             }
             else {

@@ -189,8 +189,13 @@ class MainListItem extends React.Component {
                 (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
             ) ) {
                 let threadNo = url.href.split('/t/')[1];
-                this.props.navigation.push('Details', {
-                    threadDetail: {id: threadNo, userid: 'null', 'content': 'null'}
+                this.props.navigation.navigate('Details', {
+                    threadDetail: {
+                        id: threadNo, 
+                        userid: 'null', 
+                        content: 'null',
+                        now: '2099-12-12 12:12:12'
+                    }
                 })
             }
             else {
