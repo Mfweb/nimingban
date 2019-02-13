@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
     titleView: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginBottom: 5
     },
     titleImage: {
         width: 30,
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     titleText: {
-        fontSize: 25,
+        fontSize: 24,
         color: '#FFF'
     }
 });
@@ -147,8 +148,8 @@ class LeftDrawerNavigator extends React.Component {
     render() {
         return (
             <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: globalColor}}>
-                <View style={{backgroundColor: globalColor, top: 0, height: Header.HEIGHT}}>
-                    <SafeAreaView style={[styles.titleView, {height: Header.HEIGHT}]}>
+                <View style={{backgroundColor: globalColor, top: 0, minHeight: Header.HEIGHT}}>
+                    <SafeAreaView style={[styles.titleView, {minHeight: Header.HEIGHT}]}>
                         <Image source={require('../imgs/lw.png')} style={styles.titleImage} resizeMode={'contain'}></Image>
                         <Text style={styles.titleText}>
                             A岛匿名版
