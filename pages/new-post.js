@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated } from 'react-native'
+import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
@@ -364,9 +364,11 @@ class NewPostScreen extends React.Component {
                 title: '颜文字',
                 width: Dimensions.get('window').width * 0.95,
                 content: (
-                <View style={styles.emoticonView}>
-                    {tempList}
-                </View>
+                    <ScrollView>
+                        <View style={styles.emoticonView}>
+                            {tempList}
+                        </View>
+                    </ScrollView>
                     ),
                 rightButtonText: '确认',
                 rightButtonCallBack: ()=>this.closeMessageModal(),
