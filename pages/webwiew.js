@@ -1,11 +1,30 @@
 import React, { Component } from 'react'
-import { TouchableOpacity, Linking, WebView } from 'react-native'
+import { TouchableOpacity, Linking, WebView, Text, StyleSheet, ActivityIndicator, View } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+
+const styles = StyleSheet.create({
+    titleView: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    titleText: {
+        fontSize: 18,
+        color: '#FFF'
+    }
+});
 
 class PinkWebView extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
-            title: navigation.getParam('title', 'Web'),
+            headerTitle: (
+                <View style={styles.titleView}>
+                    <ActivityIndicator
+                        size='small'
+                        hidesWhenStopped={true}
+                        animating={navigation.getParam('loading', true)}
+                        color={'#FFF'}/>
+                    <Text style={styles.titleText}>{navigation.getParam('title', 'Web')}</Text>
+                </View>),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={() => {
                     Linking.openURL(navigation.getParam('URL', 'https://mfweb.top/'));
@@ -19,11 +38,13 @@ class PinkWebView extends React.Component {
     render() {
         let url = this.props.navigation.getParam('URL', 'https://mfweb.top/');
         return (
-            <WebView style={{flex:1}} source={{uri: url}} onNavigationStateChange={
-                (res) => {
-                    this.props.navigation.setParams( {'title': res.title });
-                }
-            }/>
+            <WebView 
+                style={{flex:1}} 
+                source={{uri: url}}
+                onNavigationStateChange={(res) => { this.props.navigation.setParams( {'title': res.title }); }}
+                startInLoadingState={true}
+                onLoadStart={(res)=>{this.props.navigation.setParams({loading: true}); }}
+                onLoadEnd={(res)=>{this.props.navigation.setParams({loading: false}); }}/>
         );
     }
 }
