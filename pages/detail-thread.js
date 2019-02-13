@@ -262,7 +262,6 @@ class DetailsScreen extends React.Component {
     componentDidMount() {
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
         poID = this.threadDetail.userid;
-        this._pullDownRefresh();
         this.props.navigation.setParams({ 
             openLDrawer: this.props.navigation.openDrawer,
             replyThread: this._replyThread
@@ -271,6 +270,8 @@ class DetailsScreen extends React.Component {
         this.localReplyCount = 0;
         this.setState({
             replyList: [this.threadDetail]
+        }, ()=>{
+            this._pullDownRefresh();
         });
     }
     componentWillUnmount() {
