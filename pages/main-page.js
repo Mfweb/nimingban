@@ -3,7 +3,7 @@ import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, 
 import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
-import { TopModal } from '../component/top-modal'
+import { TopModal, TopModalApis } from '../component/top-modal'
 import { converDateTime } from '../modules/date-time'
 import { getUserCookie } from '../modules/cookie-manager'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -161,9 +161,7 @@ class MainListItem extends React.Component {
         }
     }
     _onPress = () => {
-        console.log('touch');
         requestAnimationFrame(()=>{
-            console.log('requestAnimationFrame');
             this.props.navigation.navigate('Details', {
                 threadDetail: {
                     id: this.props.itemDetail.id,
@@ -296,8 +294,6 @@ class HomeScreen extends React.Component {
             footerLoading: 0,
             threadList: Array(),
             page: 1,
-            errmsg: null,
-            errmsgModal: false,
             loadEnd: false,
             footerMessage: ''
         };
@@ -325,7 +321,7 @@ class HomeScreen extends React.Component {
                     <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.newThread} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'note'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} onPress={params.menuFunctions} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'options-vertical'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
                 </View>
@@ -341,23 +337,25 @@ class HomeScreen extends React.Component {
         this._pullDownRefresh();
         this.props.navigation.setParams({
             openLDrawer: this.props.navigation.openDrawer,
-            newThread: this._newThread
+            newThread: this._newThread,
+            menuFunctions: this._menuFunctions
         });
     }
-
+    
+    /**
+     * 发新串
+     */
     _newThread = () => {
         if(this.fid == '-1') {
+            TopModalApis.showMessage(this.refs['msgBox'], '错误','时间线不能发串，请在左侧选择要发串的板块。','确认');
             this.setState({ 
-                errmsgModal: true,
-                errmsg: '时间线不能发串，请在左侧选择要发串的板块。',
                 footerLoading: 0 
             });
             return;
         }
         if(!getUserCookie()) {
+            TopModalApis.showMessage(this.refs['msgBox'], '错误','你还没有饼干，请在饼干管理器中选择饼干。','确认');
             this.setState({ 
-                errmsgModal: true,
-                errmsg: '你还没有饼干，请在饼干管理器中选择饼干。',
                 footerLoading: 0 
             });
             return;
@@ -368,6 +366,11 @@ class HomeScreen extends React.Component {
             fid: this.fid
         });
     }
+
+    _menuFunctions = () =>{
+        TopModalApis.showMessage(this.refs['msgBox'], '测试','功能未实现','确认');
+    }
+
     loadingImages = Array();
     _renderItem = ({ item, index }) => {
         if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
@@ -409,22 +412,7 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <View style={{flex:1}}>
-               <TopModal
-                    show={this.state.errmsgModal}
-                    width={280}
-                    title={'错误'}
-                    rightButtonText={'确认'}
-                    item={<Text style={{width: 260, fontSize: 20, margin: 10}}>{this.state.errmsg}</Text>}
-                    onClosePress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }}
-                    onRightButtonPress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }} />
+               <TopModal ref={'msgBox'} />
                 <FlatList
                     data={this.state.threadList}
                     extraData={this.state}
@@ -469,16 +457,14 @@ class HomeScreen extends React.Component {
                         });
                     }
                     else {
+                        TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败:${res.errmsg}`,'确认');
                         this.setState({ 
-                            errmsgModal: true,
-                            errmsg: '请求数据失败:' + res.errmsg,
                             footerLoading: 0 
                         });
                     }
                 }).catch(()=>{
+                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败`,'确认');
                     this.setState({ 
-                        errmsgModal: true,
-                        errmsg: '请求数据失败',
                         footerLoading: 0 
                     });
                 });
@@ -499,21 +485,17 @@ class HomeScreen extends React.Component {
                             threadList: res.res,
                             page: 2,
                             headerLoading: false,
-                            loadEnd: false
+                            loadEnd: false,
                         });
                     }
                     else {
-                        this.setState({
-                            errmsgModal: true,
-                            errmsg: '请求数据失败:' + res.errmsg,
-                        });
+                        TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${res.errmsg}`,'确认');
+                        this.setState({ headerLoading: false });
                     }
-                    this.setState({ headerLoading: false });
                 }).catch((error)=>{
+                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${error}`,'确认');
                     console.log(error)
                     this.setState({ 
-                        errmsgModal: true,
-                        errmsg: '请求数据失败:' + error,
                         headerLoading: false 
                     });
                 });

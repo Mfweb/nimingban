@@ -2,21 +2,21 @@ import React from 'react'
 import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../../component/top-modal'
+import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, getVerifyCode, forgotPassword } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
 
 /**
- * 登录相关
+ * 忘记密码
  */
-class UIReg extends React.Component {
+class UIForgetPw extends React.Component {
     constructor(props) {
         super(props);
         //props:
         //checkingSession
         //onUserNameInput
-        //onRegisterButtonPress
+        //onFindButtonPress
     }
 
     render() {
@@ -44,7 +44,7 @@ class UIReg extends React.Component {
                         style={styles.pinkButton}
                         textStyle={styles.pinkButtonText}
                         showLoading={this.props.checkingSession}
-                        onPress={this.props.onRegisterButtonPress}/>
+                        onPress={this.props.onFindButtonPress}/>
                 </View>
             </View>
         );
@@ -55,13 +55,8 @@ class UserMemberForgotPassword extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalComp: null,
-            showModal: false,
             checkingSession: true,
             sessionState: false,
-            errmsgModal: false,
-            errmsg: '',
-            errtitle: '错误'
         }
     }
     inputUserName = ''
@@ -75,10 +70,8 @@ class UserMemberForgotPassword extends React.Component {
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `检查状态失败：${sessionInfo.errmsg}。`,'确认');
             this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: `检查状态失败：${sessionInfo.errmsg}。`,
                 checkingSession: false
             });
         }
@@ -93,19 +86,15 @@ class UserMemberForgotPassword extends React.Component {
     }
 
     /**
-     * 注册
+     * 找回密码
      */
-    _onReg = async () => {
+    _onFindPW = async () => {
         Keyboard.dismiss();
         if(this.inputVcode.length != 5) {
             this.setState({
                 showModal: false,
             },()=>{
-                this.setState({
-                    errtitle: '错误',
-                    errmsgModal: true,
-                    errmsg: '验证码长度错误',
-                });      
+                TopModalApis.showMessage(this.refs['msgBox'], '错误', `验证码长度错误`,'确认');  
             });
             return;
         }
@@ -113,36 +102,24 @@ class UserMemberForgotPassword extends React.Component {
             showModal: false,
             checkingSession: true
         });
-        let regRes = await forgotPassword(this.inputUserName, this.inputVcode);
-        if(regRes.status != 'ok') {
-            this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: regRes.errmsg
-            });
+        let forgetRes = await forgotPassword(this.inputUserName, this.inputVcode);
+        if(forgetRes.status != 'ok') {
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', forgetRes.errmsg,'确认');
         }
         else {
-            this.setState({
-                errtitle: '完成',
-                errmsgModal: true,
-                errmsg: '邮件已发送，请检查邮箱。'
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '完成', '邮件已发送，请检查邮箱。','确认');
         }
         this.setState({
             checkingSession: false
         });
     }
     /**
-     * 开始注册（打开验证码输入窗口
+     * 开始找回密码（打开验证码输入窗口
      */
-    _onRegStart = async () => {
+    _onFindStart = async () => {
         Keyboard.dismiss();
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
-            this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: '账号格式错误',
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误','账号格式错误','确认');
             return;
         }
         this.setState({
@@ -156,6 +133,22 @@ class UserMemberForgotPassword extends React.Component {
      * 获取验证码
      */
     _getVCode = async () => {
+        TopModalApis.showMessage(this.refs['msgBox'], 
+        '输入验证码', 
+        (
+            <View style={{width: 280, height: 100}}>
+                <TouchableOpacity 
+                style={styles.vcode}
+                onPress={this._getVCode}>
+                    <ImageProcessView 
+                    height={25} 
+                    width={25} />
+                </TouchableOpacity>
+            </View>    
+        ),
+        '确认', ()=>TopModalApis.closeModal(this.refs['msgBox']), 
+        '取消', ()=>TopModalApis.closeModal(this.refs['msgBox']));
+        /*
         this.setState({
             modalComp: (
                 <View style={{width: 280, height: 100}}>
@@ -187,65 +180,25 @@ class UserMemberForgotPassword extends React.Component {
                         textAlignVertical='center'
                         maxLength={5}
                         returnKeyType={'done'}
-                        onSubmitEditing={this._onReg}
+                        onSubmitEditing={this._onFindPW}
                         onChangeText={(text) => {this.inputVcode = text;}}/>
                     </View>    
                 )
             });
-        });
+        });*/
     }
     render() {
         return (
             <View style={styles.memberView}>
-               <TopModal
-                    show={this.state.errmsgModal}
-                    width={280}
-                    title={this.state.errtitle}
-                    rightButtonText={'确认'}
-                    item={
-                        <View style={{width: 260,  margin: 10}}>
-                            <Text style={{fontSize: 20}}>{this.state.errmsg}</Text>
-                        </View>
-                    }
-                    onClosePress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }}
-                    onRightButtonPress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }} />
-
-                <TopModal
-                    show={this.state.showModal}
-                    width={280}
-                    title={'输入验证码'}
-                    leftButtonText={'取消'}
-                    rightButtonText={'确认'}
-                    item={this.state.modalComp}
-                    onClosePress={()=>{
-                        this.setState({
-                            showModal: false
-                        });
-                        Keyboard.dismiss();
-                    }}
-                    onLeftButtonPress={()=>{
-                        this.setState({
-                            showModal: false
-                        });
-                        Keyboard.dismiss();
-                    }}
-                    onRightButtonPress={this._onReg} />
+               <TopModal ref={'msgBox'} />
                 <Image 
                 style={styles.memberTitleImg} 
                 resizeMode={'contain'} 
                 source={require('../../imgs/member-title.png')} />
-                <UIReg
+                <UIForgetPw
                     checkingSession={this.state.checkingSession}
                     onUserNameInput={(text)=>{this.inputUserName = text;}}
-                    onRegisterButtonPress={this._onRegStart}
+                    onFindButtonPress={this._onFindStart}
                 />
             </View>
         )

@@ -3,7 +3,7 @@ import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity,
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../../component/top-modal'
+import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, login, changePassword, logout } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
@@ -100,9 +100,6 @@ class UserMemberChangePassword extends React.Component {
             showModal: false,
             checkingSession: true,
             sessionState: false,
-            errmsgModal: false,
-            errmsg: '',
-            errtitle: '错误'
         }
     }
     inputOldPassword = ''
@@ -117,10 +114,8 @@ class UserMemberChangePassword extends React.Component {
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
+            TopModalApis.showMessage(this.refs['msgBox'], `请求数据失败:${res}`,'确认');
             this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: `检查状态失败：${sessionInfo.errmsg}。`,
                 checkingSession: false
             });
         }
@@ -138,27 +133,15 @@ class UserMemberChangePassword extends React.Component {
     _onChangeStart = async () => {
         Keyboard.dismiss();
         if( this.inputOldPassword.length < 5) {
-            this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: '旧密码长度太短',
-            });
+            TopModalApis.showMessage(this.refs['msgBox'],'错误', `旧密码长度太短`,'确认');
             return;
         }
         if(this.inputNewPassword1 !== this.inputNewPassword2) {
-            this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: '新密码输入不相同',
-            });
+            TopModalApis.showMessage(this.refs['msgBox'],'错误', `新密码输入不相同`,'确认');
             return;
         }
         if(this.inputNewPassword1.length < 5) {
-            this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: '新密码长度太短',
-            });
+            TopModalApis.showMessage(this.refs['msgBox'],'错误', `新密码长度太短`,'确认');
             return; 
         }
         this.setState({checkSession: true}, async ()=>{
@@ -172,10 +155,8 @@ class UserMemberChangePassword extends React.Component {
                 ], 0);
             }
             else {
+                TopModalApis.showMessage(this.refs['msgBox'],'错误', info.errmsg,'确认');
                 this.setState({
-                    errtitle: '错误',
-                    errmsgModal: true,
-                    errmsg: info.errmsg,
                     checkSession: false
                 });
             }
@@ -186,26 +167,7 @@ class UserMemberChangePassword extends React.Component {
     render() {
         return (
             <View style={styles.memberView}>
-               <TopModal
-                    show={this.state.errmsgModal}
-                    width={280}
-                    title={this.state.errtitle}
-                    rightButtonText={'确认'}
-                    item={
-                        <View style={{width: 260,  margin: 10}}>
-                            <Text style={{fontSize: 20}}>{this.state.errmsg}</Text>
-                        </View>
-                    }
-                    onClosePress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }}
-                    onRightButtonPress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }} />
+                <TopModal ref={'msgBox'} />
                 <Image 
                 style={styles.memberTitleImg} 
                 resizeMode={'contain'} 

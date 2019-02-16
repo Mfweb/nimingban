@@ -1,8 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Animated, SectionList, Dimensions, Keyboard, TouchableOpacity } from 'react-native'
-import { NavigationActions } from 'react-navigation'
-import { getForumList } from '../modules/apis'
-import { getHTMLDom } from '../modules/html-decoder'
+import { Text, View, StyleSheet, Animated, Dimensions, Keyboard, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
 
@@ -70,7 +67,17 @@ class TopModal extends React.Component {
             top: -Header.HEIGHT,
             nowOpacity: new Animated.Value(0),
             nowScale: new Animated.Value(0.1),
-            showx: false
+            showx: false,
+
+            
+            width: Dimensions.get('window').width * 0.9,
+            title: '无标题',
+            item: null,
+            leftButtonText: '取消',
+            onLeftButtonPress: ()=>{},
+            rightButtonText: '确认',
+            onRightButtonPress: ()=>{},
+            onClosePress: ()=>{},
         }
     }
     isUnMount = false;
@@ -138,29 +145,21 @@ class TopModal extends React.Component {
         ]).start(finish);
     }
 
-    componentWillReceiveProps(res) {
-        if( res.show != this.state.showx ) {
-            if(res.show) {
-                this.setState({
-                    showx: true
-                }, ()=>{
-                    this.startAnime('in');
-                })
-            }
-            else {
-                this.startAnime('out', ()=>{
-                    this.setState({
-                        showx: false
-                    }, ()=>{
-                        if(this.props.closedCallback && typeof this.props.closedCallback === 'function') {
-                            this.props.closedCallback();
-                        }
-                    });
-                });
-            }
-        }
+    showModal = (success=()=>{}) => {
+        this.setState({
+            showx: true
+        }, ()=>{
+            this.startAnime('in', success);
+        });
     }
-
+    hideModal = (success=()=>{}) => {
+        this.startAnime('out', ()=>{
+            this.setState({
+                showx: false
+            }, success);
+        });
+    }
+   
     render() {
         return (
             <Animated.View 
@@ -171,7 +170,7 @@ class TopModal extends React.Component {
                 }
             ]}>
                 <Animated.View style={ [styles.modalRoot, {
-                    width: this.props.width, 
+                    width: this.state.width, 
                     marginTop: this.state.top,
                     transform: [
                         { 
@@ -183,41 +182,41 @@ class TopModal extends React.Component {
                     ref={(ref)=>this.modalView=ref} >
                     <View style={styles.modalTitle}>
                         <Text style={styles.modalTitleText}>
-                            {this.props.title}
+                            {this.state.title}
                         </Text>
-                        <TouchableOpacity style={styles.modalCloseBtn} onPress={this.props.onClosePress}>
+                        <TouchableOpacity style={styles.modalCloseBtn} onPress={this.state.onClosePress}>
                             <Icon name={'close'} size={24} color={globalColor} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.modalTitleSplitLine}></View>
-                    <View style={{width: this.props.width}}>
-                        {this.props.item}
+                    <View style={{width: this.state.width}}>
+                        {this.state.item}
                     </View>
                     <View style={styles.modalTitleSplitLine}></View>
-                    <View style={[styles.modalButtonView, this.props.width]}>
+                    <View style={[styles.modalButtonView, this.state.width]}>
                         <TouchableOpacity 
-                            style={this.props.leftButtonText ?[
+                            style={this.state.leftButtonText ?[
                                 styles.modalButton, 
                                 {
-                                    width:this.props.width / 2,
+                                    width:this.state.width / 2,
                                     borderBottomLeftRadius: 8,
                                 }]:styles.displayNone
                             } 
-                            onPress={this.props.onLeftButtonPress}>
-                            <Text style={{fontSize: 20, color: globalColor}}>{this.props.leftButtonText}</Text>
+                            onPress={this.state.onLeftButtonPress}>
+                            <Text style={{fontSize: 20, color: globalColor}}>{this.state.leftButtonText}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={[
                                 styles.modalButton, 
                                 {
-                                    width: this.props.leftButtonText ? this.props.width/2 : this.props.width, 
+                                    width: this.state.leftButtonText ? this.state.width/2 : this.state.width, 
                                     backgroundColor: globalColor,
                                     borderBottomRightRadius: 8,
-                                    borderBottomLeftRadius: this.props.leftButtonText?0:8
+                                    borderBottomLeftRadius: this.state.leftButtonText?0:8
                                 }
                             ]}
-                            onPress={this.props.onRightButtonPress}>
-                            <Text style={{fontSize: 20, color: '#FFF'}}>{this.props.rightButtonText}</Text>
+                            onPress={this.state.onRightButtonPress}>
+                            <Text style={{fontSize: 20, color: '#FFF'}}>{this.state.rightButtonText}</Text>
                         </TouchableOpacity>
                     </View>
                 </Animated.View>
@@ -226,5 +225,80 @@ class TopModal extends React.Component {
     }
 }
 
+/**
+ * 显示一个对话框
+ * @param {object} refx ref
+ * @param {string} title 标题
+ * @param {string or object} content 内容
+ * @param {string} successButtonText 确认按钮
+ * @param {function} successButtonCallBack 确认回调
+ * @param {string} cancelButtonText 取消按钮
+ * @param {function} cancelButtonCallBack 取消回调
+ */
+function showMessage(refx = null, 
+    title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null, 
+    showSuccess=()=>{}) {
+    if(!refx) {
+        return;
+    }
+    let tempContent = 
+        (typeof content == 'string') 
+        ?
+        (<Text style={{fontSize: 20, margin: 10}}>{content}</Text>)
+        :
+        content;
+    refx.setState({
+        width: Dimensions.get('window').width * 0.8,
+        title: title,
+        item: tempContent,
+        leftButtonText: cancelButtonText,
+        onLeftButtonPress: cancelButtonCallBack == null?()=>refx.hideModal():cancelButtonCallBack,
+        rightButtonText: successButtonText,
+        onRightButtonPress: successButtonCallBack == null?()=>refx.hideModal():successButtonCallBack,
+        onClosePress: ()=>refx.hideModal(),
+    }, ()=>{
+        refx.showModal(showSuccess);
+    });
+}
 
-export  { TopModal }
+/**
+ * 设置新内容
+ * @param {object} refx ref
+ * @param {string or object} newContent 内容
+ */
+function setContent(refx = null, 
+    newContent) {
+    if(!refx) {
+        return;
+    }
+    let tempContent = 
+        (typeof newContent == 'string') 
+        ?
+        (<Text style={{fontSize: 20, margin: 10}}>{newContent}</Text>)
+        :
+        newContent;
+    refx.setState({
+        item: tempContent,
+    });
+}
+
+/**
+ * 关闭窗口
+ * @param {object} refx ref
+ * @param {function} success 动画完成回调
+ */
+function closeModal(refx = null, 
+    success = () =>{}) {
+    if(!refx) {
+        return;
+    }
+    refx.hideModal(success);
+}
+
+const TopModalApis = {
+    showMessage: showMessage,
+    setContent: setContent,
+    closeModal: closeModal
+};
+
+export  { TopModal,TopModalApis }

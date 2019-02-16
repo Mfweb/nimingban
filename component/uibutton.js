@@ -2,7 +2,6 @@ import React from 'react'
 import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../component/top-modal'
 
 const styles = StyleSheet.create({
     toolButton: {
