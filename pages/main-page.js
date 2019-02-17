@@ -441,32 +441,30 @@ class HomeScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd) {
             return;
         }
-        requestAnimationFrame(() => {
-            this.setState({ footerLoading: 1 }, async function() {
-                getThreadList(this.fid, this.state.page).then((res) => {
-                    if (res.status == 'ok') {
-                        let nextPage = this.state.page + 1;
-                        var tempList = this.state.threadList.slice()
-                        tempList = tempList.concat(res.res);
-                        this.setState({
-                            threadList: tempList,
-                            page: nextPage,
-                            footerLoading: 0,
-                            loadEnd: res.res.length == 0? true: false,
-                            footerMessage: res.res.length == 0?`加载完成 ${this.state.threadList.length}`:''
-                        });
-                    }
-                    else {
-                        TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败:${res.errmsg}`,'确认');
-                        this.setState({ 
-                            footerLoading: 0 
-                        });
-                    }
-                }).catch(()=>{
-                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败`,'确认');
+        this.setState({ footerLoading: 1 }, async function() {
+            getThreadList(this.fid, this.state.page).then((res) => {
+                if (res.status == 'ok') {
+                    let nextPage = this.state.page + 1;
+                    var tempList = this.state.threadList.slice()
+                    tempList = tempList.concat(res.res);
+                    this.setState({
+                        threadList: tempList,
+                        page: nextPage,
+                        footerLoading: 0,
+                        loadEnd: res.res.length == 0? true: false,
+                        footerMessage: res.res.length == 0?`加载完成 ${this.state.threadList.length}`:''
+                    });
+                }
+                else {
+                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败:${res.errmsg}`,'确认');
                     this.setState({ 
                         footerLoading: 0 
                     });
+                }
+            }).catch(()=>{
+                TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败`,'确认');
+                this.setState({ 
+                    footerLoading: 0 
                 });
             });
         });
@@ -476,28 +474,26 @@ class HomeScreen extends React.Component {
         if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        requestAnimationFrame(() => {
-            this.setState({ headerLoading: true, page: 1 }, function() {
-                getThreadList(this.fid, this.state.page).then((res) => {
-                    if (res.status == 'ok') {
-                        this.loadingImages = [];
-                        this.setState({
-                            threadList: res.res,
-                            page: 2,
-                            headerLoading: false,
-                            loadEnd: false,
-                        });
-                    }
-                    else {
-                        TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${res.errmsg}`,'确认');
-                        this.setState({ headerLoading: false });
-                    }
-                }).catch((error)=>{
-                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${error}`,'确认');
-                    console.log(error)
-                    this.setState({ 
-                        headerLoading: false 
+        this.setState({ headerLoading: true, page: 1 }, function() {
+            getThreadList(this.fid, this.state.page).then((res) => {
+                if (res.status == 'ok') {
+                    this.loadingImages = [];
+                    this.setState({
+                        threadList: res.res,
+                        page: 2,
+                        headerLoading: false,
+                        loadEnd: false,
                     });
+                }
+                else {
+                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${res.errmsg}`,'确认');
+                    this.setState({ headerLoading: false });
+                }
+            }).catch((error)=>{
+                TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${error}`,'确认');
+                console.log(error)
+                this.setState({ 
+                    headerLoading: false 
                 });
             });
         });
