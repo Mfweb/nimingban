@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../component/top-modal'
+import { TopModal, TopModalApis } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
 import { ActionSheet } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-picker';
@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'center',
-        width: Dimensions.get('window').width * 0.95,
         overflow: 'scroll'
     },
     emoticonItemView: {
@@ -98,17 +97,6 @@ class NewPostScreen extends React.Component {
             inputText: '',
             imageWatermark: false,
             selectdeImage: null,
-            messageModal: {
-                show: false,
-                title: '提示',
-                content: <Text></Text>,
-                leftButtonText: '',
-                rightButtonText: '',
-                leftButtonCallBack: null,
-                rightButtonCallBack: null,
-                closedCallback: null,
-                width: 280
-            },
             actionSheet: {
                 show: false,
                 top: 0,
@@ -146,46 +134,7 @@ class NewPostScreen extends React.Component {
         this.keyboardWillShowListener.remove();
         this.keyboardWillHideListener.remove();
     }
-    /**
-     * 显示一个信息窗口
-     */
-    showMessageModal = async (title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null) => {
-        let closeModal = ()=>{this.closeMessageModal()};
-        this.setState({
-            messageModal: {
-                show: true,
-                title: title,
-                width: 280,
-                content: (<Text style={{width: 260, fontSize: 20, margin: 10}}>{content}</Text>),
-                leftButtonText: cancelButtonText,
-                rightButtonText: successButtonText,
-                leftButtonCallBack: cancelButtonCallBack == null?closeModal:cancelButtonCallBack,
-                rightButtonCallBack: successButtonCallBack == null?closeModal:successButtonCallBack,
-                closedCallback: ()=>{}
-            }
-        });
-    }
-    /**
-     * 关闭信息窗口
-     */
-    closeMessageModal = (callback = ()=>{}) => {
-        //这样关闭可以防止闪烁
-        let tempObj = {
-            show: false,
-            title: this.state.messageModal.title,
-            content: this.state.messageModal.content,
-            width: this.state.messageModal.width,
-            leftButtonText: this.state.messageModal.leftButtonText,
-            rightButtonText: this.state.messageModal.rightButtonText,
-            leftButtonCallBack: null,
-            rightButtonCallBack: null,
-            closedCallback: ()=>callback()
-        }
-        Keyboard.dismiss();
-        this.setState({
-            messageModal: tempObj
-        });
-    }
+    
     /**
      * 关闭ActionSheet
      */
@@ -235,7 +184,7 @@ class NewPostScreen extends React.Component {
     _startSend = async () => {
         Keyboard.dismiss();
         if(this.state.inputText.length <= 0) {
-            this.showMessageModal('错误', '请输入内容', '确认');
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', '请输入内容','确认');
             return;
         }
         let res = await replyNewThread(
@@ -249,7 +198,7 @@ class NewPostScreen extends React.Component {
             this.props.navigation.goBack();
         }
         else {
-            this.showMessageModal('错误', res.errmsg, '确认');
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', res.errmsg,'确认');
         }
     }
 
@@ -259,20 +208,20 @@ class NewPostScreen extends React.Component {
      */
     _selectImageHandle(imgData) {
         if(imgData.error) {
-            this.showMessageModal('错误', imgData.error, '确认');
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', imgData.error,'确认');
         }
         else {
-            this.showMessageModal('提示', '图片添加水印？', '是', ()=>{
-                this.closeMessageModal(()=>{
+            TopModalApis.showMessage(this.refs['msgBox'], '提示', '图片添加水印？', '是', ()=>{
+                TopModalApis.closeModal(this.refs['msgBox'], ()=>{
                     this.setState({
                         imageWatermark: true,
                         selectdeImage: {uri: imgData.uri}
                     });
                 });
             }, '否', ()=>{
-                this.closeMessageModal(()=>{
+                TopModalApis.closeModal(this.refs['msgBox'], ()=>{
                     this.setState({
-                        imageWatermark: true,
+                        imageWatermark: false,
                         selectdeImage: {uri: imgData.uri}
                     });
                 });
@@ -335,10 +284,10 @@ class NewPostScreen extends React.Component {
                                 });
                                 break;
                             case 2:
-                                this.showMessageModal('错误', '未实现', '确认');
+                                TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
                                 break;
                             case 3:
-                                this.showMessageModal('错误', '未实现', '确认');
+                                TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
                                 break;
                         }
                     });
@@ -358,39 +307,21 @@ class NewPostScreen extends React.Component {
                 <Text style={styles.emoticonText}>{emoticonList[i]}</Text>
             </TouchableOpacity>);
         }
-        this.setState({
-            messageModal: {
-                show: true,
-                title: '颜文字',
-                width: Dimensions.get('window').width * 0.95,
-                content: (
-                    <ScrollView>
-                        <View style={styles.emoticonView}>
-                            {tempList}
-                        </View>
-                    </ScrollView>
-                    ),
-                rightButtonText: '确认',
-                rightButtonCallBack: ()=>this.closeMessageModal(),
-                closedCallback: ()=>{}
-            }
-        });
+        TopModalApis.showMessage(this.refs['msgBox'], '颜文字', 
+        (
+            <ScrollView>
+                <View style={styles.emoticonView}>
+                    {tempList}
+                </View>
+            </ScrollView>
+        ),
+        '确认');
     }
 
     render() {
         return(
             <View style={[styles.pageView, {paddingBottom: this.state.bottomHeight}]}>
-                <TopModal
-                    show={this.state.messageModal.show}
-                    width={this.state.messageModal.width}
-                    title={ this.state.messageModal.title }
-                    rightButtonText={this.state.messageModal.rightButtonText}
-                    leftButtonText={this.state.messageModal.leftButtonText}
-                    item={this.state.messageModal.content}
-                    onClosePress={()=>this.closeMessageModal()}
-                    onRightButtonPress={this.state.messageModal.rightButtonCallBack} 
-                    onLeftButtonPress={this.state.messageModal.leftButtonCallBack}
-                    closedCallback={this.state.messageModal.closedCallback}/>
+                <TopModal ref={'msgBox'} />
                 <ActionSheet 
                     show={this.state.actionSheet.show}
                     top={this.state.actionSheet.top}

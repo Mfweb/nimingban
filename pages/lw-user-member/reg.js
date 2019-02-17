@@ -3,7 +3,7 @@ import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity,
 import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { TopModal } from '../../component/top-modal'
+import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, getVerifyCode, register } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
@@ -77,13 +77,8 @@ class UserMemberRegister extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalComp: null,
-            showModal: false,
             checkingSession: true,
             sessionState: false,
-            errmsgModal: false,
-            errmsg: '',
-            errtitle: '错误',
             agreeTerms: false
         }
     }
@@ -98,10 +93,8 @@ class UserMemberRegister extends React.Component {
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `检查状态失败：${sessionInfo.errmsg}。`,'确认');
             this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: `检查状态失败：${sessionInfo.errmsg}。`,
                 checkingSession: false
             });
         }
@@ -118,114 +111,88 @@ class UserMemberRegister extends React.Component {
     /**
      * 注册
      */
-    _onReg = async () => {
-        Keyboard.dismiss();
+    _onReg = () => {
         if(this.inputVcode.length != 5) {
-            this.setState({
-                showModal: false,
-            },()=>{
-                this.setState({
-                    errtitle: '错误',
-                    errmsgModal: true,
-                    errmsg: '验证码长度错误',
-                });      
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', '验证码长度错误','确认');
             return;
         }
         this.setState({
-            showModal: false,
             checkingSession: true
-        });
-        let regRes = await register(this.inputUserName, this.inputVcode);
-        if(regRes.status != 'ok') {
+        }, async () => {
+            let regRes = await register(this.inputUserName, this.inputVcode);
+            if(regRes.status != 'ok') {
+                TopModalApis.showMessage(this.refs['msgBox'], '错误', regRes.errmsg,'确认');
+            }
+            else {
+                TopModalApis.showMessage(this.refs['msgBox'], '信息', '邮件已发送，请检查邮箱','确认');
+            }
             this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: regRes.errmsg
+                checkingSession: false
             });
-        }
-        else {
-            this.setState({
-                errtitle: '完成',
-                errmsgModal: true,
-                errmsg: '邮件已发送，请检查邮箱。'
-            });
-        }
-        this.setState({
-            checkingSession: false
         });
     }
+
     /**
      * 开始注册（打开验证码输入窗口
      */
     _onRegStart = async () => {
         Keyboard.dismiss();
         if( this.state.agreeTerms !== true ) {
-            this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: '请先同意服务条款和隐私政策'
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `请先同意服务条款和隐私政策`,'确认');
             return;
         }
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
-            this.setState({
-                errtitle: '错误',
-                errmsgModal: true,
-                errmsg: '账号格式错误',
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `账号格式错误`,'确认');
             return;
         }
-        this.setState({
-            showModal: true
-        }, ()=>{
-            this._getVCode();
-        });
-    }
-
-    /**
-     * 获取验证码
-     */
-    _getVCode = async () => {
-        this.setState({
-            modalComp: (
-                <View style={{width: 280, height: 100}}>
-                    <TouchableOpacity 
-                    style={styles.vcode}
-                    onPress={this._getVCode}>
-                        <ImageProcessView 
-                        height={25} 
-                        width={25} />
-                    </TouchableOpacity>
-                </View>    
-            )
-        }, async () => {
-            let vcode = await getVerifyCode();
-            this.setState({
-                modalComp: (
-                    <View style={{width: 280, height: 100}}>
-                        <TouchableOpacity style={styles.vcode}
-                        onPress={this._getVCode}>
-                            <Image style={{
-                                width: 280, height: 50,top: 0
-                            }} 
-                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
-                            resizeMode='contain' />
-                        </TouchableOpacity>
-                        <TextInput 
-                        style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
-                        autoFocus={true}
-                        textAlignVertical='center'
-                        maxLength={5}
-                        returnKeyType={'done'}
-                        onSubmitEditing={this._onReg}
-                        onChangeText={(text) => {this.inputVcode = text;}}/>
-                    </View>    
-                )
+        this._getVCode(()=>{
+            Keyboard.dismiss();
+            TopModalApis.closeModal(this.refs['msgBox'], ()=>{
+                this._onReg();
             });
         });
     }
-
+  /**
+     * 获取验证码
+     */
+    _getVCode = (checkCallback) => {
+        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
+        (
+            <View style={{width: 280, height: 100}}>
+                <TouchableOpacity 
+                style={styles.vcode}
+                onPress={()=>this._getVCode(checkCallback)}>
+                    <ImageProcessView 
+                    height={25} 
+                    width={25} />
+                </TouchableOpacity>
+            </View>
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        async () => {
+            let vcode = await getVerifyCode();
+            TopModalApis.setContent(this.refs['msgBox'], (
+                <View style={{width: 280, height: 100}}>
+                    <TouchableOpacity style={styles.vcode}
+                    onPress={()=>this._getVCode(checkCallback)}>
+                        <Image style={{
+                            width: 280, height: 50,top: 0
+                        }} 
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        resizeMode='contain' />
+                    </TouchableOpacity>
+                    <TextInput 
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    autoFocus={true}
+                    textAlignVertical='center'
+                    maxLength={5}
+                    returnKeyType={'done'}
+                    onSubmitEditing={()=>checkCallback()}
+                    onChangeText={(text) => {this.inputVcode = text;}}/>
+                </View>    
+                )
+            );
+        });
+    }
         //onEnterTermsPress
         //onTermsPress
         //onPrivacyPolicyPress
@@ -247,47 +214,7 @@ class UserMemberRegister extends React.Component {
     render() {
         return (
             <View style={styles.memberView}>
-               <TopModal
-                    show={this.state.errmsgModal}
-                    width={280}
-                    title={this.state.errtitle}
-                    rightButtonText={'确认'}
-                    item={
-                        <View style={{width: 260,  margin: 10}}>
-                            <Text style={{fontSize: 20}}>{this.state.errmsg}</Text>
-                        </View>
-                    }
-                    onClosePress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }}
-                    onRightButtonPress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }} />
-
-                <TopModal
-                    show={this.state.showModal}
-                    width={280}
-                    title={'输入验证码'}
-                    leftButtonText={'取消'}
-                    rightButtonText={'确认'}
-                    item={this.state.modalComp}
-                    onClosePress={()=>{
-                        this.setState({
-                            showModal: false
-                        });
-                        Keyboard.dismiss();
-                    }}
-                    onLeftButtonPress={()=>{
-                        this.setState({
-                            showModal: false
-                        });
-                        Keyboard.dismiss();
-                    }}
-                    onRightButtonPress={this._onReg} />
+                <TopModal ref={'msgBox'} />
                 <Image 
                 style={styles.memberTitleImg} 
                 resizeMode={'contain'} 

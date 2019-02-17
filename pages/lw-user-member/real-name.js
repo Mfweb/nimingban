@@ -3,7 +3,7 @@ import { Text, Button, View, Image, StyleSheet, FlatList, TextInput, Dimensions,
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../../component/top-modal'
+import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, getVerifyCode, startVerified, logout, checkVerifiedSMS } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { getHTMLDom } from '../../modules/html-decoder'
@@ -122,14 +122,14 @@ class UIRealName extends React.Component {
                     autoComplete={'tel'}
                     editable={!this.props.checkingSession}
                     enablesReturnKeyAutomatically={false}
-                    onSubmitEditing={this.props.onLoginButtonPress}
+                    onSubmitEditing={this.props.onStartPress}
                     onChangeText={this.props.onPhoneInput} />
                 </View>
                 
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'开始认证'}
-                        style={styles.loginButton}
-                        textStyle={styles.loginButtonText}
+                        style={styles.pinkButton}
+                        textStyle={styles.pinkButtonText}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onStartPress}/>
                 </View>
@@ -142,25 +142,10 @@ class RealNameAuth extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalComp: null,
-            showModal: false,
             checkingSession: true,
-            errmsgModal: false,
-            errmsg: '',
             countryCode: 0,
             waitingSuccess: false,
             authMessage: '',
-
-            messageModal: {
-                show: false,
-                title: '提示',
-                content: <Text></Text>,
-                leftButtonText: '',
-                rightButtonText: '',
-                leftButtonCallBack: null,
-                rightButtonCallBack: null,
-                closedCallback: null
-            },
         }
     }
     inputPhone = ''
@@ -193,46 +178,8 @@ class RealNameAuth extends React.Component {
             });
         }
         this.props.navigation.setParams({ logout: ()=>{
-            this.showMessageModal('确认', '确认退出登录?', '确认', this._logout, '取消');
+            TopModalApis.showMessage(this.refs['msgBox'], '提示', `确认退出登录?`,'确认',this._logout,'取消');
         } })
-    }
-    /**
-     * 显示一个信息窗口
-     */
-    showMessageModal = async (title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null) => {
-        let closeModal = ()=>{this.closeMessageModal()};
-        this.setState({
-            messageModal: {
-                show: true,
-                title: title,
-                content: (<Text style={{width: 260, fontSize: 20, margin: 10}}>{content}</Text>),
-                leftButtonText: cancelButtonText,
-                rightButtonText: successButtonText,
-                leftButtonCallBack: cancelButtonCallBack == null?closeModal:cancelButtonCallBack,
-                rightButtonCallBack: successButtonCallBack == null?closeModal:successButtonCallBack,
-                closedCallback: ()=>{}
-            }
-        });
-    }
-    /**
-     * 关闭信息窗口
-     */
-    closeMessageModal = (callback = ()=>{}) => {
-        //这样关闭可以防止闪烁
-        let tempObj = {
-            show: false,
-            title: this.state.messageModal.title,
-            content: this.state.messageModal.content,
-            leftButtonText: this.state.messageModal.leftButtonText,
-            rightButtonText: this.state.messageModal.rightButtonText,
-            leftButtonCallBack: null,
-            rightButtonCallBack: null,
-            closedCallback: ()=>callback()
-        }
-        Keyboard.dismiss();
-        this.setState({
-            messageModal: tempObj
-        });
     }
     /**
      * 退出登录
@@ -254,11 +201,11 @@ class RealNameAuth extends React.Component {
     _checkRealNameAuth = async () => {
         let info = await checkVerifiedSMS();
         if(info.status != 'ok') {
-            this.showMessageModal('错误', info.errmsg, '确认');
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', info.errmsg,'确认');
         }
         else {
             if(info.msg == 'false') {
-                this.showMessageModal('信息', '还未收到短信或手机号已经绑定过其他账号。', '确认');
+                TopModalApis.showMessage(this.refs['msgBox'], '信息', '还未收到短信或手机号已经绑定过其他账号。','确认');
             }
             else if(info.msg == 'true') {
                 this.props.navigation.reset([
@@ -268,7 +215,7 @@ class RealNameAuth extends React.Component {
                 ], 0);
             }
             else {
-                this.showMessageModal('错误', info.msg, '确认');
+                TopModalApis.showMessage(this.refs['msgBox'], '错误', info.msg,'确认');
             }
         }
     }
@@ -286,19 +233,20 @@ class RealNameAuth extends React.Component {
     _startRealNameAuth = () => {
         Keyboard.dismiss();
         if (!(/^\d{5,}$/.test(this.inputPhone))) {
-            this.showMessageModal('错误', '手机号格式错误', '确认');
+            TopModalApis.showMessage(this.refs['msgBox'], '信息', '手机号格式错误','确认');
             return;
         }
         this.inputVcode = '';
         this._getVCode(() => {
-            this.closeMessageModal(async ()=>{
+            Keyboard.dismiss();
+            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
                 if(this.inputVcode.length != 5) {
-                    this.showMessageModal('错误', '验证码输入错误', '确认');
+                    TopModalApis.showMessage(this.refs['msgBox'], '信息', '验证码输入错误','确认');
                 }
                 else {
                     let rnInfo = await startVerified(this.inputPhone, this.state.countryCode + 1, this.inputVcode);
                     if(rnInfo.status != 'ok') {
-                        this.showMessageModal('错误', rnInfo.errmsg, '确认');
+                        TopModalApis.showMessage(this.refs['msgBox'], '信息', rnInfo.errmsg,'确认');
                     }
                     else {
                         this.setState({
@@ -314,36 +262,24 @@ class RealNameAuth extends React.Component {
      * 获取验证码
      */
     _getVCode = (checkCallback) => {
-        this.setState({
-            messageModal: {
-                show: true,
-                title: '输入验证码',
-                content: (
-                <View style={{width: 280, height: 100}}>
-                    <TouchableOpacity 
-                    style={styles.vcode}
-                    onPress={()=>this._getVCode(checkCallback)}>
-                        <ImageProcessView 
-                        height={25} 
-                        width={25} />
-                    </TouchableOpacity>
-                </View>
-                ),
-                leftButtonText: '取消',
-                rightButtonText: '确认',
-                leftButtonCallBack: ()=>this.closeMessageModal(),
-                rightButtonCallBack: ()=>checkCallback(),
-                closedCallback: null
-            }
-        }, async () => {
+        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
+        (
+            <View style={{width: 280, height: 100}}>
+                <TouchableOpacity 
+                style={styles.vcode}
+                onPress={()=>this._getVCode(checkCallback)}>
+                    <ImageProcessView 
+                    height={25} 
+                    width={25} />
+                </TouchableOpacity>
+            </View>
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        async () => {
             let vcode = await getVerifyCode();
-            let tempObj = {
-                show: true,
-                title: '输入验证码',
-                content: (
+            TopModalApis.setContent(this.refs['msgBox'], (
                 <View style={{width: 280, height: 100}}>
                     <TouchableOpacity style={styles.vcode}
-                    onPress={()=>this._getVCode(this.state.messageModal.rightButtonCallBack)}>
+                    onPress={()=>this._getVCode(checkCallback)}>
                         <Image style={{
                             width: 280, height: 50,top: 0
                         }} 
@@ -359,16 +295,8 @@ class RealNameAuth extends React.Component {
                     onSubmitEditing={()=>checkCallback()}
                     onChangeText={(text) => {this.inputVcode = text;}}/>
                 </View>    
-                ),
-                leftButtonText: '取消',
-                rightButtonText: '确认',
-                leftButtonCallBack: this.state.messageModal.leftButtonCallBack,
-                rightButtonCallBack: this.state.messageModal.rightButtonCallBack,
-                closedCallback: null
-            };
-            this.setState({
-                messageModal: tempObj
-            });
+                )
+            );
         });
     }
     /**
@@ -376,50 +304,32 @@ class RealNameAuth extends React.Component {
      */
     _onCountryCodePress = () => {
         Keyboard.dismiss();
-        this.setState({
-            messageModal: {
-                show: true,
-                title: '选择国家',
-                content: (
-                    <FlatList
-                        style={{width: 280, height: 300, backgroundColor: '#F5F5F5'}}
-                        data={countryCodeList}
-                        extraData={this.state}
-                        keyExtractor={(item, index) => {return index.toString()}}
-                        renderItem={({item,index})=>{
-                            return (
-                                <TouchableOpacity 
-                                    style={{margin: 5,borderRadius:2, backgroundColor: this.state.countryCode==index?'#A9A9A9':'#F5F5F5'}}
-                                    onPress={()=>{this.setState({countryCode: index}, this.closeMessageModal());}}>
-                                    <Text style={{fontSize: 24, textAlign:'center'}}>
-                                        {item}
-                                    </Text>
-                                </TouchableOpacity>
-                            );
-                        }}
-                    />
-                ),
-                rightButtonText: '确认',
-                rightButtonCallBack: ()=>this.closeMessageModal(),
-                closedCallback: null
-            }
-        });
+        TopModalApis.showMessage(this.refs['msgBox'], '选择国家', 
+        (
+            <FlatList
+                style={{height: 300, backgroundColor: '#F5F5F5'}}
+                data={countryCodeList}
+                extraData={this.state}
+                keyExtractor={(item, index) => {return index.toString()}}
+                renderItem={({item,index})=>{
+                    return (
+                        <TouchableOpacity 
+                            style={{margin: 5,borderRadius:2, backgroundColor: this.state.countryCode==index?'#A9A9A9':'#F5F5F5'}}
+                            onPress={()=>{this.setState({countryCode: index}, TopModalApis.closeModal(this.refs['msgBox']));}}>
+                            <Text style={{fontSize: 24, textAlign:'center'}}>
+                                {item}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                }}
+            />
+        ), '确认');
     }
 
     render() {
         return (
             <View style={styles.loginView}>
-               <TopModal
-                    show={this.state.messageModal.show}
-                    width={280}
-                    title={ this.state.messageModal.title }
-                    rightButtonText={this.state.messageModal.rightButtonText}
-                    leftButtonText={this.state.messageModal.leftButtonText}
-                    item={this.state.messageModal.content}
-                    onClosePress={()=>this.closeMessageModal()}
-                    onRightButtonPress={this.state.messageModal.rightButtonCallBack} 
-                    onLeftButtonPress={this.state.messageModal.leftButtonCallBack}
-                    closedCallback={this.state.messageModal.closedCallback}/>
+                <TopModal ref={'msgBox'} />
                 <Image 
                 style={styles.loginTitleImg} 
                 resizeMode={'contain'} 

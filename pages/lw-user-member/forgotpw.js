@@ -91,15 +91,10 @@ class UserMemberForgotPassword extends React.Component {
     _onFindPW = async () => {
         Keyboard.dismiss();
         if(this.inputVcode.length != 5) {
-            this.setState({
-                showModal: false,
-            },()=>{
-                TopModalApis.showMessage(this.refs['msgBox'], '错误', `验证码长度错误`,'确认');  
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `验证码长度错误`,'确认');  
             return;
         }
         this.setState({
-            showModal: false,
             checkingSession: true
         });
         let forgetRes = await forgotPassword(this.inputUserName, this.inputVcode);
@@ -116,77 +111,61 @@ class UserMemberForgotPassword extends React.Component {
     /**
      * 开始找回密码（打开验证码输入窗口
      */
-    _onFindStart = async () => {
+    _onFindStart = () => {
         Keyboard.dismiss();
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
             TopModalApis.showMessage(this.refs['msgBox'], '错误','账号格式错误','确认');
             return;
         }
-        this.setState({
-            showModal: true
-        }, ()=>{
-            this._getVCode();
+        this._getVCode(()=>{
+            Keyboard.dismiss();
+            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+                await this._onFindPW();
+            });
         });
     }
-
     /**
      * 获取验证码
      */
-    _getVCode = async () => {
-        TopModalApis.showMessage(this.refs['msgBox'], 
-        '输入验证码', 
+    _getVCode = (checkCallback) => {
+        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
         (
             <View style={{width: 280, height: 100}}>
                 <TouchableOpacity 
                 style={styles.vcode}
-                onPress={this._getVCode}>
+                onPress={()=>this._getVCode(checkCallback)}>
                     <ImageProcessView 
                     height={25} 
                     width={25} />
                 </TouchableOpacity>
-            </View>    
-        ),
-        '确认', ()=>TopModalApis.closeModal(this.refs['msgBox']), 
-        '取消', ()=>TopModalApis.closeModal(this.refs['msgBox']));
-        /*
-        this.setState({
-            modalComp: (
-                <View style={{width: 280, height: 100}}>
-                    <TouchableOpacity 
-                    style={styles.vcode}
-                    onPress={this._getVCode}>
-                        <ImageProcessView 
-                        height={25} 
-                        width={25} />
-                    </TouchableOpacity>
-                </View>    
-            )
-        }, async () => {
+            </View>
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        async () => {
             let vcode = await getVerifyCode();
-            this.setState({
-                modalComp: (
-                    <View style={{width: 280, height: 100}}>
-                        <TouchableOpacity style={styles.vcode}
-                        onPress={this._getVCode}>
-                            <Image style={{
-                                width: 280, height: 50,top: 0
-                            }} 
-                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
-                            resizeMode='contain' />
-                        </TouchableOpacity>
-                        <TextInput 
-                        style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
-                        autoFocus={true}
-                        textAlignVertical='center'
-                        maxLength={5}
-                        returnKeyType={'done'}
-                        onSubmitEditing={this._onFindPW}
-                        onChangeText={(text) => {this.inputVcode = text;}}/>
-                    </View>    
+            TopModalApis.setContent(this.refs['msgBox'], (
+                <View style={{width: 280, height: 100}}>
+                    <TouchableOpacity style={styles.vcode}
+                    onPress={()=>this._getVCode(checkCallback)}>
+                        <Image style={{
+                            width: 280, height: 50,top: 0
+                        }} 
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        resizeMode='contain' />
+                    </TouchableOpacity>
+                    <TextInput 
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    autoFocus={true}
+                    textAlignVertical='center'
+                    maxLength={5}
+                    returnKeyType={'done'}
+                    onSubmitEditing={()=>checkCallback()}
+                    onChangeText={(text) => {this.inputVcode = text;}}/>
+                </View>    
                 )
-            });
-        });*/
+            );
+        });
     }
+  
     render() {
         return (
             <View style={styles.memberView}>

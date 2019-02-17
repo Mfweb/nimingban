@@ -3,7 +3,7 @@ import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableO
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal } from '../../component/top-modal'
+import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, getVerifyCode, login } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
@@ -81,12 +81,8 @@ class UserMemberLogin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalComp: null,
-            showModal: false,
             checkingSession: true,
             sessionState: false,
-            errmsgModal: false,
-            errmsg: ''
         }
     }
     inputUserName = ''
@@ -113,10 +109,9 @@ class UserMemberLogin extends React.Component {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
             this.setState({
-                errmsgModal: true,
-                errmsg: `检查状态失败：${sessionInfo.errmsg}，可能导致无法正常登录。`,
                 checkingSession: false
             });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `检查状态失败：${sessionInfo.errmsg}，可能导致无法正常登录。`,'确认');
         }
         else {
             console.log('loginCheck:', sessionInfo.session);
@@ -143,27 +138,18 @@ class UserMemberLogin extends React.Component {
     _onLogin = async () => {
         Keyboard.dismiss();
         if(this.inputVcode.length != 5) {
-            this.setState({
-                showModal: false,
-            },()=>{
-                this.setState({
-                    errmsgModal: true,
-                    errmsg: '验证码长度错误',
-                });      
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `验证码长度错误`,'确认');
             return;
         }
         this.setState({
-            showModal: false,
             checkingSession: true
         });
         let loginRes = await login(this.inputUserName, this.inputPassWord, this.inputVcode);
         if(loginRes.status != 'ok') {
             this.setState({
-                errmsgModal: true,
-                errmsg: loginRes.errmsg,
                 checkingSession: false
             });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', loginRes.errmsg,'确认');
         }
         else {
             this.setState({
@@ -183,108 +169,67 @@ class UserMemberLogin extends React.Component {
     _onLoginStart = async () => {
         Keyboard.dismiss();
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
-            this.setState({
-                errmsgModal: true,
-                errmsg: '账号格式错误',
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `账号格式错误`,'确认');
             return;
         }
         if( this.inputPassWord.length < 5 ) {
-            this.setState({
-                errmsgModal: true,
-                errmsg: '密码格式错误',
-            });
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', `密码格式错误`,'确认');
             return; 
         }
-        this.setState({
-            showModal: true
-        }, ()=>{
-            this._getVCode();
+        this._getVCode(()=>{
+            Keyboard.dismiss();
+            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+                await this._onLogin();
+            });
         });
     }
 
     /**
      * 获取验证码
      */
-    _getVCode = async () => {
-        this.setState({
-            modalComp: (
-                <View style={{width: 280, height: 100}}>
-                    <TouchableOpacity 
-                    style={styles.vcode}
-                    onPress={this._getVCode}>
-                        <ImageProcessView 
-                        height={25} 
-                        width={25} />
-                    </TouchableOpacity>
-                </View>    
-            )
-        }, async () => {
+    _getVCode = (checkCallback) => {
+        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
+        (
+            <View style={{width: 280, height: 100}}>
+                <TouchableOpacity 
+                style={styles.vcode}
+                onPress={()=>this._getVCode(checkCallback)}>
+                    <ImageProcessView 
+                    height={25} 
+                    width={25} />
+                </TouchableOpacity>
+            </View>
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        async () => {
             let vcode = await getVerifyCode();
-            this.setState({
-                modalComp: (
-                    <View style={{width: 280, height: 100}}>
-                        <TouchableOpacity style={styles.vcode}
-                        onPress={this._getVCode}>
-                            <Image style={{
-                                width: 280, height: 50,top: 0
-                            }} 
-                            source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
-                            resizeMode='contain' />
-                        </TouchableOpacity>
-                        <TextInput 
-                        style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
-                        autoFocus={true}
-                        textAlignVertical='center'
-                        maxLength={5}
-                        returnKeyType={'done'}
-                        onSubmitEditing={this._onLogin}
-                        onChangeText={(text) => {this.inputVcode = text;}}/>
-                    </View>    
+            TopModalApis.setContent(this.refs['msgBox'], (
+                <View style={{width: 280, height: 100}}>
+                    <TouchableOpacity style={styles.vcode}
+                    onPress={()=>this._getVCode(checkCallback)}>
+                        <Image style={{
+                            width: 280, height: 50,top: 0
+                        }} 
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        resizeMode='contain' />
+                    </TouchableOpacity>
+                    <TextInput 
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    autoFocus={true}
+                    textAlignVertical='center'
+                    maxLength={5}
+                    returnKeyType={'done'}
+                    onSubmitEditing={()=>checkCallback()}
+                    onChangeText={(text) => {this.inputVcode = text;}}/>
+                </View>    
                 )
-            });
+            );
         });
     }
+
     render() {
         return (
             <View style={styles.loginView}>
-               <TopModal
-                    show={this.state.errmsgModal}
-                    width={280}
-                    title={'错误'}
-                    rightButtonText={'确认'}
-                    item={<Text style={{width: 260, fontSize: 20, margin: 10}}>{this.state.errmsg}</Text>}
-                    onClosePress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }}
-                    onRightButtonPress={()=>{
-                        this.setState({
-                            errmsgModal: false
-                        });
-                    }} />
-
-                <TopModal
-                    show={this.state.showModal}
-                    width={280}
-                    title={'输入验证码'}
-                    leftButtonText={'取消'}
-                    rightButtonText={'确认'}
-                    item={this.state.modalComp}
-                    onClosePress={()=>{
-                        this.setState({
-                            showModal: false
-                        });
-                        Keyboard.dismiss();
-                    }}
-                    onLeftButtonPress={()=>{
-                        this.setState({
-                            showModal: false
-                        });
-                        Keyboard.dismiss();
-                    }}
-                    onRightButtonPress={this._onLogin} />
+                <TopModal ref={'msgBox'} />
                 <Image 
                 style={styles.loginTitleImg} 
                 resizeMode={'contain'} 
