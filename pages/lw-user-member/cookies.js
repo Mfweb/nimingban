@@ -7,7 +7,7 @@ import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo, getEnableUserCookie } from '../../modules/user-member-api'
 import { FlatList } from 'react-native-gesture-handler';
 import { UIButton } from '../../component/uibutton'
-import { ActionSheet } from '../../component/action-sheet'
+import { ActionSheet, ActionSheetApis } from '../../component/action-sheet'
 import { globalColor, styles } from './user-member-styles'
 import { Header } from 'react-navigation';
 
@@ -52,24 +52,6 @@ class UserMemberCookies extends React.Component {
         }
     }
 
-    /**
-     * 关闭ActionSheet
-     */
-    closeActionSheet = (callback = ()=>{}) => {
-        let tempObj = {
-            show: false,
-            top: this.state.actionSheet.top,
-            left: this.state.actionSheet.left,
-            title: this.state.actionSheet.title,
-            items: this.state.actionSheet.items,
-            closedCallback: ()=>callback(),
-            onItemPress: null
-        }
-        this.setState({
-            actionSheet: tempObj
-        });
-    }
-
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok' || sessionInfo.session !== true) {
@@ -99,38 +81,34 @@ class UserMemberCookies extends React.Component {
      * 显示右侧菜单
      */
     _showRightMenu = () => {
-        this.setState({
-            actionSheet: {
-                show: true,
-                top: Header.HEIGHT,
-                left: Dimensions.get('window').width,
-                title: '详细菜单',
-                items: [
-                    '获取新饼干',
-                    '实名认证信息',
-                    '修改密码',
-                    '退出登录'
-                ],
-                onItemPress:(index) => {
-                    this.closeActionSheet(()=>{
-                        switch(index) {
-                            case 0:
-                            this._getNewCookie();
-                            break;
-                            case 1:
-                            this._getVerifiedInfo();
-                            break;
-                            case 2:
-                            this.props.navigation.push('UserMemberChangePassword')
-                            break;
-                            case 3:
-                            this._logout();
-                            break;
-                        }
-                    });
-                }
-            }
-        });
+        ActionSheetApis.showActionSheet(this.refs['actMenu'],
+            Dimensions.get('window').width,
+            Header.HEIGHT,
+            '详细菜单',
+            [
+                '获取新饼干',
+                '实名认证信息',
+                '修改密码',
+                '退出登录'
+            ],
+            (index) => {
+                ActionSheetApis.closeActionSheet(this.refs['actMenu'], ()=>{
+                    switch(index) {
+                        case 0:
+                        this._getNewCookie();
+                        break;
+                        case 1:
+                        this._getVerifiedInfo();
+                        break;
+                        case 2:
+                        this.props.navigation.push('UserMemberChangePassword')
+                        break;
+                        case 3:
+                        this._logout();
+                        break;
+                    }
+                });
+            });
     }
 
     /**
@@ -337,15 +315,7 @@ class UserMemberCookies extends React.Component {
         return (
             <View style={{flex: 1}}>
                <TopModal ref={'msgBox'} />
-                <ActionSheet 
-                    show={this.state.actionSheet.show}
-                    top={this.state.actionSheet.top}
-                    left={this.state.actionSheet.left}
-                    title={this.state.actionSheet.title}
-                    items={this.state.actionSheet.items}
-                    onItemPress={this.state.actionSheet.onItemPress}
-                    closedCallback={this.state.actionSheet.closedCallback}
-                    onClosePress={()=>this.closeActionSheet()}/>
+                <ActionSheet ref={'actMenu'} />
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}

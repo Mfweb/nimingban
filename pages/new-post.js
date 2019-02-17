@@ -3,7 +3,7 @@ import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
-import { ActionSheet } from '../component/action-sheet'
+import { ActionSheet, ActionSheetApis } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-picker';
 const globalColor = '#fa7296';
 const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "(=ﾟωﾟ)=",
@@ -97,15 +97,6 @@ class NewPostScreen extends React.Component {
             inputText: '',
             imageWatermark: false,
             selectdeImage: null,
-            actionSheet: {
-                show: false,
-                top: 0,
-                left: 0,
-                title: '',
-                items: [],
-                closedCallback: null,
-                onItemPress: null
-            },
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -134,24 +125,7 @@ class NewPostScreen extends React.Component {
         this.keyboardWillShowListener.remove();
         this.keyboardWillHideListener.remove();
     }
-    
-    /**
-     * 关闭ActionSheet
-     */
-    closeActionSheet = (callback = ()=>{}) => {
-        let tempObj = {
-            show: false,
-            top: this.state.actionSheet.top,
-            left: this.state.actionSheet.left,
-            title: this.state.actionSheet.title,
-            items: this.state.actionSheet.items,
-            closedCallback: ()=>callback(),
-            onItemPress: null
-        }
-        this.setState({
-            actionSheet: tempObj
-        });
-    }
+
     /**
      * 键盘打开或改变
      */
@@ -247,53 +221,45 @@ class NewPostScreen extends React.Component {
      */
     _selectImage = () => {
         Keyboard.dismiss();
-        this.setState({
-            actionSheet: {
-                show: true,
-                top: Dimensions.get('window').height - 50,
-                left: Dimensions.get('window').width / 3 - 12 + 12,
-                title: '选择图片',
-                items: [
-                    '相机',
-                    '从相册选择',
-                    '涂鸦(未实现)',
-                    '芦苇娘(未实现)'
-                ],
-                onItemPress:(index) => {
-                    this.closeActionSheet(()=>{
-                        switch (index) {
-                            case 0:
-                                ImagePicker.launchCamera({
-                                    cameraType: 'back',
-                                    mediaType: 'photo',
-                                    //allowsEditing: true,
-                                }, (response) => {
-                                    if(!response.didCancel) {
-                                        this._selectImageHandle(response);
-                                    }
-                                });
-                                break;
-                            case 1:
-                                ImagePicker.launchImageLibrary({
-                                    mediaType: 'photo',
-                                    //allowsEditing: true,
-                                }, (response) => {
-                                    if(!response.didCancel) {
-                                        this._selectImageHandle(response);
-                                    }
-                                });
-                                break;
-                            case 2:
-                                TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
-                                break;
-                            case 3:
-                                TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
-                                break;
-                        }
-                    });
-                }
-            }
-        });
+        ActionSheetApis.showActionSheet(
+            this.refs['actMenu'], 
+            Dimensions.get('window').width / 3 - 12 + 12,
+            Dimensions.get('window').height - 50,
+            '选择图片',
+            ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘(未实现)'], 
+            (index) => {
+                ActionSheetApis.closeActionSheet(this.refs['actMenu'], ()=>{
+                    switch (index) {
+                        case 0:
+                            ImagePicker.launchCamera({
+                                cameraType: 'back',
+                                mediaType: 'photo',
+                                //allowsEditing: true,
+                            }, (response) => {
+                                if(!response.didCancel) {
+                                    this._selectImageHandle(response);
+                                }
+                            });
+                            break;
+                        case 1:
+                            ImagePicker.launchImageLibrary({
+                                mediaType: 'photo',
+                                //allowsEditing: true,
+                            }, (response) => {
+                                if(!response.didCancel) {
+                                    this._selectImageHandle(response);
+                                }
+                            });
+                            break;
+                        case 2:
+                            TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
+                            break;
+                        case 3:
+                            TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
+                            break;
+                    }
+                });
+            });
     }
     /**
      * 打开颜文字输入
@@ -322,15 +288,7 @@ class NewPostScreen extends React.Component {
         return(
             <View style={[styles.pageView, {paddingBottom: this.state.bottomHeight}]}>
                 <TopModal ref={'msgBox'} />
-                <ActionSheet 
-                    show={this.state.actionSheet.show}
-                    top={this.state.actionSheet.top}
-                    left={this.state.actionSheet.left}
-                    title={this.state.actionSheet.title}
-                    items={this.state.actionSheet.items}
-                    onItemPress={this.state.actionSheet.onItemPress}
-                    closedCallback={this.state.actionSheet.closedCallback}
-                    onClosePress={()=>this.closeActionSheet()}/>
+                <ActionSheet ref={'actMenu'} />
                 <View style={styles.inputView}>
                     <TextInput
                         value={this.state.inputText}

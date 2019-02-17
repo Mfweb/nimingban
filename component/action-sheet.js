@@ -110,8 +110,17 @@ class ActionSheet extends React.Component {
             nowOpacity: new Animated.Value(0),
             arrowTranslate: new Animated.Value(0),
             invert: false,
+            arrorTop: 0,
             top: 0,
-            arrorTop: 0
+
+            setTop: 0,
+            setLeft: 0,
+
+            items: [],
+            title: '',
+
+            onItemPress: (index)=>{},
+            onClosePress: ()=>{}
         }
     }
     isUnmount = false;
@@ -121,33 +130,28 @@ class ActionSheet extends React.Component {
     componentWillUnmount() {
         this.isUnmount = true;
     }
-    componentWillReceiveProps(res) {
-        if( res.show != this.state.showx ) {
-            if(res.show) {
-                this.setState({
-                    showx: true
-                }, ()=>{
-                    this.startAnime('in');
-                });
-            }
-            else {
-                this.startAnime('out', ()=>{
-                    this.setState({
-                        showx: false
-                    }, ()=>{
-                        if(this.props.closedCallback && typeof this.props.closedCallback === 'function') {
-                            this.props.closedCallback();
-                        }
-                    });
-                });
-            }
-        }
+
+    showActionSheet = (success=()=>{}) =>{
+        this.setState({
+            showx: true
+        }, ()=>{
+            this.startAnime('in', success);
+        });
     }
+
+    hideActionSheet = (success=()=>{}) =>{
+        this.startAnime('out', ()=>{
+            this.setState({
+                showx: false
+            }, success);
+        });
+    }
+
     startAnime = (mode, finished = ()=>{}) => {
         if(this.isUnmount) {
             return;
         }
-        let arrowLeft = this.props.left - Dimensions.get('window').width * 0.025 - 4;
+        let arrowLeft = this.state.setLeft - Dimensions.get('window').width * 0.025 - 4;
         let arrowLeftMax = Dimensions.get('window').width * 0.95 - 30;
         arrowLeft = arrowLeft>arrowLeftMax?arrowLeftMax:arrowLeft;
         arrowLeft = arrowLeft<0?0:arrowLeft;
@@ -178,36 +182,36 @@ class ActionSheet extends React.Component {
     }
 
     _itemPress = (index) => {
-        if(this.props.onItemPress && typeof this.props.onItemPress === 'function') {
-            this.props.onItemPress(index);
+        if(this.state.onItemPress && typeof this.state.onItemPress === 'function') {
+            this.state.onItemPress(index);
         }
     }
     _onLayout = (res) => {
-        if(Dimensions.get('window').height - 70 - this.props.top < res.nativeEvent.layout.height) {
+        if(Dimensions.get('window').height - 70 - this.state.setTop < res.nativeEvent.layout.height) {
             //下面放不开了，倒置显示
             this.setState({
                 invert: true,
-                top: this.props.top - Header.HEIGHT - res.nativeEvent.layout.height - 8,
-                arrorTop: this.props.top - Header.HEIGHT - 8
+                top: this.state.setTop - Header.HEIGHT - res.nativeEvent.layout.height - 8,
+                arrorTop: this.state.setTop - Header.HEIGHT - 8
             });
         }
         else {
             this.setState({
                 invert: false,
-                top: this.props.top - Header.HEIGHT + 8,
-                arrorTop: this.props.top - Header.HEIGHT - 8
+                top: this.state.setTop - Header.HEIGHT + 8,
+                arrorTop: this.state.setTop - Header.HEIGHT - 8
             });  
         }
     }
     render() {
         let items = [];
-        for(let i = 0; i < this.props.items.length; i++) {
+        for(let i = 0; i < this.state.items.length; i++) {
             items.push(
                 <View key={i}>
                     <View style={styles.line}/>
                     <TouchableOpacity style={styles.item} onPress={()=>this._itemPress(i)}>
                         <Text style={styles.itemText}>
-                            {this.props.items[i]}
+                            {this.state.items[i]}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -234,11 +238,11 @@ class ActionSheet extends React.Component {
                     }
                 ]}/>
 
-                <TouchableOpacity style={styles.modalMaskTouch} activeOpacity={1} onPress={this.props.onClosePress}>
+                <TouchableOpacity style={styles.modalMaskTouch} activeOpacity={1} onPress={this.state.onClosePress}>
                     <View ref='window' onLayout={this._onLayout} style={[styles.body, {top: this.state.top}]}>
                         <View style={styles.title}>
                             <Text style={styles.titleText}>
-                                {this.props.title}
+                                {this.state.title}
                             </Text>
                         </View>
                         {items}
@@ -249,4 +253,50 @@ class ActionSheet extends React.Component {
     }
 }
 
-export {ActionSheet}
+/**
+ * 显示一个actionSheet
+ * @param {object} refx ref
+ * @param {number} x 箭头X坐标
+ * @param {number} y 箭头Y坐标
+ * @param {string} title 标题
+ * @param {object} items 内容
+ * @param {function} pressCallback 点击了项目回调
+ * @param {function} success 显示完成回调
+ * @param {function} close 关闭回调
+ */
+function showActionSheet(refx, x, y, title, items, pressCallback, success=()=>{} , close = null) {
+    if(!refx) {
+        return;
+    }
+    refx.setState({
+        setTop: y,
+        setLeft: x,
+
+        items: items,
+        title: title,
+
+        onItemPress: pressCallback,
+        onClosePress: close?close:()=>refx.hideActionSheet()
+    }, ()=>{
+        refx.showActionSheet(success);
+    });
+}
+
+/**
+ * 关闭actionSheet
+ * @param {object} refx ref
+ * @param {function} success 关闭回调
+ */
+function closeActionSheet(refx, success=()=>{}) {
+    if(!refx) {
+        return;
+    }
+    refx.hideActionSheet(success);
+}
+
+const ActionSheetApis = {
+    showActionSheet: showActionSheet,
+    closeActionSheet: closeActionSheet
+};
+
+export {ActionSheet, ActionSheetApis}
