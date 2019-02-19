@@ -69,9 +69,63 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 24,
         color: '#FFF'
+    },
+    islandSelectModal: {
+        position: 'absolute',
+        zIndex: 9999,
+        backgroundColor: globalColor,
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+        shadowColor: '#696969',
+
+        paddingTop: 2,
+        paddingBottom: 2,
+        paddingLeft: 5,
+        paddingRight: 5
     }
 });
 
+
+/**
+ * props:
+ * show
+ * onSelected
+ */
+class IsLandSelect extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            islandList: []
+        }
+    }
+    componentDidMount() {
+        let tempIsland = [];
+        for(let key in configBase.islandList) {
+            tempIsland.push(
+                <TouchableOpacity 
+                    style={styles.titleIsland}
+                    onPress={()=>this.props.onSelected(key)}
+                    key={key}>
+                    <Image source={configBase.islandList[key].logo} style={styles.titleImage} resizeMode={'contain'}></Image>
+                    <Text style={styles.titleText}>
+                        {configBase.islandList[key].displayName}匿名版
+                    </Text>
+                </TouchableOpacity>
+            );
+        }
+        this.setState({
+            islandList: tempIsland
+        });
+    }
+    render() {
+        return(
+            <View style={[this.props.show?styles.islandSelectModal:styles.displayNone, {top: this.props.top, left: this.props.left}]}>
+                {this.state.islandList}
+            </View>
+        )
+    }
+}
 
 class LeftDrawerNavigator extends React.Component {
     constructor(props) {
@@ -80,42 +134,26 @@ class LeftDrawerNavigator extends React.Component {
             forumList: [],
             headerLoading: false,
             showAllIsland: false,
-            islandList: []
+            islandModalX: 0,
+            islandModalY: 0
         };
     }
 
     componentDidMount() {
-        this._refreshIslandList();
         this._pullDownRefresh(false);
     }
-
-    /**
-     * 刷新板块列表
-     */
-    _refreshIslandList = () =>{
-        let tempIsland = [];
-        for(let key in configBase.islandList) {
-            tempIsland.push(
-                <TouchableOpacity style={
-                    (configDynamic.islandMode==key || this.state.showAllIsland)
-                    ?
-                    styles.titleIsland
-                    :
-                    styles.displayNone}
-                    onPress={()=>this._onSelectIsland(key)}
-                    key={key}>
-                <Image source={configBase.islandList[key].logo} style={styles.titleImage} resizeMode={'contain'}></Image>
-                <Text style={styles.titleText}>
-                    {configBase.islandList[key].displayName}匿名版
-                </Text>
-                <Icon name={'arrow-down'} size={12} color={'#FFF'}/>
-            </TouchableOpacity>
-            );
-        }
-        this.setState({
-            islandList: tempIsland
-        });
+    _gotoFroum = (id, name)=> {
+        this.props.navigation._childrenNavigation.Home.reset([
+            NavigationActions.navigate({ 
+                routeName: 'Home',
+                params: {
+                    forumID: id,
+                    name: name
+                }
+            })
+        ], 0);
     }
+ 
     /**
      * 板块分组
      */
@@ -132,15 +170,7 @@ class LeftDrawerNavigator extends React.Component {
      * 切换板块
      */
     _onPressItem = (item)=> {
-        this.props.navigation._childrenNavigation.Home.reset([
-            NavigationActions.navigate({ 
-                routeName: 'Home',
-                params: {
-                    forumID: item.id,
-                    name: item.name
-                }
-            })
-        ], 0);
+        this._gotoFroum(item.id, item.name);
         this.props.navigation.closeDrawer();
     }
 
@@ -163,78 +193,106 @@ class LeftDrawerNavigator extends React.Component {
     /**
      * 下拉刷新板块列表
      */
-    _pullDownRefresh = (force) => {
+    _pullDownRefresh = (force, finish=()=>{}) => {
         this.setState({
             headerLoading: true
-        }, ()=>{
-            getForumList(force).then((res) => {
-                if(res.status == 'ok') {
-                    let tempList = Array();
-                    res.res.forEach(forumGroup => {
-                        tempList.push({
-                            groupName: forumGroup.name,
-                            data: forumGroup.forums.slice()
-                        });
+        }, async ()=>{
+            let res = await getForumList(force);
+            if(res.status == 'ok') {
+                let tempList = Array();
+                res.res.forEach(forumGroup => {
+                    tempList.push({
+                        groupName: forumGroup.name,
+                        data: forumGroup.forums.slice()
                     });
-                    this.setState({
-                        forumList: tempList,
-                        headerLoading: false
-                    });
-                }
-                else {
-                    alert('获取板块列表失败,' + res.errmsg);
-                    this.setState({
-                        headerLoading: false
-                    });
-                }
-            }).catch(()=>{
-                alert('获取板块列表失败');
+                });
+                this.setState({
+                    forumList: tempList,
+                    headerLoading: false
+                }, finish);
+            }
+            else {
+                alert('获取板块列表失败,' + res.errmsg);
                 this.setState({
                     headerLoading: false
-                });
-            });
+                }, finish);
+            }
         });
     }
-    /**
-     * 更新岛配置，刷新
-     */
-    _changeIsland = (name) =>{
-        if(name != configDynamic.islandMode) {
-            configDynamic.islandMode = name;
-            this._pullDownRefresh(false);
-            this.props.navigation._childrenNavigation.Home.reset([
-                NavigationActions.navigate({ 
-                    routeName: 'Home',
-                    params: {
-                        forumID: -1,
-                        name: '时间线'
-                    }
-                })
-            ], 0);
-        }
-    }
+
+    headerSize = null;
     /**
      * 点击了某个岛，开始切换
      */
-    _onSelectIsland = (isName)=>{
-        if(isName!='ld') {
-            this._changeIsland(isName);
-        }
+    _onSelectIsland = ()=>{
         this.setState({
+            islandModalX: headerSize.x,
+            islandModalY: headerSize.y + headerSize.height,
             showAllIsland: !this.state.showAllIsland
-        }, this._refreshIslandList);
+        });
+        /*this.setState({
+            showAllIsland: !this.state.showAllIsland
+        }, () => {
+            console.log(isName);
+            if(isName != configDynamic.islandMode) {
+                configDynamic.islandMode = isName;
+            }
+            this._refreshIslandList(() => {
+                if(isName == 'ld') {
+                    return;
+                }
+                this._pullDownRefresh(false, ()=>{
+
+                });
+                //, ()=>
+            });
+        });*/
+    }
+    
+    _onChangeIsland = (name)=>{
+        // 里岛API不同，暂时先不支持
+        if(name == 'ld') {
+            this.setState({
+                showAllIsland: false
+            });
+            return;
+        }
+        if(name != configDynamic.islandMode) {
+            configDynamic.islandMode = name;
+        }
+
+        this.setState({
+            showAllIsland: false
+        }, ()=>{
+            this._pullDownRefresh(false, ()=>this._gotoFroum(-1, '时间线'));
+        });
     }
 
-
+    _headerDisplayLayout = (res) => {
+        headerSize = res.nativeEvent.layout;
+    }
     render() {
         return (
             <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: globalColor}}>
                 <View style={{backgroundColor: globalColor, top: 0, minHeight: Header.HEIGHT}}>
                     <SafeAreaView style={[styles.titleView, {minHeight: Header.HEIGHT}]}>
-                        {this.state.islandList}
+                        <TouchableOpacity
+                                onLayout={this._headerDisplayLayout}
+                                style={styles.titleIsland}
+                                onPress={this._onSelectIsland}>
+                            <Image source={configBase.islandList[configDynamic.islandMode].logo} style={styles.titleImage} resizeMode={'contain'}></Image>
+                            <Text style={styles.titleText}>
+                                {configBase.islandList[configDynamic.islandMode].displayName}匿名版
+                            </Text>
+                            <Icon name={'arrow-down'} size={12} color={'#FFF'}/>
+                        </TouchableOpacity>
                     </SafeAreaView>
                 </View>       
-                
+                <IsLandSelect
+                    left={this.state.islandModalX}
+                    top={this.state.islandModalY}
+                    show={this.state.showAllIsland}
+                    onSelected={this._onChangeIsland}/>
                 <SectionList
                     style={{backgroundColor: '#FFF'}}
                     onRefresh={()=>this._pullDownRefresh(true)}
