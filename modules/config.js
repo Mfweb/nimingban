@@ -1,7 +1,21 @@
 import RNFS from 'react-native-fs';
 
 const configBase = {
-    appMark: 'PinkAdao'
+    appMark: 'PinkAdao',
+    islandList: {
+        'lw': {
+            displayName: 'A岛',
+            logo: require('../imgs/lw.png')
+        },
+        'bt': {
+            displayName: '备胎',
+            logo: require('../imgs/bt.png')
+        },
+        'ld': {
+            displayName: '里岛',
+            logo: require('../imgs/ld.png')
+        },
+    }
 }
 
 const configNetwork = {

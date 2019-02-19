@@ -7,7 +7,7 @@ import { TopModal, TopModalApis } from '../component/top-modal'
 import { converDateTime } from '../modules/date-time'
 import { getUserCookie } from '../modules/cookie-manager'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-
+import { configBase, configDynamic } from '../modules/config'
 
 const globalColor = '#fa7296';
 
@@ -310,7 +310,7 @@ class HomeScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
-            title: 'A岛(' + navigation.getParam('name', '时间线') + ')',
+            title:  `${configBase.islandList[configDynamic.islandMode].displayName}(${navigation.getParam('name', '时间线')})`,
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                     <Icon name={'menu'} size={24} color={'#FFF'} />
