@@ -117,6 +117,16 @@ var configDynamic = {
         'lw': null,
         'bt': null,
         'ld': null,
+    },
+    systemCookie: {
+        'lw': null,
+        'bt': null,
+        'ld': null,
+    },
+    userCookie: {
+        'lw': null,
+        'bt': null,
+        'ld': null,
     }
 }
 

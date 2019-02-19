@@ -1,8 +1,6 @@
 import { AsyncStorage } from 'react-native'
 import { configNetwork, configLocal, configDynamic } from './config'
 
-var __systemJSONCache = null;
-var __userCookieCache = null;
 /**
  * 将cookie字符串转为object
  * @param {string} cookieStr set-cookie格式的cookie字符串
@@ -43,7 +41,7 @@ function _cookieJsonToStr(cookieIn) {
  * 清空所有cookie
  */
 async function clearCookie() {
-    __systemJSONCache = null;
+    configDynamic.systemCookie[configDynamic.islandMode] = null;
     await AsyncStorage.removeItem(configLocal.localStorageName[configDynamic.islandMode].memberCookie);
 }
 
@@ -67,7 +65,7 @@ async function saveCookie(cookieIn) {
     }
 
     let saveString = _cookieJsonToStr(savedCookies);
-    __systemJSONCache = saveString;
+    configDynamic.systemCookie[configDynamic.islandMode] = saveString;
     console.log('save', saveString);
     await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].memberCookie, saveString);
 }
@@ -76,13 +74,13 @@ async function saveCookie(cookieIn) {
  * 从缓存获取cookie
  */
 async function getCookie() {
-    if(__systemJSONCache != null) {
-        return __systemJSONCache;
+    if(configDynamic.systemCookie[configDynamic.islandMode] != null) {
+        return configDynamic.systemCookie[configDynamic.islandMode];
     }
     let temp = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].memberCookie);
-    __systemJSONCache = temp==null?'':temp;
-    console.log('read:', __systemJSONCache);
-    return __systemJSONCache;
+    configDynamic.systemCookie[configDynamic.islandMode] = temp==null?'':temp;
+    console.log('read:', configDynamic.systemCookie[configDynamic.islandMode]);
+    return configDynamic.systemCookie[configDynamic.islandMode];
 }
 
 /**
@@ -97,7 +95,7 @@ async function setUserCookieFromString(rawString) {
 
     if(cookieLine.hasOwnProperty('userhash')) {
         await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookie, `userhash=${cookieLine['userhash']}`);
-        __userCookieCache = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
+        configDynamic.userCookie[configDynamic.islandMode] = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
         return true;
     }
     else {
@@ -109,11 +107,11 @@ async function setUserCookieFromString(rawString) {
  * 获取用户饼干
  */
 async function getUserCookie() {
-    if(__userCookieCache !== null) {
-        console.log('cookie:', __userCookieCache);
-        return __userCookieCache;
+    if(configDynamic.userCookie[configDynamic.islandMode] !== null) {
+        return configDynamic.userCookie[configDynamic.islandMode];
     }
-    __userCookieCache = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
-    return __userCookieCache;
+    configDynamic.userCookie[configDynamic.islandMode] = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
+    console.log('cookie:', configDynamic.userCookie[configDynamic.islandMode]);
+    return configDynamic.userCookie[configDynamic.islandMode];
 }
 export { saveCookie, getCookie, clearCookie, setUserCookieFromString, getUserCookie }
