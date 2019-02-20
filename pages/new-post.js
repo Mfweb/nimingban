@@ -181,6 +181,7 @@ class NewPostScreen extends React.Component {
      * @param {object} imgData 选择或拍照的数据
      */
     _selectImageHandle(imgData) {
+        console.log(imgData);
         if(imgData.error) {
             TopModalApis.showMessage(this.refs['msgBox'], '错误', imgData.error,'确认');
         }
@@ -234,6 +235,7 @@ class NewPostScreen extends React.Component {
                             ImagePicker.launchCamera({
                                 cameraType: 'back',
                                 mediaType: 'photo',
+                                noData: true,
                                 //allowsEditing: true,
                             }, (response) => {
                                 if(!response.didCancel) {
@@ -244,6 +246,7 @@ class NewPostScreen extends React.Component {
                         case 1:
                             ImagePicker.launchImageLibrary({
                                 mediaType: 'photo',
+                                noData: true
                                 //allowsEditing: true,
                             }, (response) => {
                                 if(!response.didCancel) {
