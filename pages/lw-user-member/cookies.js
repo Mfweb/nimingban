@@ -1,11 +1,10 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Picker, TextInput, Dimensions, TouchableOpacity, Keyboard, RefreshControl } from 'react-native'
+import { Text, View, Image, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, RefreshControl } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo, getEnableUserCookie } from '../../modules/user-member-api'
-import { FlatList } from 'react-native-gesture-handler';
 import { UIButton } from '../../component/uibutton'
 import { ActionSheet, ActionSheetApis } from '../../component/action-sheet'
 import { globalColor, styles } from './user-member-styles'
@@ -314,7 +313,7 @@ class UserMemberCookies extends React.Component {
     render() {
         return (
             <View style={{flex: 1}}>
-               <TopModal ref={'msgBox'} />
+                <TopModal ref={'msgBox'} />
                 <ActionSheet ref={'actMenu'} />
                 <FlatList
                     data={this.state.userCookies}

@@ -84,25 +84,28 @@ const configLocal = {
             memberCookie: 'MemberCookiesLW',
             forumCache: 'ForumListLW',
             forumNameCache: 'ForumNameListLW',
-            userCookie: 'UserCookieLW'
+            userCookie: 'UserCookieLW',
+            userCookieList: 'UserCookieListLW'
         },
         'bt': {
             memberCookie: 'MemberCookiesBT',
             forumCache: 'ForumListBT',
             forumNameCache: 'ForumNameListBT',
-            userCookie: 'UserCookieBT'
+            userCookie: 'UserCookieBT',
+            userCookieList: 'UserCookieListBT'
         },
         'ld': {
             memberCookie: 'MemberCookiesLD',
             forumCache: 'ForumListLD',
             forumNameCache: 'ForumNameListLD',
-            userCookie: 'UserCookieLD'
+            userCookie: 'UserCookieLD',
+            userCookieList: 'UserCookieListLD'
         }
     }
 }
 
 var configDynamic = {
-    islandMode: 'lw',
+    islandMode: 'bt',
     apiRedirectURL: {
         'lw': null,
         'bt': null,

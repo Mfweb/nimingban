@@ -237,7 +237,7 @@ class TopModal extends React.Component {
  */
 function showMessage(refx = null, 
     title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null, 
-    showSuccess=()=>{}) {
+    showSuccess=()=>{}, onClosePress=null) {
     if(!refx) {
         return;
     }
@@ -255,7 +255,7 @@ function showMessage(refx = null,
         onLeftButtonPress: cancelButtonCallBack == null?()=>refx.hideModal():cancelButtonCallBack,
         rightButtonText: successButtonText,
         onRightButtonPress: successButtonCallBack == null?()=>refx.hideModal():successButtonCallBack,
-        onClosePress: ()=>refx.hideModal(),
+        onClosePress: onClosePress==null ? ()=>refx.hideModal() : onClosePress,
     }, ()=>{
         refx.showModal(showSuccess);
     });

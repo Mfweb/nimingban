@@ -4686,6 +4686,13 @@ react-moment@^0.8.4:
   resolved "http://registry.npm.taobao.org/react-moment/download/react-moment-0.8.4.tgz#18eb59e1541c8b216353e23c21e9db50e42e2edb"
   integrity sha1-GOtZ4VQciyFjU+I8IenbUOQuLts=
 
+react-native-camera@^1.12.0:
+  version "1.12.0"
+  resolved "http://registry.npm.taobao.org/react-native-camera/download/react-native-camera-1.12.0.tgz#64cfb95fe4ad00f4fc4d94281bb3c913025964ca"
+  integrity sha1-ZM+5X+StAPT8TZQoG7PJEwJZZMo=
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-cookies@^3.3.0:
   version "3.3.0"
   resolved "http://registry.npm.taobao.org/react-native-cookies/download/react-native-cookies-3.3.0.tgz#527f65eb2d8a7a000107706bb11beb57f511e701"
@@ -4726,6 +4733,11 @@ react-native-safe-area-view@^0.12.0:
   version "1.0.0-alpha.22"
   resolved "http://registry.npm.taobao.org/react-native-screens/download/react-native-screens-1.0.0-alpha.22.tgz#7a120377b52aa9bbb94d0b8541a014026be9289b"
   integrity sha1-ehIDd7Uqqbu5TQuFQaAUAmvpKJs=
+
+react-native-sound@^0.10.12:
+  version "0.10.12"
+  resolved "http://registry.npm.taobao.org/react-native-sound/download/react-native-sound-0.10.12.tgz#f912d6f9d6e9e2b42b391e0226787628d940f01a"
+  integrity sha1-+RLW+dbp4rQrOR4CJnh2KNlA8Bo=
 
 react-native-tab-view@^1.0.0, react-native-tab-view@^1.2.0:
   version "1.3.2"

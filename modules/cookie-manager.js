@@ -114,4 +114,48 @@ async function getUserCookie() {
     console.log('cookie:', configDynamic.userCookie[configDynamic.islandMode]);
     return configDynamic.userCookie[configDynamic.islandMode];
 }
-export { saveCookie, getCookie, clearCookie, setUserCookieFromString, getUserCookie }
+
+/**
+ * 增加一个新饼干
+ * @param {string} mark 标记
+ * @param {string} newCookie 饼干内容
+ */
+async function addUserCookieList(mark, value) {
+    let allCookies = await getUserCookieList();
+    for(let i = 0; i < allCookies.length; i++) {
+        if(allCookies[i].value == value) {
+            return false;
+        }
+    }
+    let newCookieObj = {
+        mark: mark,
+        value: value
+    };
+    allCookies.push(newCookieObj);
+    await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookieList, JSON.stringify(allCookies));
+    return true;
+}
+
+/**
+ * 获取所有用户饼干
+ */
+async function getUserCookieList() {
+    let tempCookies = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookieList);
+    console.log(tempCookies);
+    if(tempCookies) {
+        try {
+            return JSON.parse(tempCookies);
+        } catch {
+        }
+    }
+    return [];
+}
+export { 
+    saveCookie, 
+    getCookie, 
+    clearCookie, 
+    setUserCookieFromString, 
+    getUserCookie,
+    addUserCookieList,
+    getUserCookieList
+}

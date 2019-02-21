@@ -142,6 +142,10 @@ class LeftDrawerNavigator extends React.Component {
     componentDidMount() {
         this._pullDownRefresh(false);
     }
+
+    /**
+     * 复位路由并跳转到板块
+     */
     _gotoFroum = (id, name)=> {
         this.props.navigation._childrenNavigation.Home.reset([
             NavigationActions.navigate({ 
@@ -153,7 +157,16 @@ class LeftDrawerNavigator extends React.Component {
             })
         ], 0);
     }
- 
+    /**
+     * 复位路由并跳转到用户系统
+     */
+    _gotoMember = () => {
+        this.props.navigation._childrenNavigation.UserMember.reset([
+            NavigationActions.navigate({ 
+                routeName: configDynamic.islandMode == 'lw'?'UserMemberLogin':'UserCookieManager'
+            })
+        ], 0);
+    }
     /**
      * 板块分组
      */
@@ -230,23 +243,6 @@ class LeftDrawerNavigator extends React.Component {
             islandModalY: headerSize.y + headerSize.height,
             showAllIsland: !this.state.showAllIsland
         });
-        /*this.setState({
-            showAllIsland: !this.state.showAllIsland
-        }, () => {
-            console.log(isName);
-            if(isName != configDynamic.islandMode) {
-                configDynamic.islandMode = isName;
-            }
-            this._refreshIslandList(() => {
-                if(isName == 'ld') {
-                    return;
-                }
-                this._pullDownRefresh(false, ()=>{
-
-                });
-                //, ()=>
-            });
-        });*/
     }
     
     _onChangeIsland = (name)=>{
@@ -318,7 +314,7 @@ class LeftDrawerNavigator extends React.Component {
                         </View>
 
                         <View style={styles.bottomToolsItem}>
-                            <TouchableOpacity onPress={()=>this.props.navigation.navigate('UserMember')}>
+                            <TouchableOpacity onPress={this._gotoMember}>
                                 <Icon name={'user'} size={32} color={'#FFF'} />
                             </TouchableOpacity>
                         </View>

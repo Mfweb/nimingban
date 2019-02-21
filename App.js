@@ -12,6 +12,7 @@ import { UserMemberForgotPassword } from './pages/lw-user-member/forgotpw'
 import { UserMemberCookies } from './pages/lw-user-member/cookies'
 import { RealNameAuth } from './pages/lw-user-member/real-name'
 import { UserMemberChangePassword } from './pages/lw-user-member/change-password'
+import { UserCookieManager } from './pages/user-cookie-manager'
 import { NewPostScreen } from './pages/new-post'
 const globalColor = '#fa7296';
 
@@ -40,6 +41,8 @@ const MainStackNavigator = createStackNavigator({
 
 // 用户系统
 const UserMemberStackNavigator = createStackNavigator({
+    //本地饼干管理器
+    UserCookieManager: { screen: UserCookieManager },
     // 用户系统登录
     UserMemberLogin: { screen: UserMemberLogin },
     //注册
