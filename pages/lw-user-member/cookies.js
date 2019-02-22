@@ -88,6 +88,7 @@ class UserMemberCookies extends React.Component {
                 '获取新饼干',
                 '实名认证信息',
                 '修改密码',
+                '本地饼干管理器',
                 '退出登录'
             ],
             (index) => {
@@ -103,6 +104,13 @@ class UserMemberCookies extends React.Component {
                         this.props.navigation.push('UserMemberChangePassword')
                         break;
                         case 3:
+                        this.props.navigation.reset([
+                            NavigationActions.navigate({ 
+                                routeName: 'UserCookieManager'
+                            })
+                        ], 0);
+                        break;
+                        case 4:
                         this._logout();
                         break;
                     }

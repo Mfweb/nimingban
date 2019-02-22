@@ -82,7 +82,7 @@ async function getCookie() {
     console.log('read:', configDynamic.systemCookie[configDynamic.islandMode]);
     return configDynamic.systemCookie[configDynamic.islandMode];
 }
-
+/****************用户饼干****************/
 /**
  * 从原始数据获取并应用一个饼干
  * @param {string} rawString 原始数据
@@ -94,13 +94,22 @@ async function setUserCookieFromString(rawString) {
     }
 
     if(cookieLine.hasOwnProperty('userhash')) {
-        await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookie, `userhash=${cookieLine['userhash']}`);
-        configDynamic.userCookie[configDynamic.islandMode] = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
+        setUserCookie(cookieLine['userhash']);
+        await addUserCookieList('userMember', cookieLine['userhash']);//添加到饼干列表
         return true;
     }
     else {
         return false;
     }
+}
+
+/**
+ * 直接应用一个饼干
+ * @param {string} value 饼干内容
+ */
+async function setUserCookie(value) {
+    await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookie, `userhash=${value}`);
+    configDynamic.userCookie[configDynamic.islandMode] = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookie);
 }
 
 /**
@@ -135,13 +144,26 @@ async function addUserCookieList(mark, value) {
     await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookieList, JSON.stringify(allCookies));
     return true;
 }
-
+/**
+ * 移除指定饼干
+ * @param {string} value 内容
+ */
+async function removeUserCookieList(value) {
+    let allCookies = await getUserCookieList();
+    for(let i = 0; i < allCookies.length; i++) {
+        if(allCookies[i].value == value) {
+            allCookies.splice(i, 1);
+            await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookieList, JSON.stringify(allCookies));
+            console.log(i);
+            break;
+        }
+    }
+}
 /**
  * 获取所有用户饼干
  */
 async function getUserCookieList() {
     let tempCookies = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].userCookieList);
-    console.log(tempCookies);
     if(tempCookies) {
         try {
             return JSON.parse(tempCookies);
@@ -155,7 +177,9 @@ export {
     getCookie, 
     clearCookie, 
     setUserCookieFromString, 
+    setUserCookie,
     getUserCookie,
     addUserCookieList,
-    getUserCookieList
+    getUserCookieList,
+    removeUserCookieList
 }

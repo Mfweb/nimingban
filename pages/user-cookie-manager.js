@@ -1,7 +1,6 @@
 import React from 'react'
-import { Text, View, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, RefreshControl, Platform } from 'react-native'
+import { Text, View, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, RefreshControl, Platform, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { globalColor, styles } from './lw-user-member/user-member-styles'
 import { TopModal, TopModalApis } from '../component/top-modal'
 import { ActionSheet, ActionSheetApis } from '../component/action-sheet'
 import { Header } from 'react-navigation';
@@ -9,59 +8,71 @@ import { configDynamic } from '../modules/config';
 import { RNCamera } from 'react-native-camera'
 import SoundPlayer from 'react-native-sound'
 import ImagePicker from 'react-native-image-picker';
-import { getUserCookieList, addUserCookieList, getUserCookie } from '../modules/cookie-manager'
+import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCookie } from '../modules/cookie-manager'
+import { UIButton } from '../component/uibutton'
 
-function base64Decoder(input, length) {
-    let keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-    var output = new Uint8ClampedArray(length);
-    var chr1, chr2, chr3 = "";
-    var enc1, enc2, enc3, enc4 = "";
-    var i = 0;
+const globalColor = '#fa7296';
+const styles = StyleSheet.create({
+    displayNone: {
+        display: 'none'
+    },
+    cookieMessage: {
+        padding: 4,
+        backgroundColor: '#FFE4B5',
+        flex: 1,
+    },
+    cookieMessageText: {
+        fontSize: 22,
+        color: '#696969'
+    },
+    cookieUsage: {
+        paddingLeft: 8,
+        marginTop: 5
+    },
+    cookieUsageText: {
+        color: '#696969',
+        fontSize: 16
+    },
+    cookieList: {
+        backgroundColor: '#DCDCDC',
+    },
+    cookieColumn: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    },
+    cookieItem: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        flexDirection: 'row',
+        height: 70,
+        backgroundColor: '#FFF',
+        marginTop: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    cookieIDText: {
+        color: globalColor,
+        fontSize: 22,
+        textAlign:'center',
+    },
+    cookieText: {
+        color: '#696969',
+        fontSize: 12,
+        textAlign:'center', 
+        lineHeight: 12
+    },
+});
 
-    // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
-    var base64test = /[^A-Za-z0-9\+\/\=]/g;
-    if (base64test.exec(input)) {
-        window.alert("There were invalid base64 characters in the input text.\n" +
-            "Valid base64 characters are A-Z, a-z, 0-9, '+', '/',and '='\n" +
-            "Expect errors in decoding.");
-    }
-    input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-    var idx = 0;
-    do {
-        enc1 = keyStr.indexOf(input.charAt(i++));
-        enc2 = keyStr.indexOf(input.charAt(i++));
-        enc3 = keyStr.indexOf(input.charAt(i++));
-        enc4 = keyStr.indexOf(input.charAt(i++));
-
-        chr1 = (enc1 << 2) | (enc2 >> 4);
-        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-        chr3 = ((enc3 & 3) << 6) | enc4;
-
-        //output.push(chr1);
-        output[idx++] = chr1;
-        if (enc3 != 64) {
-            output[idx++] = chr2;
-            //output = output + String.fromCharCode(chr2);
-        }
-        if (enc4 != 64) {
-            output[idx++] = chr3;
-            //output = output + String.fromCharCode(chr3);
-        }
-
-        chr1 = chr2 = chr3 = "";
-        enc1 = enc2 = enc3 = enc4 = "";
-
-    } while (i < input.length);
-
-    return output;
-}
 class UserCookieManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             userCookies: [],
             cookieListLoading: false,
-            headerInfo: null
+            headerInfo: null,
+            usingCookie: null
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -182,6 +193,9 @@ class UserCookieManager extends React.Component {
             })
         );
     }
+    /**
+     * 增加一块饼干
+     */
     _addCookieToList = (cookieValue) => {
         if(this._checkCookie(cookieValue)) {
             this._getUserMark(async (markStr)=>{
@@ -195,6 +209,9 @@ class UserCookieManager extends React.Component {
             });
         }
     }
+    /**
+     * 检查饼干是否存在
+     */
     _checkCookie = (cookieValue) => {
         for(let i = 0; i < this.state.userCookies.length; i++) {
             if(this.state.userCookies[i].value == cookieValue) {
@@ -204,6 +221,9 @@ class UserCookieManager extends React.Component {
         }
         return true;
     }
+    /**
+     * 获取用户备注
+     */
     _getUserMark = (finish = ()=>{}) => {
         this.__inputMarkString = '';
         TopModalApis.showMessage(this.refs['msgBox'], '输入备注(可以为空)', 
@@ -252,23 +272,69 @@ class UserCookieManager extends React.Component {
             </View>
         );
     }
-    _pullDownRefreshing = async () => {
+    _pullDownRefreshing = () => {
         this.setState({
-            userCookies: await getUserCookieList()
+            cookieListLoading: true,
+            usingCookie: configDynamic.userCookie[configDynamic.islandMode]
+        }, async () => {
+            this.setState({
+                userCookies: await getUserCookieList(),
+                cookieListLoading: false
+            });
         });
     }
-    handleCanvas = (canvas) => {
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = 'purple';
-        ctx.fillRect(0, 0, 100, 100);
-    }
+
     _renderItem = ({ item, index }) => {
+        let using = configDynamic.userCookie[configDynamic.islandMode] == `userhash=${item.value}`;
         return (
-            <Text>
-                <Text>{item.mark}</Text>
-                <Text>{item.value}</Text>
-            </Text>
+            <View style={[styles.cookieItem, using?{backgroundColor: '#FFC0CB'}:{}]}>
+                <View style={styles.cookieColumn}>
+                    <Text style={styles.cookieIDText}>
+                        {item.mark}
+                    </Text>
+                </View>
+
+                <View style={styles.cookieColumn}>
+                    <Text style={styles.cookieText}>
+                        {item.value}
+                    </Text>
+                </View>
+
+                <View style={styles.cookieColumn}>
+                    <UIButton
+                    text={'删除'}
+                    style={{backgroundColor: '#DCDCDC', width: 45, height: 30}}
+                    textStyle={{color:globalColor, fontSize: 19}}
+                    showLoading={false}
+                    onPress={()=>this._deleteCookie(item.value)}
+                    />
+                    <UIButton
+                    text={'应用'}
+                    style={using?styles.displayNone:{backgroundColor: globalColor, width: 45, height: 30}}
+                    textStyle={{color:'#FFF', fontSize: 19}}
+                    showLoading={false}
+                    onPress={()=>this._enableCookie(item.value)}
+                    />
+                </View>
+            </View>
         );
+    }
+    /**
+     * 删除指定饼干
+     */
+    _deleteCookie = (value) => {
+        TopModalApis.showMessage(this.refs['msgBox'], '信息', '确认删除？', '确认', async ()=>{
+            TopModalApis.closeModal(this.refs['msgBox']);
+            await removeUserCookieList(value);
+            this._pullDownRefreshing();
+        }, '取消');
+    }
+    /**
+     * 应用指定饼干
+     */
+    _enableCookie = async (value) => {
+        await setUserCookie(value);
+        this._pullDownRefreshing();
     }
     render() {
         return (
