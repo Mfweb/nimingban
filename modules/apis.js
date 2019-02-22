@@ -322,20 +322,23 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
     try {
         var response = null;
         if(img){
+            let bodys = {
+                resto: tid,
+                fid: tid,
+                name: name,
+                email: email,
+                title: title,
+                content: content,
+            };
+            if(waterMark) {
+                bodys.water = 'true'
+            }
             response = await uploadFile(url, img, 'image', {
                 method: 'POST',
                 headers: {
                     'cookie': await getUserCookie() 
                 },
-                body: {
-                    resto: tid,
-                    fid: tid,
-                    name: name,
-                    email: email,
-                    title: title,
-                    content: content,
-                    water: waterMark
-                }
+                body: bodys
             });
         }
         else {
