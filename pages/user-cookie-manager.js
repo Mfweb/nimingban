@@ -350,9 +350,23 @@ class UserCookieManager extends React.Component {
                     showLoading={false}
                     onPress={()=>this._enableCookie(item.value)}
                     />
+                    <UIButton
+                    text={'取消'}
+                    style={(!using)?styles.displayNone:{backgroundColor: globalColor, width: 45, height: 30}}
+                    textStyle={{color:'#FFF', fontSize: 19}}
+                    showLoading={false}
+                    onPress={this._disableCookie}
+                    />
                 </View>
             </View>
         );
+    }
+    /**
+     * 取消使用当前饼干
+     */
+    _disableCookie = async () => {
+        await setUserCookie(null);
+        this._pullDownRefreshing();
     }
     /**
      * 删除指定饼干
