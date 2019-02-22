@@ -157,7 +157,7 @@ class NewPostScreen extends React.Component {
      */
     _startSend = async () => {
         Keyboard.dismiss();
-        if(this.state.inputText.length <= 0) {
+        if(!this.state.selectdeImage && this.state.inputText.length <= 0) {
             TopModalApis.showMessage(this.refs['msgBox'], '错误', '请输入内容','确认');
             return;
         }
