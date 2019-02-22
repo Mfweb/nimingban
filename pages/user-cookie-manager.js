@@ -137,6 +137,7 @@ class UserCookieManager extends React.Component {
                         case 1:
                             break;
                         case 2:
+                            this._manualInput();
                             break;
                         case 3:
                             if(configDynamic.islandMode == 'lw') {
@@ -147,6 +148,34 @@ class UserCookieManager extends React.Component {
                     }
                 });
             });
+    }
+    /**
+     * 手动输入添加饼干
+     */
+    _manualInput = () => {
+        this.__inputCookieString = '';
+        TopModalApis.showMessage(this.refs['msgBox'], '输入饼干内容', 
+        (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
+            <TextInput 
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                autoFocus={true}
+                textAlignVertical='center'
+                returnKeyType={'done'}
+                onSubmitEditing={()=>{
+                    TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+                        this._addCookieToList(this.__inputCookieString);
+                    });
+                }}
+                onChangeText={(text) => {
+                    this.__inputCookieString = text;
+                }}/>
+        </View>),
+        '确认',
+        ()=>{
+            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+                this._addCookieToList(this.__inputCookieString);
+            });
+        }, '取消');
     }
     /**
      * 扫码添加饼干
@@ -190,18 +219,7 @@ class UserCookieManager extends React.Component {
                         }
                     }}/>
             ), 
-            '关闭', 
-            () => TopModalApis.closeModal(this.refs['msgBox'], ()=>{
-                TopModalApis.setContent(this.refs['msgBox'], null);
-            }), 
-            null, 
-            ()=>TopModalApis.closeModal(this.refs['msgBox'], ()=>{
-                TopModalApis.setContent(this.refs['msgBox'], null);
-            }),
-            ()=>{}, 
-            ()=>TopModalApis.closeModal(this.refs['msgBox'], ()=>{
-                TopModalApis.setContent(this.refs['msgBox'], null);
-            })
+            '关闭'
         );
     }
     /**
@@ -224,6 +242,10 @@ class UserCookieManager extends React.Component {
      * 检查饼干是否存在
      */
     _checkCookie = (cookieValue) => {
+        if(!cookieValue || cookieValue.length < 20) {
+            TopModalApis.showMessage(this.refs['msgBox'], '错误', '必须输入饼干内容', '确认');
+            return false;
+        }
         for(let i = 0; i < this.state.userCookies.length; i++) {
             if(this.state.userCookies[i].value == cookieValue) {
                 TopModalApis.showMessage(this.refs['msgBox'], '错误', '饼干已存在', '确认');
@@ -238,32 +260,26 @@ class UserCookieManager extends React.Component {
     _getUserMark = (finish = ()=>{}) => {
         this.__inputMarkString = '';
         TopModalApis.showMessage(this.refs['msgBox'], '输入备注(可以为空)', 
-        <View style={{height: 30}}>
+        <View style={{height: 30, marginTop:20, marginBottom: 20}}>
             <TextInput 
                 style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
                 autoFocus={true}
                 textAlignVertical='center'
                 returnKeyType={'done'}
                 onSubmitEditing={()=>{
-                    Keyboard.dismiss();
-                    finish(this.__inputMarkString);
+                    TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+                        finish(this.__inputMarkString);
+                    });
                 }}
                 onChangeText={(text) => {
                     this.__inputMarkString = text;
                 }}/>
         </View>
         , '确认',()=>{
-            Keyboard.dismiss();
             TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
                 finish(this.__inputMarkString);
             });
-        }, '取消', ()=>{
-            Keyboard.dismiss();
-            TopModalApis.closeModal(this.refs['msgBox']);
-        }, null, ()=>{
-            Keyboard.dismiss();
-            TopModalApis.closeModal(this.refs['msgBox']);
-        });
+        }, '取消');
     }
     _headerComponent = () => {
         return (

@@ -154,8 +154,10 @@ class TopModal extends React.Component {
     }
     hideModal = (success=()=>{}) => {
         this.startAnime('out', ()=>{
+            Keyboard.dismiss();
             this.setState({
-                showx: false
+                showx: false,
+                item: null
             }, success);
         });
     }
