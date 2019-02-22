@@ -19,11 +19,12 @@ const styles = StyleSheet.create({
     },
     cookieMessage: {
         padding: 4,
-        backgroundColor: '#FFE4B5',
         flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     cookieMessageText: {
-        fontSize: 22,
+        fontSize: 20,
         color: '#696969'
     },
     cookieUsage: {
@@ -82,7 +83,6 @@ class UserCookieManager extends React.Component {
         this.state = {
             userCookies: [],
             cookieListLoading: false,
-            headerInfo: null,
             usingCookie: null
         }
     }
@@ -283,9 +283,9 @@ class UserCookieManager extends React.Component {
     }
     _headerComponent = () => {
         return (
-            <View style={this.state.headerInfo?styles.cookieMessage:styles.displayNone}>
+            <View style={this.state.userCookies.length==0?styles.cookieMessage:styles.displayNone}>
                 <Text style={styles.cookieMessageText}>
-                {this.state.headerInfo}
+                你还没有饼干，点击右上角添加饼干
                 </Text>
             </View>
         );
@@ -293,9 +293,6 @@ class UserCookieManager extends React.Component {
     _footerComponent = () => {
         return (
             <View style={styles.cookieUsage}>
-                <Text style={styles.cookieUsageText}>
-                    点击右上角菜单添加饼干
-                </Text>
                 <TouchableOpacity 
                     style={configDynamic.islandMode=='lw'?styles.backtoUsermemberView:styles.displayNone}
                     onPress={()=>{
