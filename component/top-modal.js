@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, Animated, Dimensions, Keyboard, TouchableOpacity } from 'react-native'
+import { Text, View, StyleSheet, Animated, Dimensions, Keyboard, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
 
@@ -244,7 +244,9 @@ function showMessage(refx = null,
     let tempContent = 
         (typeof content == 'string') 
         ?
-        (<Text style={{fontSize: 20, margin: 10}}>{content}</Text>)
+        (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
+            <Text style={{fontSize: 20, margin: 10}}>{content}</Text>
+        </ScrollView>)
         :
         content;
     refx.setState({
@@ -274,7 +276,9 @@ function setContent(refx = null,
     let tempContent = 
         (typeof newContent == 'string') 
         ?
-        (<Text style={{fontSize: 20, margin: 10}}>{newContent}</Text>)
+        (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
+            <Text style={{fontSize: 20, margin: 10}}>{newContent}</Text>
+        </ScrollView>)
         :
         newContent;
     refx.setState({
