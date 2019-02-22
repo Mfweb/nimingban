@@ -128,7 +128,7 @@ async function getUserCookie() {
  * 从Set-Cookie原始数据中获取饼干并添加到列表
  * @param {string} rawString 原始数据
  */
-async function addUserCookieFromString(rawString) {
+async function addUserCookieFromString(rawString, enable = true) {
     console.log('bt cookie', rawString);
     let cookieLine = _cookieStrToJson(rawString);
     console.log(cookieLine);
@@ -139,15 +139,13 @@ async function addUserCookieFromString(rawString) {
     if(cookieLine.hasOwnProperty('userhash')) {
         if(cookieLine['userhash'] != 'deleted') {
             await addUserCookieList('auto', cookieLine['userhash']);//添加到饼干列表
-            if(await getUserCookie() != `userhash=${cookieLine['userhash']}`) {
+            if((await getUserCookie() != `userhash=${cookieLine['userhash']}`) && enable) {
                 setUserCookie(cookieLine['userhash']);
             }
+            return true;
         }
-        return true;
     }
-    else {
-        return false;
-    }
+    return false;
 }
 /**
  * 增加一个新饼干

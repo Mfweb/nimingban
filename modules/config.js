@@ -45,6 +45,7 @@ const configNetwork = {
         getForumThread: `/Api/showf?appid=${configBase.appMark}`,
         getImageCDN: `/Api/getCdnPath?appid=${configBase.appMark}`,
         getThreadReply: `/Api/thread?appid=${configBase.appMark}`,
+        getCookie: `/Api/getcookie?appid=${configBase.appMark}`,
         replyThread: `/Home/Forum/doReplyThread.html?appid=${configBase.appMark}`,
         newThread: `/Home/Forum/doPostThread.html?appid=${configBase.appMark}`
     },

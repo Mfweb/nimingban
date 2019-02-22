@@ -304,6 +304,39 @@ async function getImage(imgMode, imageName) {
 }
 
 /**
+ * 备胎岛直接领饼干
+ */
+async function realAnonymousGetCookie() {
+    let url = await getUrl(configNetwork.apiUrl.getCookie);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+
+    try {
+        var response = await request(url);
+    }catch(error) {
+        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+    }
+    if(response.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
+    }
+    if(response.body == '"error"') {
+        return { status: 'error', errmsg: '获取失败，可能没开饼干' };
+    }
+    if(response.headers.hasOwnProperty('Set-Cookie')) {
+        console.log('find bt cookie');
+        if(await addUserCookieFromString(response.headers['Set-Cookie'], false) == false) {
+            return { status: 'error', errmsg: '解析饼干失败' };
+        }
+        else {
+            return { status: 'ok' };
+        }
+    }
+    else {
+        return { status: 'error', errmsg: '没有找到饼干，可能没有开放' };
+    }
+}
+/**
  * 回复或发一个串
  * @param {string} tid 要回复的ID
  * @param {string} content 内容
@@ -382,5 +415,6 @@ export {
     getReplyList, /* 获取串回复列表 */
     getImage, /* 获取串中的缩略图或原图 */
     clearImageCache, /* 清空缩略图缓存 */
-    replyNewThread
+    replyNewThread,
+    realAnonymousGetCookie
 };

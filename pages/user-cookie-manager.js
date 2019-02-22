@@ -11,6 +11,7 @@ import ImagePicker from 'react-native-image-picker';
 import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCookie } from '../modules/cookie-manager'
 import { UIButton } from '../component/uibutton'
 import { NavigationActions } from 'react-navigation'
+import { realAnonymousGetCookie } from '../modules/apis'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -144,10 +145,23 @@ class UserCookieManager extends React.Component {
                                 TopModalApis.showMessage(this.refs['msgBox'], '错误', '该功能不支持芦苇岛', '确认');
                                 return;
                             }
+                            else {
+                                this._autoGet();
+                            }
                         break;
                     }
                 });
             });
+    }
+    _autoGet = async () => {
+        let res = await realAnonymousGetCookie();
+        if(res.status == 'ok') {
+            TopModalApis.showMessage(this.refs['msgBox'], '提示', '获取完成', '确认');
+            this._pullDownRefreshing();
+        }
+        else {
+            TopModalApis.showMessage(this.refs['msgBox'], '提示', res.errmsg, '确认');
+        }
     }
     /**
      * 手动输入添加饼干
