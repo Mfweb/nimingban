@@ -147,7 +147,7 @@ async function getThreadList(fid, page) {
         }
         return { status: 'ok', res: resJSON };
     } catch (error) {
-        return { status: 'error', errmsg: error };
+        return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
     }
 }
 
@@ -173,7 +173,6 @@ async function getReplyList(tid, page) {
     }catch(error) {
         return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
     }
-    console.log(response);
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }
@@ -184,7 +183,7 @@ async function getReplyList(tid, page) {
         let resJSON = JSON.parse(response.body);
         return { status: 'ok', res: resJSON };
     } catch (error) {
-        return { status: 'error', errmsg: error };
+        return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
     }
 }
 

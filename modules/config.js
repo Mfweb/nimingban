@@ -105,7 +105,7 @@ const configLocal = {
 }
 
 var configDynamic = {
-    islandMode: 'bt',
+    islandMode: 'lw',
     apiRedirectURL: {
         'lw': null,
         'bt': null,
