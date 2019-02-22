@@ -10,7 +10,7 @@ function _cookieStrToJson(cookieStr){
         return null;
     }
     let outCookie = new Object();
-    let cookieLine = cookieStr.replace(/ /g,'').split(';');
+    let cookieLine = cookieStr.replace(/ /g,'').replace(/(path=\/)+[\,\;\ ]*/ig, '').split(';');
     cookieLine.forEach(item => {
         let cookie = item.split('=');
         if(cookie.length == 2) {
@@ -125,6 +125,31 @@ async function getUserCookie() {
 }
 
 /**
+ * 从Set-Cookie原始数据中获取饼干并添加到列表
+ * @param {string} rawString 原始数据
+ */
+async function addUserCookieFromString(rawString) {
+    console.log('bt cookie', rawString);
+    let cookieLine = _cookieStrToJson(rawString);
+    console.log(cookieLine);
+    if(cookieLine == null) {
+        return false;
+    }
+
+    if(cookieLine.hasOwnProperty('userhash')) {
+        if(cookieLine['userhash'] != 'deleted') {
+            await addUserCookieList('auto', cookieLine['userhash']);//添加到饼干列表
+            if(await getUserCookie() != `userhash=${cookieLine['userhash']}`) {
+                setUserCookie(cookieLine['userhash']);
+            }
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+/**
  * 增加一个新饼干
  * @param {string} mark 标记
  * @param {string} newCookie 饼干内容
@@ -172,13 +197,15 @@ async function getUserCookieList() {
     return [];
 }
 export { 
-    saveCookie, 
-    getCookie, 
-    clearCookie, 
-    setUserCookieFromString, 
-    setUserCookie,
-    getUserCookie,
-    addUserCookieList,
-    getUserCookieList,
-    removeUserCookieList
+    saveCookie, // 保存系统Cookie
+    getCookie, // 获取系统Cookie
+    clearCookie, // 清空系统Cookie
+
+    setUserCookieFromString, // 从Set-Cookie原始数据中获取并应用一个用户饼干
+    setUserCookie, // 设置激活用户饼干
+    getUserCookie, // 获取激活的用户饼干
+    addUserCookieFromString, // 从Set-Cookie原始数据中获取饼干并添加到列表
+    addUserCookieList, // 将一个新的用户饼干添加到饼干列表中
+    getUserCookieList, // 获取用户饼干列表
+    removeUserCookieList // 从饼干列表中删除一个饼干
 }

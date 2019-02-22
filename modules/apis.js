@@ -2,7 +2,7 @@ import { AsyncStorage } from 'react-native'
 import RNFS from 'react-native-fs';
 import { request, uploadFile } from './network'
 import { configNetwork, configLocal, configDynamic } from './config'
-import { getUserCookie } from './cookie-manager'
+import { getUserCookie, addUserCookieFromString } from './cookie-manager'
 
 /**
  * 检查并返回最新的host，
@@ -354,6 +354,11 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
     console.log(response);
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
+    }
+    //备胎岛发串回串自动获取饼干
+    if(configDynamic.islandMode == 'bt' && response.headers.hasOwnProperty('Set-Cookie')) {
+        console.log('find bt cookie');
+        await addUserCookieFromString(response.headers['Set-Cookie']);
     }
     try {
         let resJSON = JSON.parse(response.body);
