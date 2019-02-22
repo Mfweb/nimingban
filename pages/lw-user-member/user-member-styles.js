@@ -133,6 +133,16 @@ const styles = StyleSheet.create({
         width: ScreenWidth,
         height: ScreenWidth / 600 * 272
     },
+    backtoUsermemberView: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 15
+    },
+    backtoUsermemberText: {
+        fontSize: 20,
+        color: '#1E90FF',
+        textDecorationLine: 'underline'
+    },
     //实名认证
     countryCode: {
         width: 60,

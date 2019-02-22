@@ -10,6 +10,7 @@ import SoundPlayer from 'react-native-sound'
 import ImagePicker from 'react-native-image-picker';
 import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCookie } from '../modules/cookie-manager'
 import { UIButton } from '../component/uibutton'
+import { NavigationActions } from 'react-navigation'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -63,6 +64,16 @@ const styles = StyleSheet.create({
         textAlign:'center', 
         lineHeight: 12
     },
+    backtoUsermemberView: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 5
+    },
+    backtoUsermemberText: {
+        fontSize: 20,
+        color: '#1E90FF',
+        textDecorationLine: 'underline'
+    }
 });
 
 class UserCookieManager extends React.Component {
@@ -269,6 +280,17 @@ class UserCookieManager extends React.Component {
                 <Text style={styles.cookieUsageText}>
                     点击右上角菜单添加饼干
                 </Text>
+                <TouchableOpacity 
+                    style={configDynamic.islandMode=='lw'?styles.backtoUsermemberView:styles.displayNone}
+                    onPress={()=>{
+                        this.props.navigation.reset([
+                            NavigationActions.navigate({ 
+                                routeName: 'UserMemberLogin'
+                            })
+                        ], 0);
+                    }}>
+                    <Text style={styles.backtoUsermemberText}>返回用户系统</Text>
+                </TouchableOpacity>
             </View>
         );
     }

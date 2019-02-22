@@ -72,6 +72,17 @@ class UILogin extends React.Component {
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onLoginButtonPress}/>
                 </View>
+                <TouchableOpacity 
+                    style={styles.backtoUsermemberView}
+                    onPress={()=>{
+                        this.props.navigation.reset([
+                            NavigationActions.navigate({ 
+                                routeName: 'UserCookieManager'
+                            })
+                        ], 0);
+                    }}>
+                    <Text style={styles.backtoUsermemberText}>本地饼干管理器</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -235,6 +246,7 @@ class UserMemberLogin extends React.Component {
                 resizeMode={'contain'} 
                 source={require('../../imgs/member-title.png')} />
                 <UILogin
+                    navigation= {this.props.navigation}
                     checkingSession={this.state.checkingSession}
                     onUserNameInput={(text)=>{this.inputUserName = text;}}
                     onPasswordInput={(text)=>{this.inputPassWord = text;}}

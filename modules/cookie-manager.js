@@ -154,7 +154,6 @@ async function removeUserCookieList(value) {
         if(allCookies[i].value == value) {
             allCookies.splice(i, 1);
             await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].userCookieList, JSON.stringify(allCookies));
-            console.log(i);
             break;
         }
     }
