@@ -18,12 +18,7 @@ async function checkRedirect() {
         return configDynamic.apiRedirectURL[configDynamic.islandMode];
     }
     console.log('get new redirect');
-    try {
-        var response = await request(configNetwork.baseUrl[configDynamic.islandMode].base);
-    }catch(error){
-        return null;
-    }
-    
+    var response = await request(configNetwork.baseUrl[configDynamic.islandMode].base);
     if(response.stateCode != 200) {
         console.warn('get redirect error');
         return null;
@@ -86,11 +81,7 @@ async function getForumList(force = false) {
         if(url === null) {
             return { status: 'error', errmsg: '获取host失败' };
         }
-        try{
-            var response = await request(url);
-        }catch(error) {
-            return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-        }
+        var response = await request(url);
         if(response.stateCode != 200) {
             return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
         }
@@ -120,17 +111,16 @@ async function getThreadList(fid, page) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try{
-        var response = await request(url, {
-            method: 'POST',
-            headers: {
-                'cookie': await getUserCookie() 
-            },
-            body: 'id=' + fid + '&page=' + page,
-        });
-    }catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var response = await request(url, {
+        method: 'POST',
+        headers: {
+            'cookie': await getUserCookie() 
+        },
+        body: {
+            id: fid,
+            page: page
+        },
+    });
 
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
@@ -162,17 +152,16 @@ async function getReplyList(tid, page) {
         return { status: 'error', errmsg: '获取host失败' };
     }
 
-    try {
-        var response = await request(url, {
-            method: 'POST',
-            headers: {
-                'cookie': await getUserCookie() 
-            },
-            body: 'id=' + tid + '&page=' + page,
-        });
-    }catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var response = await request(url, {
+        method: 'POST',
+        headers: {
+            'cookie': await getUserCookie() 
+        },
+        body: {
+            id: tid,
+            page: page
+        },
+    });
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }
@@ -197,12 +186,7 @@ async function getImageCDN() {
         if(url === null) {
             return null;
         }
-        try{
-            var response = await request(url);
-        }
-        catch {
-            return null;
-        }
+        var response = await request(url);
         if(response.stateCode != 200) {
             return null;
         }
@@ -312,11 +296,7 @@ async function realAnonymousGetCookie() {
         return { status: 'error', errmsg: '获取host失败' };
     }
 
-    try {
-        var response = await request(url);
-    }catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var response = await request(url);
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }
@@ -352,40 +332,43 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
         return { status: 'error', errmsg: '获取host失败' };
     }
 
-    try {
-        var response = null;
-        if(img){
-            let bodys = {
+    var response = null;
+    if(img){
+        let bodys = {
+            resto: tid,
+            fid: tid,
+            name: name,
+            email: email,
+            title: title,
+            content: content,
+        };
+        if(waterMark) {
+            bodys.water = 'true'
+        }
+        response = await uploadFile(url, img, 'image', {
+            method: 'POST',
+            headers: {
+                'cookie': await getUserCookie() 
+            },
+            body: bodys
+        });
+    }
+    else {
+        response = await request(url, {
+            method: 'POST',
+            headers: {
+                'cookie': await getUserCookie() 
+            },
+            body: {
                 resto: tid,
                 fid: tid,
                 name: name,
                 email: email,
                 title: title,
                 content: content,
-            };
-            if(waterMark) {
-                bodys.water = 'true'
-            }
-            response = await uploadFile(url, img, 'image', {
-                method: 'POST',
-                headers: {
-                    'cookie': await getUserCookie() 
-                },
-                body: bodys
-            });
-        }
-        else {
-            response = await request(url, {
-                method: 'POST',
-                headers: {
-                    'cookie': await getUserCookie() 
-                },
-                body: `resto=${tid}&fid=${tid}&name=${name}&email=${email}&title=${title}&content=${content}&water=${waterMark}`,
-            });
-        }
-    }catch(error) {
-        console.log(error);
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
+                water: waterMark
+            },
+        });
     }
     console.log(response);
     if(response.stateCode != 200) {

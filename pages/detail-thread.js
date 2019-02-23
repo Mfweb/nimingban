@@ -509,6 +509,7 @@ class DetailsScreen extends React.Component {
                 TopModalApis.showMessage(this.refs['msgBox'], '错误', `请求数据失败:${res.errmsg}`,'确认');
                 this.setState({
                     headerLoading: false,
+                    loadEnd: true
                 });
             }
         });

@@ -13,17 +13,13 @@ async function checkSession() {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie()
-            },
-        });
-    }catch(error){
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie()
+        },
+    });
 
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
@@ -104,20 +100,18 @@ async function login(username, password, vcode) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-            body: `email=${username}&password=${password}&verify=${vcode}` 
-        });
-    }catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
-
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+        body: {
+            email: username,
+            password: password,
+            verify: vcode 
+        }
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -146,18 +140,18 @@ async function register(username, vcode) {
         return { status: 'error', errmsg: '获取host失败' };
     }
 
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-            body: `email=${username}&agree=''&verify=${vcode}` 
-        });    
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+        body: {
+            email: username,
+            agree: '',
+            verify: vcode 
+        }
+    }); 
 
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
@@ -187,18 +181,17 @@ async function forgotPassword(username, vcode) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-            body: `email=${username}&verify=${vcode}` 
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+        body: {
+            email: username,
+            verify: vcode 
+        }
+    });
 
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
@@ -232,16 +225,12 @@ async function getUserCookies() {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -310,18 +299,16 @@ async function deleteUserCookie(cookieid, vcode) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-            body: `verify=${vcode}`
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+        body: {
+            verify: vcode
+        }
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -348,18 +335,16 @@ async function getNewUserCookie(vcode) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-            body: `verify=${vcode}`
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+        body: {
+            verify: vcode
+        }
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -385,16 +370,12 @@ async function getVerifiedInfo() {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -450,18 +431,18 @@ async function startVerified(mobile, countryID, vcode) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-            body: `verify=${vcode}&mobile_country_id=${countryID}&mobile=${mobile}`
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+        body: {
+            verify: vcode,
+            mobile_country_id: countryID,
+            mobile: mobile
+        }
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -523,16 +504,12 @@ async function checkVerifiedSMS() {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'GET',
-            headers: {
-                'cookie': await getCookie() 
-            },
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'GET',
+        headers: {
+            'cookie': await getCookie() 
+        },
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -551,18 +528,18 @@ async function changePassword(oldpw, newpw, newpw2) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'POST',
-            saveCookies: true,
-            headers: {
-                'cookie': await getCookie() 
-            },
-            body: `oldpwd=${oldpw}&pwd=${newpw}&repwd=${newpw2}`
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'POST',
+        saveCookies: true,
+        headers: {
+            'cookie': await getCookie() 
+        },
+        body: {
+            oldpwd: oldpw,
+            pwd: newpw,
+            repwd: newpw2
+        }
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }
@@ -589,16 +566,12 @@ async function getEnableUserCookie(id) {
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
     }
-    try {
-        var res = await request(url, {
-            method: 'GET',
-            headers: {
-                'cookie': await getCookie() 
-            }
-        });
-    } catch(error) {
-        return { status: 'error', errmsg: `http:${error.stateCode},${error.errMsg}` };
-    }
+    var res = await request(url, {
+        method: 'GET',
+        headers: {
+            'cookie': await getCookie() 
+        }
+    });
     if(res.stateCode != 200) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }//setUserCookieFromString
