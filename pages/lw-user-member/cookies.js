@@ -45,7 +45,7 @@ class UserMemberCookies extends React.Component {
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
                 onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'options-vertical'} size={24} color={'#FFF'} />
+                    <Icon name={'options'} size={24} color={'#FFF'} />
                 </TouchableOpacity>
             )
         }

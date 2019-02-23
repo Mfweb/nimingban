@@ -286,7 +286,7 @@ class DetailsScreen extends React.Component {
                         <Icon name={'note'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                        <Icon name={'options-vertical'} size={24} color={'#FFF'} />
+                        <Icon name={'options'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
                 </View>
             )
