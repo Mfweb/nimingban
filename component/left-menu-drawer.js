@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, SafeAreaView, SectionList, Dimensions, TouchableOpacity } from 'react-native'
+import { Text, View, Image, StyleSheet, SafeAreaView, SectionList, Dimensions, TouchableOpacity, Animated } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import { getForumList } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
@@ -83,6 +83,16 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         paddingLeft: 5,
         paddingRight: 5
+    },
+    closeMask: {
+        backgroundColor: '#00000050',
+        position: 'absolute',
+        width: Dimensions.get('window').width * 0.7,
+        height: Dimensions.get('window').height,
+        top:0,
+        left: 0,
+        flex: 1,
+        zIndex: 9998
     }
 });
 
@@ -91,12 +101,16 @@ const styles = StyleSheet.create({
  * props:
  * show
  * onSelected
+ * onClosed
  */
 class IsLandSelect extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            islandList: []
+            islandList: [],
+            nowOpacity: new Animated.Value(0),
+            nowScale: new Animated.Value(0.1),
+            show: false
         }
     }
     componentDidMount() {
@@ -118,11 +132,72 @@ class IsLandSelect extends React.Component {
             islandList: tempIsland
         });
     }
+    componentWillReceiveProps(newProps) {
+        if(newProps.show != this.state.show) {
+            if(newProps.show === true) {
+                this.setState({
+                    show: true
+                }, ()=>{
+                    this.startAnime('in');
+                });
+            }
+            else if(newProps.show === false) {
+                this.startAnime('out', ()=>{
+                    this.setState({
+                        show: false,
+                    });
+                });
+            }
+        }
+    }
+    startAnime = function (mode, finish = ()=>{}) {
+        if(this.isUnMount) {
+            return;
+        }
+        this.state.nowOpacity.setValue(mode==='in'?0:1);
+        this.state.nowScale.setValue(mode==='in'?0.1:1.0);
+        Animated.parallel([
+            Animated.timing(
+                this.state.nowOpacity,
+                {
+                    toValue: mode==='in'?1:0,
+                    duration: 200,
+                    useNativeDriver: true,
+                    stiffness: 50
+                }
+            ),
+            Animated.timing(
+                this.state.nowScale,
+                {
+                    toValue: mode==='in'?1.0:0.1,
+                    duration: 200,
+                    useNativeDriver: true,
+                    friction: 2
+                }
+            )
+        ]).start(finish);
+    }
     render() {
         return(
-            <View style={[this.props.show?styles.islandSelectModal:styles.displayNone, {top: this.props.top, left: this.props.left}]}>
-                {this.state.islandList}
-            </View>
+            <Animated.View style={[this.state.show?styles.closeMask:styles.displayNone, {
+                opacity: this.state.nowOpacity,
+            }]}>
+                <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={this.props.onClosed}>
+                    <Animated.View style={
+                        [this.state.show?styles.islandSelectModal:styles.displayNone, 
+                        {
+                            top: this.props.top, 
+                            left: this.props.left,
+                            transform: [
+                                { 
+                                    scale: this.state.nowScale 
+                                }
+                            ]
+                        }]}>
+                        {this.state.islandList}
+                    </Animated.View>
+                </TouchableOpacity>
+            </Animated.View>
         )
     }
 }
@@ -238,6 +313,7 @@ class LeftDrawerNavigator extends React.Component {
      * 点击了某个岛，开始切换
      */
     _onSelectIsland = ()=>{
+        console.log(this.props.navigation);
         this.setState({
             islandModalX: headerSize.x,
             islandModalY: headerSize.y + headerSize.height,
@@ -288,7 +364,8 @@ class LeftDrawerNavigator extends React.Component {
                     left={this.state.islandModalX}
                     top={this.state.islandModalY}
                     show={this.state.showAllIsland}
-                    onSelected={this._onChangeIsland}/>
+                    onSelected={this._onChangeIsland}
+                    onClosed={()=>{this.setState({showAllIsland: false})}}/>
                 <SectionList
                     style={{backgroundColor: '#FFF'}}
                     onRefresh={()=>this._pullDownRefresh(true)}
