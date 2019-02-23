@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated, ActivityIndicator } from 'react-native'
+import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated, ActivityIndicator, SafeAreaView } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
@@ -339,32 +339,34 @@ class NewPostScreen extends React.Component {
                         onChangeText={(text)=>{this.setState({inputText: text});}}
                         />
                 </View>
-                <View style={styles.toolsView}>
-                    <TouchableOpacity style={styles.toolsButton} onPress={this._openEmoticon}>
-                        <Icon name={'emotsmile'} size={24} color={'#FFF'} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={this.state.selectdeImage?styles.displayNone:styles.toolsButton} onPress={this._selectImage}>
-                    <Icon name={'picture'} size={24} color={'#FFF'} />
-                        <Image resizeMode='cover' source={this.state.selectdeImage} style={this.state.selectdeImage?styles.selectedImg:styles.displayNone}/>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={this.state.selectdeImage?styles.toolsButton:styles.displayNone} onPress={this._viewImage}>
-                        <Image resizeMode='cover' source={this.state.selectdeImage} style={styles.selectedImg}/>
-                        <TouchableOpacity onPress={this._removeImage} style={styles.deleteImage}>
-                            <Icon name={'close'} size={14} color={'red'} />
+                <SafeAreaView style={{backgroundColor: globalColor}}>
+                    <View style={styles.toolsView}>
+                        <TouchableOpacity style={styles.toolsButton} onPress={this._openEmoticon}>
+                            <Icon name={'emotsmile'} size={24} color={'#FFF'} />
                         </TouchableOpacity>
-                    </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.toolsButton} onPress={this._clearInput}>
-                        <Icon name={'trash'} size={24} color={'#FFF'} />
-                    </TouchableOpacity>
+                        <TouchableOpacity style={this.state.selectdeImage?styles.displayNone:styles.toolsButton} onPress={this._selectImage}>
+                        <Icon name={'picture'} size={24} color={'#FFF'} />
+                            <Image resizeMode='cover' source={this.state.selectdeImage} style={this.state.selectdeImage?styles.selectedImg:styles.displayNone}/>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.toolsButton} onPress={this._startSend}>
-                        <Icon style={this.state.sending?styles.displayNone:{}} name={'paper-plane'} size={24} color={'#FFF'} />
-                        <ActivityIndicator style={this.state.sending?{}:styles.displayNone} color={'#FFF'} size='small'/>
-                    </TouchableOpacity>
-                </View>
+                        <TouchableOpacity style={this.state.selectdeImage?styles.toolsButton:styles.displayNone} onPress={this._viewImage}>
+                            <Image resizeMode='cover' source={this.state.selectdeImage} style={styles.selectedImg}/>
+                            <TouchableOpacity onPress={this._removeImage} style={styles.deleteImage}>
+                                <Icon name={'close'} size={14} color={'red'} />
+                            </TouchableOpacity>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.toolsButton} onPress={this._clearInput}>
+                            <Icon name={'trash'} size={24} color={'#FFF'} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={styles.toolsButton} onPress={this._startSend}>
+                            <Icon style={this.state.sending?styles.displayNone:{}} name={'paper-plane'} size={24} color={'#FFF'} />
+                            <ActivityIndicator style={this.state.sending?{}:styles.displayNone} color={'#FFF'} size='small'/>
+                        </TouchableOpacity>
+                    </View>
+                </SafeAreaView>
             </View>
         );
     }
