@@ -325,8 +325,9 @@ async function realAnonymousGetCookie() {
  * @param {string} title 标题
  * @param {string} img 图片地址
  * @param {bool} waterMark 是否增加水印
+ * @param {function} onProgress 上传进度
  */
-async function replyNewThread(mode, tid, content, name="", email="", title="", img = null, waterMark = false) {
+async function replyNewThread(mode, tid, content, name="", email="", title="", img = null, waterMark = false, onProgress = null) {
     let url = await getUrl(mode == 1 ? configNetwork.apiUrl.replyThread : configNetwork.apiUrl.newThread);
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
@@ -350,7 +351,8 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
             headers: {
                 'cookie': await getUserCookie() 
             },
-            body: bodys
+            body: bodys,
+            onProgress: onProgress
         });
     }
     else {
@@ -366,11 +368,11 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
                 email: email,
                 title: title,
                 content: content,
-                water: waterMark
+                water: waterMark,
+                onProgress: onProgress
             },
         });
     }
-    console.log(response);
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }

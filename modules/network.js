@@ -18,6 +18,7 @@ function _request(url, option, uploadImg = null, imageKeyName = null) {
         onSuccess = null,
         onFail = null,
         onFinish = null,
+        onProgress = null,
         saveCookies = false,
     } = option;
     var xhr = new XMLHttpRequest();
@@ -35,6 +36,18 @@ function _request(url, option, uploadImg = null, imageKeyName = null) {
     }
     for(let key in body) {
         formData.append(key, body[key]);
+    }
+    xhr.upload.onprogress = e => {
+        if(onProgress && typeof onProgress === 'function' && e.lengthComputable){
+            let percent = Math.floor(e.loaded / e.total * 80) ;
+            onProgress(percent);
+        }
+    }
+    xhr.onprogress = e=> {
+        if(onProgress && typeof onProgress === 'function' && e.lengthComputable){
+            let percent = Math.floor(e.loaded / e.total * 20 + 80) ;
+            onProgress(percent);
+        }
     }
     xhr.onerror = e => {
         var failData = {

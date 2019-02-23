@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated } from 'react-native'
+import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated, ActivityIndicator } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
@@ -86,6 +86,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0
+    },
+    progressView: {
+        height: 8,
+        width: Dimensions.get('window').width,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        backgroundColor: '#00BFFF',
+        zIndex: 500
     }
 });
 
@@ -97,6 +106,8 @@ class NewPostScreen extends React.Component {
             inputText: '',
             imageWatermark: false,
             selectdeImage: null,
+            translateNow: new Animated.Value(0),
+            sending: false
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -120,12 +131,23 @@ class NewPostScreen extends React.Component {
 
         this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
         this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
+        this._setProgress(0);
     }
     componentWillUnmount() {
         this.keyboardWillShowListener.remove();
         this.keyboardWillHideListener.remove();
     }
-
+    _setProgress = (targetValue) => {
+        Animated.timing(
+            this.state.translateNow,
+            {
+                toValue: (-Dimensions.get('window').width) + Dimensions.get('window').width * (targetValue / 100),
+                duration: 300,
+                useNativeDriver: true,
+                stiffness: 80
+            }
+        ).start();
+    }
     /**
      * 键盘打开或改变
      */
@@ -157,22 +179,36 @@ class NewPostScreen extends React.Component {
      */
     _startSend = async () => {
         Keyboard.dismiss();
+        if(this._sending){
+            return;
+        }
         if(!this.state.selectdeImage && this.state.inputText.length <= 0) {
             TopModalApis.showMessage(this.refs['msgBox'], '错误', '请输入内容','确认');
             return;
         }
+        this._sending = true;
+        this.setState({
+            sending: true,
+        });
         let res = await replyNewThread(
             this.mode,
             this.mode == 1 ? this.replyId: this.fid,
             this.state.inputText,
             '','','',
             this.state.selectdeImage?this.state.selectdeImage.uri:null,
-            this.state.imageWatermark);
+            this.state.imageWatermark,
+            this._setProgress
+        );
+        this._sending = false;
+        this.setState({
+            sending: false,
+        });
         if(res.status == 'ok') {
             this.props.navigation.goBack();
         }
         else {
             TopModalApis.showMessage(this.refs['msgBox'], '错误', res.errmsg,'确认');
+            this._setProgress(0);
         }
     }
 
@@ -181,7 +217,6 @@ class NewPostScreen extends React.Component {
      * @param {object} imgData 选择或拍照的数据
      */
     _selectImageHandle(imgData) {
-        console.log(imgData);
         if(imgData.error) {
             TopModalApis.showMessage(this.refs['msgBox'], '错误', imgData.error,'确认');
         }
@@ -292,6 +327,7 @@ class NewPostScreen extends React.Component {
             <View style={[styles.pageView, {paddingBottom: this.state.bottomHeight}]}>
                 <TopModal ref={'msgBox'} />
                 <ActionSheet ref={'actMenu'} />
+                <Animated.View style={[styles.progressView, { transform: [{ translateX: this.state.translateNow }]}]}/>
                 <View style={styles.inputView}>
                     <TextInput
                         value={this.state.inputText}
@@ -325,7 +361,8 @@ class NewPostScreen extends React.Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.toolsButton} onPress={this._startSend}>
-                        <Icon name={'paper-plane'} size={24} color={'#FFF'} />
+                        <Icon style={this.state.sending?styles.displayNone:{}} name={'paper-plane'} size={24} color={'#FFF'} />
+                        <ActivityIndicator style={this.state.sending?{}:styles.displayNone} color={'#FFF'} size='small'/>
                     </TouchableOpacity>
                 </View>
             </View>
