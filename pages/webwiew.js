@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { TouchableOpacity, Linking, WebView, Text, StyleSheet, ActivityIndicator, View } from 'react-native'
+import { TouchableOpacity, Linking, Text, StyleSheet, ActivityIndicator, View } from 'react-native'
+import { WebView } from "react-native-webview"
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 
 const styles = StyleSheet.create({
