@@ -5,7 +5,6 @@ import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
 import { TopModal, TopModalApis } from '../component/top-modal'
 import { converDateTime } from '../modules/date-time'
-import { getUserCookie } from '../modules/cookie-manager'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configBase, configDynamic } from '../modules/config'
 import  { Toast, ToastApis } from '../component/toast'
@@ -402,13 +401,6 @@ class HomeScreen extends React.Component {
     _newThread = () => {
         if(this.fid == '-1') {
             TopModalApis.showMessage(this.refs['msgBox'], '错误','时间线不能发串，请在左侧选择要发串的板块。','确认');
-            this.setState({ 
-                footerLoading: 0 
-            });
-            return;
-        }
-        if(!getUserCookie()) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误','你还没有饼干，请在饼干管理器中选择饼干。','确认');
             this.setState({ 
                 footerLoading: 0 
             });
