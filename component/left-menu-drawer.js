@@ -313,7 +313,6 @@ class LeftDrawerNavigator extends React.Component {
      * 点击了某个岛，开始切换
      */
     _onSelectIsland = ()=>{
-        console.log(this.props.navigation);
         this.setState({
             islandModalX: headerSize.x,
             islandModalY: headerSize.y + headerSize.height,

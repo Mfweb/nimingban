@@ -125,7 +125,6 @@ class UserMemberLogin extends React.Component {
             TopModalApis.showMessage(this.refs['msgBox'], '错误', `检查状态失败：${sessionInfo.errmsg}，可能导致无法正常登录。`,'确认');
         }
         else {
-            console.log('loginCheck:', sessionInfo.session);
             this.setState({
                 sessionState: sessionInfo.session,
                 checkingSession: false

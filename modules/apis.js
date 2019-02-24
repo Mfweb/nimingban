@@ -232,7 +232,6 @@ async function getImage(imgMode, imageName) {
         var localPath = (imgMode === 'thumb' ? configLocal.localDirectory.imageCacheThumb : configLocal.localDirectory.imageCacheFull) + '/' + imageName.replace('/','-');
 
         if(await RNFS.exists(localPath)) {
-            console.log('Get image from cache.');
             return {
                 status: 'ok',
                 download: false,
@@ -259,7 +258,6 @@ async function getImage(imgMode, imageName) {
 
         let downloadStaRes = await downloadRes.promise;
         if(downloadStaRes.statusCode == 200 && downloadStaRes.bytesWritten > 0) {
-            console.log('image download ok', localPath);
             return {
                 status: 'ok',
                 download: true,
@@ -304,7 +302,6 @@ async function realAnonymousGetCookie() {
         return { status: 'error', errmsg: '获取失败，可能没开饼干' };
     }
     if(response.headers.hasOwnProperty('Set-Cookie')) {
-        console.log('find bt cookie');
         if(await addUserCookieFromString(response.headers['Set-Cookie'], false) == false) {
             return { status: 'error', errmsg: '解析饼干失败' };
         }

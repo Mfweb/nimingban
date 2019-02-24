@@ -422,7 +422,6 @@ class HomeScreen extends React.Component {
         if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
             this.loadingImages.push(index);
             let imgName = item.img + item.ext;
-            //console.log(imgName);
             getImage('thumb', imgName).then((res) => {
                 let imgUrl = require('../imgs/img-error.png');
                 if(res.status == 'ok') {

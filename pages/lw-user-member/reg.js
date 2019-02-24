@@ -99,7 +99,6 @@ class UserMemberRegister extends React.Component {
             });
         }
         else {
-            console.log('loginCheck:', sessionInfo.session);
             this.setState({
                 sessionState: sessionInfo.session,
                 checkingSession: false

@@ -50,7 +50,6 @@ async function clearCookie() {
  * @param {string} cookieIn 要设置的cookies
  */
 async function saveCookie(cookieIn) {
-    console.log('save:' + cookieIn);
     let savedCookies = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].memberCookie);
     if(savedCookies != null) {
         savedCookies = _cookieStrToJson(savedCookies);
@@ -66,7 +65,6 @@ async function saveCookie(cookieIn) {
 
     let saveString = _cookieJsonToStr(savedCookies);
     configDynamic.systemCookie[configDynamic.islandMode] = saveString;
-    console.log('save', saveString);
     await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].memberCookie, saveString);
 }
 
@@ -129,9 +127,7 @@ async function getUserCookie() {
  * @param {string} rawString 原始数据
  */
 async function addUserCookieFromString(rawString, enable = true) {
-    console.log('bt cookie', rawString);
     let cookieLine = _cookieStrToJson(rawString);
-    console.log(cookieLine);
     if(cookieLine == null) {
         return false;
     }

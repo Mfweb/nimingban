@@ -293,7 +293,6 @@ class NewPostScreen extends React.Component {
                 includeBase64: false,
                 compressImageQuality: 0.8
             });
-            console.log(pickerImage);
             if(!pickerImage) {
                 return;
             }
@@ -319,7 +318,6 @@ class NewPostScreen extends React.Component {
                 includeBase64: false,
                 compressImageQuality: 0.8
             });
-            console.log(pickerImage);
             if(!pickerImage) {
                 return;
             }

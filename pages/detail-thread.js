@@ -437,7 +437,6 @@ class DetailsScreen extends React.Component {
                     //这一页是空的，到底了
                     if( ((res.res.replys.length == 1) && (res.res.replys[0].id == 9999999))
                         || (res.res.replys.length == 0) ) {
-                        console.log('end');
                         this.setState({
                             footerLoading: 0,
                             loadEnd: true,
@@ -457,7 +456,6 @@ class DetailsScreen extends React.Component {
                         var pageLength = res.res.replys.length;
                         if(cpCount > 0) {
                             res.res.replys.splice(0, this.localReplyCount);
-                            //console.log(res.res.replys);
                             tempList = tempList.concat(res.res.replys);
                         }
                         else {
@@ -470,7 +468,7 @@ class DetailsScreen extends React.Component {
                             replyList: tempList,
                             page: nextPage,
                             footerLoading: 0
-                        }, ()=>{console.log('replay count:' + this.state.replyList.length.toString());});
+                        });
                         if(pageLength >= 19) {
                             this.localReplyCount = 0;
                         }
