@@ -45,26 +45,22 @@ class Toast extends React.Component {
     keyboardWillHideListener = null;
     componentWillUnmount() {
         this.isUnMount = true;
-        /*this.keyboardWillShowListener.remove();
-        this.keyboardWillHideListener.remove();*/
+        this.keyboardWillShowListener.remove();
+        this.keyboardWillHideListener.remove();
     }
-    /*componentWillMount() {
+    componentWillMount() {
         this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
         this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     }
     _keyboardWillShow = (e) => {
-        if(this.modalSize != null) {
-            let keyboardTop = Dimensions.get('window').height - e.startCoordinates.height;
-
-        }
-        else {
-            this.setState({top: -Header.HEIGHT});
-        }
+        this.setState({
+            bottom: e.startCoordinates.height + 30
+        });
     }
     _keyboardWillHide = () => {
-        this.setState({top: -Header.HEIGHT});
+        this.setState({bottom: Dimensions.get('window').height * 0.2});
     }
-*/
+
     startAnime = function (mode, finish = ()=>{}) {
         if(this.isUnMount) {
             return;
@@ -133,8 +129,7 @@ class Toast extends React.Component {
     }
 }
 
-var toastRef = null;
-function showMessage(content, time=1000) {
+function showMessage(toastRef, content, time=1000) {
     if(!toastRef) {
         return;
     }
@@ -144,12 +139,9 @@ function showMessage(content, time=1000) {
         toastRef.showToast(time);
     });
 }
-function setRef(refx) {
-    toastRef = refx;
-}
+
 const ToastApis = {
     show: showMessage,
-    setRef: setRef
 };
 
 export  { Toast, ToastApis }

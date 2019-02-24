@@ -11,6 +11,7 @@ import { configBase, configDynamic } from '../modules/config'
 import  { Toast, ToastApis } from '../component/toast'
 
 const globalColor = '#fa7296';
+var ToastRef = null;
 
 const styles = StyleSheet.create({
     mainList: {
@@ -231,7 +232,7 @@ class MainListItem extends React.Component {
                 });
             }
             else {
-                ToastApis.show('图片加载失败');
+                ToastApis.show(ToastRef, '图片加载失败');
             }
         });
     }
@@ -466,7 +467,7 @@ class HomeScreen extends React.Component {
         return (
             <View style={{flex:1}}>
                 <TopModal ref={'msgBox'} />
-                <Toast ref={ToastApis.setRef}/>
+                <Toast ref={(ref) => {ToastRef = ref}}/>
                 <FlatList
                     data={this.state.threadList}
                     extraData={this.state}
