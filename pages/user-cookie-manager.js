@@ -7,7 +7,6 @@ import { Header } from 'react-navigation';
 import { configDynamic } from '../modules/config';
 import { RNCamera } from 'react-native-camera'
 import SoundPlayer from 'react-native-sound'
-import ImagePicker from 'react-native-image-picker';
 import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCookie } from '../modules/cookie-manager'
 import { UIButton } from '../component/uibutton'
 import { NavigationActions } from 'react-navigation'

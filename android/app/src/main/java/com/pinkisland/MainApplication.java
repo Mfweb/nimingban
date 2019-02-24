@@ -3,6 +3,7 @@ package com.pinkisland;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import org.reactnative.camera.RNCameraPackage;
@@ -31,6 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PickerPackage(),
             new RNCWebViewPackage(),
             new RNSoundPackage(),
             new RNCameraPackage(),

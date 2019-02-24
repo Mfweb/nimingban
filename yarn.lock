@@ -4717,15 +4717,15 @@ react-native-gesture-handler@^1.0.15, react-native-gesture-handler@~1.0.14:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-image-crop-picker@^0.22.0:
+  version "0.22.0"
+  resolved "http://registry.npm.taobao.org/react-native-image-crop-picker/download/react-native-image-crop-picker-0.22.0.tgz#8f7f657dcde45cc366ac529a624205155571c03f"
+  integrity sha1-j39lfc3kXMNmrFKaYkIFFVVxwD8=
+
 react-native-image-pan-zoom@^2.1.9:
   version "2.1.11"
   resolved "http://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.11.tgz#61bcb69219d95e76a9797d23e4a2e8e0bd654ae9"
   integrity sha1-Yby2khnZXnapeX0j5KLo4L1lSuk=
-
-react-native-image-picker@^0.28.0:
-  version "0.28.0"
-  resolved "http://registry.npm.taobao.org/react-native-image-picker/download/react-native-image-picker-0.28.0.tgz#e3f26df170ea932e9c0404624fbced2f59a300e3"
-  integrity sha1-4/Jt8XDqky6cBARiT7ztL1mjAOM=
 
 react-native-image-zoom-viewer@^2.2.25:
   version "2.2.25"

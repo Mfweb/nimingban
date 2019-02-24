@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
 import { ActionSheet, ActionSheetApis } from '../component/action-sheet'
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 const globalColor = '#fa7296';
 const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "(=ﾟωﾟ)=",
 "| ω・´)", "|-` )", "|д` )", "|ー` )", "|∀` )",
@@ -217,32 +217,29 @@ class NewPostScreen extends React.Component {
      * @param {object} imgData 选择或拍照的数据
      */
     _selectImageHandle(imgData) {
-        if(imgData.error) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', imgData.error,'确认');
-        }
-        else {
-            TopModalApis.showMessage(this.refs['msgBox'], '提示', '图片添加水印？', '是', ()=>{
-                TopModalApis.closeModal(this.refs['msgBox'], ()=>{
-                    this.setState({
-                        imageWatermark: true,
-                        selectdeImage: {uri: imgData.uri}
-                    });
-                });
-            }, '否', ()=>{
-                TopModalApis.closeModal(this.refs['msgBox'], ()=>{
-                    this.setState({
-                        imageWatermark: false,
-                        selectdeImage: {uri: imgData.uri}
-                    });
+        TopModalApis.showMessage(this.refs['msgBox'], '提示', '图片添加水印？', '是', ()=>{
+            TopModalApis.closeModal(this.refs['msgBox'], ()=>{
+                this.setState({
+                    imageWatermark: true,
+                    selectdeImage: {uri: `file://${imgData}`}
                 });
             });
-        }
+        }, '否', ()=>{
+            TopModalApis.closeModal(this.refs['msgBox'], ()=>{
+                this.setState({
+                    imageWatermark: false,
+                    selectdeImage: {uri: `file://${imgData}`}
+                });
+            });
+        });
     }
     /**
      * 预览图片
      */
     _viewImage = () => {
-        console.log('view image');
+        this.props.navigation.push('ImageViewer', {
+            imageUrl: this.state.selectdeImage.uri
+        });
     }
     /**
      * 去掉图片
@@ -267,27 +264,10 @@ class NewPostScreen extends React.Component {
                 ActionSheetApis.closeActionSheet(this.refs['actMenu'], ()=>{
                     switch (index) {
                         case 0:
-                            ImagePicker.launchCamera({
-                                cameraType: 'back',
-                                mediaType: 'photo',
-                                noData: true,
-                                //allowsEditing: true,
-                            }, (response) => {
-                                if(!response.didCancel) {
-                                    this._selectImageHandle(response);
-                                }
-                            });
+                            this._selectImageFromCamera();
                             break;
                         case 1:
-                            ImagePicker.launchImageLibrary({
-                                mediaType: 'photo',
-                                noData: true
-                                //allowsEditing: true,
-                            }, (response) => {
-                                if(!response.didCancel) {
-                                    this._selectImageHandle(response);
-                                }
-                            });
+                            this._selectImageFromLibrary();
                             break;
                         case 2:
                             TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
@@ -298,6 +278,59 @@ class NewPostScreen extends React.Component {
                     }
                 });
             });
+    }
+
+    /**
+     * 拍照
+     */
+    _selectImageFromCamera = async() => {
+        try{
+            let pickerImage = await ImagePicker.openCamera({
+                mediaType: 'photo',
+                cropping: false,
+                multiple: false,
+                writeTempFile: false,
+                includeBase64: false,
+                compressImageQuality: 0.8
+            });
+            console.log(pickerImage);
+            if(!pickerImage) {
+                return;
+            }
+            if(pickerImage.size > (2 * 1024 * 1024)) {
+                TopModalApis.showMessage(this.refs['msgBox'], '错误', '图片大于2M，请重新选择','确认');
+            }
+            else {
+                this._selectImageHandle(pickerImage.path);
+            }
+        }catch {
+        }
+    }
+    /**
+     * 从图库中选择图片
+     */
+    _selectImageFromLibrary = async() => {
+        try{
+            let pickerImage = await ImagePicker.openPicker({
+                mediaType: 'photo',
+                cropping: false,
+                multiple: false,
+                writeTempFile: false,
+                includeBase64: false,
+                compressImageQuality: 0.8
+            });
+            console.log(pickerImage);
+            if(!pickerImage) {
+                return;
+            }
+            if(pickerImage.size > (2 * 1024 * 1024)) {
+                TopModalApis.showMessage(this.refs['msgBox'], '错误', '图片大于2M，请重新选择','确认');
+            }
+            else {
+                this._selectImageHandle(pickerImage.path);
+            }
+        }catch {
+        }
     }
     /**
      * 打开颜文字输入
