@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
+import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, Animated } from 'react-native'
 import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
@@ -123,6 +123,17 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         padding: 8
+    },
+    touchActiveView: {
+        position: 'absolute',
+        backgroundColor: globalColor,
+        opacity: 0.3,
+        width: '100%',
+        height: '100%',
+        left: '-100%',
+        top: 0,
+        marginTop: 10,
+        zIndex: 995,
     }
 });
 
@@ -157,10 +168,24 @@ class MainListItem extends React.Component {
         this.state = {
             displayData:{},
             imgLocalUri: null,
-            imgUri: null
+            imgUri: null,
+            translateNow: new Animated.Value(0),
         }
     }
+    _startAnime(to, success=()=>{}) {
+        //this.state.translateNow.setValue(0);
+        Animated.timing(
+            this.state.translateNow,
+            {
+                toValue: to,
+                duration: 300,
+                useNativeDriver: true,
+                stiffness: 80
+            }
+        ).start(success);
+    }
     _onPress = () => {
+        this._startAnime(Dimensions.get('window').width, ()=>this._startAnime(0));
         requestAnimationFrame(()=>{
             this.props.navigation.navigate('Details', {
                 threadDetail: {
@@ -236,7 +261,8 @@ class MainListItem extends React.Component {
     render() {
         let { itemDetail } = this.props;
         return (
-            <TouchableOpacity onPress={this._onPress} activeOpacity={0.5}>
+            <TouchableOpacity style={{overflow: 'hidden'}} onPress={this._onPress} activeOpacity={1}>
+                <Animated.View style={[styles.touchActiveView, {transform: [{ translateX: this.state.translateNow}]}]}/>
                 <View style={styles.mainListItem}>
                     <View style={styles.mainListItemHeader}>
                         <View style={styles.mainListItemHeaderL1}>
