@@ -97,7 +97,7 @@ class ImageProcessView extends React.Component {
     render() {
         return (
             <Animated.Image 
-            style={{
+            style={[{
                 height: this.props.height,
                 width: this.props.width,
                 left: 0,
@@ -106,7 +106,7 @@ class ImageProcessView extends React.Component {
                         rotate: this.state.translateNow.interpolate( {inputRange: [0, 360],outputRange: ['0deg', '360deg']} )
                     }
                 ] 
-            }}
+            }].concat(this.props.style)}
             resizeMode='contain'
             source={require('../imgs/loading.png')}>
             </Animated.Image>

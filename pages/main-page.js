@@ -134,6 +134,12 @@ const styles = StyleSheet.create({
         top: 0,
         marginTop: 10,
         zIndex: 995,
+    },
+    downloadImage: {
+        position: 'absolute',
+        top: Dimensions.get('window').width / 2.5 / 2 - 20,
+        left: Dimensions.get('window').width / 2.5 / 2 - 20,
+        zIndex: 500
     }
 });
 
@@ -170,6 +176,7 @@ class MainListItem extends React.Component {
             imgLocalUri: null,
             imgUri: null,
             translateNow: new Animated.Value(0),
+            fullImageDownloading: false
         }
     }
     _startAnime(to, success=()=>{}) {
@@ -205,8 +212,24 @@ class MainListItem extends React.Component {
         });
     }
     _onPressImage = () => {
-        this.props.navigation.push('ImageViewer', {
-            imgName: this.props.itemDetail.img + this.props.itemDetail.ext
+        if(this.state.fullImageDownloading) {
+            return;
+        }
+        this.setState({
+            fullImageDownloading: true
+        }, async () => {
+            let res = await getImage('image', this.props.itemDetail.img + this.props.itemDetail.ext);
+            this.setState({
+                fullImageDownloading: false
+            });
+            if(res.status === 'ok') {
+                this.props.navigation.push('ImageViewer', {
+                    imageUrl: res.path
+                });
+            }
+            else {
+                
+            }
         });
     }
     componentDidMount() {
@@ -296,9 +319,10 @@ class MainListItem extends React.Component {
                         {this.state.displayData['threadContent']}
                     </Text>
                     <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage} activeOpacity={0.5}>
-                    <MainListImage 
-                        localUri={this.state.imgLocalUri}
-                        imgUri={this.state.imgUri}/>
+                        <MainListImage 
+                            localUri={this.state.imgLocalUri}
+                            imgUri={this.state.imgUri}/>
+                        <ImageProcessView style={this.state.fullImageDownloading?styles.downloadImage:styles.displayNone} height={40} width={40} />
                     </TouchableOpacity>
 
 
