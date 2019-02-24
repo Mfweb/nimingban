@@ -1,12 +1,11 @@
 import React from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, Clipboard, Linking } from 'react-native'
+import { Text, Button, View, Image, FlatList, TextInput, TouchableOpacity, Keyboard, Clipboard, Linking } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../../component/top-modal'
 import { checkSession, getVerifyCode, startVerified, logout, checkVerifiedSMS } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-import { getHTMLDom } from '../../modules/html-decoder'
 import { globalColor, styles } from './user-member-styles'
 
 const countryCodeList = [

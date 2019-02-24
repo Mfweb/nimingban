@@ -1,10 +1,9 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
-import { ImageProcessView } from '../../component/list-process-view'
+import { View, Image, TextInput, Keyboard } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../../component/top-modal'
-import { checkSession, login, changePassword, logout } from '../../modules/user-member-api'
+import { checkSession, changePassword, logout } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
 /**

@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#00000072',
         top: 0,
         left: 0,
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
+        width: '100%',
+        height: '100%',
         position: 'absolute',
         zIndex: 9996,
     },
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#696969'
     },
     body: {
-        width: Dimensions.get('window').width * 0.95,
+        width: '95%',
         backgroundColor: '#F5F5F5',
         borderRadius: 8,
         padding: 4

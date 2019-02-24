@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
+import { View, Image, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../../component/top-modal'

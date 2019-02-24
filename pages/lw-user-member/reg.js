@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
+import { Text, View, Image, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'

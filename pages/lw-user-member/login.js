@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Modal, TextInput, Dimensions, TouchableOpacity, Keyboard } from 'react-native'
+import { Text, View, Image, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'

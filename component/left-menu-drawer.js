@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
     closeMask: {
         backgroundColor: '#00000050',
         position: 'absolute',
-        width: Dimensions.get('window').width * 0.7,
-        height: Dimensions.get('window').height,
+        width: '100%',
+        height: '100%',
         top:0,
         left: 0,
         flex: 1,
