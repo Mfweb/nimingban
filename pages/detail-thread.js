@@ -157,9 +157,6 @@ class MainListItem extends React.Component {
             fullImageDownloading: false
         }
     }
-    _onPress = () => {
-
-    }
     _onPressImage = () => {
         if(this.state.fullImageDownloading) {
             return;
@@ -242,46 +239,44 @@ class MainListItem extends React.Component {
     render() {
         let { itemDetail } = this.props;
         return (
-            <TouchableOpacity onPress={this._onPress} activeOpacity={0.8}>
-                <View style={styles.mainListItem}>
-                    <View style={styles.mainListItemHeader}>
-                        <View style={styles.mainListItemHeaderL1}>
-                            <Text style={this.state.displayData['userIDStyle']}>
-                                {this.state.displayData['userID']}
-                            </Text>
+            <View style={styles.mainListItem}>
+                <View style={styles.mainListItemHeader}>
+                    <View style={styles.mainListItemHeaderL1}>
+                        <Text style={this.state.displayData['userIDStyle']}>
+                            {this.state.displayData['userID']}
+                        </Text>
 
-                            <Text style={styles.mainListItemTid}>
-                                No.{itemDetail.id}
-                            </Text>
+                        <Text style={styles.mainListItemTid}>
+                            No.{itemDetail.id}
+                        </Text>
 
-                            <Text style={styles.mainListItemTime}>
-                                {this.state.displayData['displayTime']}
-                            </Text>
-                        </View>
+                        <Text style={styles.mainListItemTime}>
+                            {this.state.displayData['displayTime']}
+                        </Text>
                     </View>
-                    <View style={styles.mainListItemHeaderL2}>
-                        <View style={styles.mainListItemHeaderL2L}>
-                            <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
-                            <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
-                        </View>
-
-                        <View style={styles.mainListItemHeaderL2R}>
-                            <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
-                        </View>
-
-                    </View>
-
-                    <Text style={styles.mainListItemContent}>
-                        {this.state.displayData['threadContent']}
-                    </Text>
-                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage}>
-                        <MainListImage 
-                            localUri={this.state.imgLocalUri}
-                            imgUri={this.state.imgUri}/>
-                        <ImageProcessView style={this.state.fullImageDownloading?styles.downloadImage:styles.displayNone} height={40} width={40} />
-                    </TouchableOpacity>
                 </View>
-            </TouchableOpacity>
+                <View style={styles.mainListItemHeaderL2}>
+                    <View style={styles.mainListItemHeaderL2L}>
+                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
+                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
+                    </View>
+
+                    <View style={styles.mainListItemHeaderL2R}>
+                        <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
+                    </View>
+
+                </View>
+
+                <Text style={styles.mainListItemContent}>
+                    {this.state.displayData['threadContent']}
+                </Text>
+                <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage}>
+                    <MainListImage 
+                        localUri={this.state.imgLocalUri}
+                        imgUri={this.state.imgUri}/>
+                    <ImageProcessView style={this.state.fullImageDownloading?styles.downloadImage:styles.displayNone} height={40} width={40} />
+                </TouchableOpacity>
+            </View>
         );
     }
 }
@@ -412,7 +407,8 @@ class DetailsScreen extends React.Component {
                     ItemSeparatorComponent={this._itemSeparator}
                     onEndReachedThreshold={0.1}
                     onEndReached={this._pullUpLoading}
-                    onViewableItemsChanged={this._onViewableItemsChanged}
+                    pageSize={20}
+                    removeClippedSubviews={true}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.headerLoading}
@@ -458,16 +454,12 @@ class DetailsScreen extends React.Component {
                             res.res.replys.splice(0, this.localReplyCount);
                             tempList = tempList.concat(res.res.replys);
                         }
-                        else {
-                            this.setState({
-                                loadEnd: true,
-                                footerMessage: `加载完成,点击再次加载 ${tempList.length-1}/${res.res.replyCount}`
-                            });
-                        }
                         this.setState({
                             replyList: tempList,
                             page: nextPage,
-                            footerLoading: 0
+                            footerLoading: 0,
+                            loadEnd: cpCount > 0 ? false : true,
+                            footerMessage: cpCount > 0 ? `上拉继续加载 ${tempList.length-1}/${res.res.replyCount}` : `加载完成,点击再次加载 ${tempList.length-1}/${res.res.replyCount}`
                         });
                         if(pageLength >= 19) {
                             this.localReplyCount = 0;

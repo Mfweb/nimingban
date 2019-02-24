@@ -20,18 +20,21 @@ const styles = StyleSheet.create({
     mainListItem: {
         backgroundColor: '#FFF',
         marginTop: 10,
-        padding: 8,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: '#696969',
+        shadowColor: '#696969'
     },
     mainListItemContent: {
         color: '#000',
-        fontSize: 20
+        fontSize: 20,
+        paddingLeft: 8,
+        paddingRight: 8
     },
     mainListItemHeader: {
-
+        paddingTop: 8,
+        paddingLeft: 8,
+        paddingRight: 8
     },
     mainListItemHeaderL1: {
         flex: 1,
@@ -45,7 +48,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8
+        marginBottom: 8,
+        paddingLeft: 8,
+        paddingRight: 8
     },
     mainListItemHeaderL2L: {
         marginLeft: 5,
@@ -95,7 +100,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
         marginBottom: 3,
-        paddingRight: 5
+        paddingLeft: 8,
+        paddingRight: 13
     },
     mainListReplayCountText: {
         marginLeft: 3,
@@ -108,7 +114,8 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width / 2.5,
         height: Dimensions.get('window').width / 2.5,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingLeft: 8,
     },
     mainListItemImage: {
         height: Dimensions.get('window').width / 2.5,
@@ -133,7 +140,6 @@ const styles = StyleSheet.create({
         height: '100%',
         left: '-200%',
         top: 0,
-        marginTop: 10,
         zIndex: 995,
         borderTopRightRadius: 500,
         borderBottomRightRadius: 500,
@@ -287,52 +293,50 @@ class MainListItem extends React.Component {
     render() {
         let { itemDetail } = this.props;
         return (
-            <TouchableOpacity style={{overflow: 'hidden'}} onPress={this._onPress} activeOpacity={1}>
+            <TouchableOpacity style={styles.mainListItem} onPress={this._onPress} activeOpacity={1}>
                 <Animated.View style={[styles.touchActiveView, {transform: [{ translateX: this.state.translateNow}]}]}/>
-                <View style={styles.mainListItem}>
-                    <View style={styles.mainListItemHeader}>
-                        <View style={styles.mainListItemHeaderL1}>
-                            <Text style={itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName}>
-                                {this.state.displayData['userID']}
-                            </Text>
+                <View style={styles.mainListItemHeader}>
+                    <View style={styles.mainListItemHeaderL1}>
+                        <Text style={itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName}>
+                            {this.state.displayData['userID']}
+                        </Text>
 
-                            <Text style={styles.mainListItemTid}>
-                                No.{itemDetail.id}
-                            </Text>
+                        <Text style={styles.mainListItemTid}>
+                            No.{itemDetail.id}
+                        </Text>
 
-                            <Text style={styles.mainListItemTime}>
-                                {this.state.displayData['displayTime']}
-                            </Text>
-                        </View>
+                        <Text style={styles.mainListItemTime}>
+                            {this.state.displayData['displayTime']}
+                        </Text>
                     </View>
-                    <View style={styles.mainListItemHeaderL2}>
-                        <View style={styles.mainListItemHeaderL2L}>
-                            <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
-                            <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
-                        </View>
-
-                        <View style={styles.mainListItemHeaderL2R}>
-                            <Text style={this.state.displayData['fName'] ?styles.mainListItemForumName: styles.displayNone }>{this.state.displayData['fName']}</Text>
-                            <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
-                        </View>
-
+                </View>
+                <View style={styles.mainListItemHeaderL2}>
+                    <View style={styles.mainListItemHeaderL2L}>
+                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
+                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
                     </View>
 
-                    <Text style={styles.mainListItemContent}>
-                        {this.state.displayData['threadContent']}
-                    </Text>
-                    <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage} activeOpacity={0.5}>
-                        <MainListImage 
-                            localUri={this.state.imgLocalUri}
-                            imgUri={this.state.imgUri}/>
-                        <ImageProcessView style={this.state.fullImageDownloading?styles.downloadImage:styles.displayNone} height={40} width={40} />
-                    </TouchableOpacity>
-
-
-                    <View style={styles.mainListItemBottom}>
-                        <Icon name={'bubble'} size={24} color={globalColor} />
-                        <Text style={styles.mainListReplayCountText}>{this.state.displayData['replayCountText']}</Text>
+                    <View style={styles.mainListItemHeaderL2R}>
+                        <Text style={this.state.displayData['fName'] ?styles.mainListItemForumName: styles.displayNone }>{this.state.displayData['fName']}</Text>
+                        <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
                     </View>
+
+                </View>
+
+                <Text style={styles.mainListItemContent}>
+                    {this.state.displayData['threadContent']}
+                </Text>
+                <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage} activeOpacity={0.5}>
+                    <MainListImage 
+                        localUri={this.state.imgLocalUri}
+                        imgUri={this.state.imgUri}/>
+                    <ImageProcessView style={this.state.fullImageDownloading?styles.downloadImage:styles.displayNone} height={40} width={40} />
+                </TouchableOpacity>
+
+
+                <View style={styles.mainListItemBottom}>
+                    <Icon name={'bubble'} size={24} color={globalColor} />
+                    <Text style={styles.mainListReplayCountText}>{this.state.displayData['replayCountText']}</Text>
                 </View>
             </TouchableOpacity>
         );
@@ -451,9 +455,7 @@ class HomeScreen extends React.Component {
             );
         }
     }
-    /*_onViewableItemsChanged = ({changed}) => {
-        console.log(changed);
-    }*/
+
     render() {
         return (
             <View style={{flex:1}}>
@@ -470,7 +472,8 @@ class HomeScreen extends React.Component {
                     ListFooterComponent={this._footerComponent}
                     onEndReachedThreshold={0.1}
                     onEndReached={this._pullUpLoading}
-                    onViewableItemsChanged={this._onViewableItemsChanged}
+                    pageSize={20}
+                    removeClippedSubviews={true}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.headerLoading}

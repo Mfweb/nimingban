@@ -106,10 +106,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
  */
 function getHTMLDom(htmlTextIn, aCallback = ()=>{}) {
     let domJSON = parseDOM( escape2Html(htmlTextIn) );
-    let dom = _getHTMLDom(domJSON, aCallback);
-    return (
-        <Text key={domKey++}>{dom}</Text>
-    );
+    return _getHTMLDom(domJSON, aCallback);
 }
 /**
  * 将字符串中的链接转为超链接
