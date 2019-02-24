@@ -6,6 +6,7 @@ import { ListProcessView,ImageProcessView } from '../component/list-process-view
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal, TopModalApis } from '../component/top-modal'
 import { converDateTime } from '../modules/date-time'
+import  { Toast, ToastApis } from '../component/toast'
 
 const globalColor = '#fa7296';
 
@@ -175,7 +176,7 @@ class MainListItem extends React.Component {
                 });
             }
             else {
-                
+                ToastApis.show('图片加载失败');
             }
         });
     }
@@ -395,7 +396,8 @@ class DetailsScreen extends React.Component {
     render() {
         return (
             <View style={{flex:1}}>
-               <TopModal ref={'msgBox'} />
+                <TopModal ref={'msgBox'} />
+                <Toast ref={ToastApis.setRef}/>
                 <FlatList
                     data={this.state.replyList}
                     extraData={this.state}

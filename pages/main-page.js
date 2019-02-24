@@ -8,6 +8,7 @@ import { converDateTime } from '../modules/date-time'
 import { getUserCookie } from '../modules/cookie-manager'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configBase, configDynamic } from '../modules/config'
+import  { Toast, ToastApis } from '../component/toast'
 
 const globalColor = '#fa7296';
 
@@ -230,7 +231,7 @@ class MainListItem extends React.Component {
                 });
             }
             else {
-                
+                ToastApis.show('图片加载失败');
             }
         });
     }
@@ -464,7 +465,8 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <View style={{flex:1}}>
-               <TopModal ref={'msgBox'} />
+                <TopModal ref={'msgBox'} />
+                <Toast ref={ToastApis.setRef}/>
                 <FlatList
                     data={this.state.threadList}
                     extraData={this.state}
