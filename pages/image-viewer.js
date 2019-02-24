@@ -1,26 +1,25 @@
 import React, { Component } from 'react'
-import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, TouchableHighlight, Dimensions, Animated, TouchableOpacity } from 'react-native'
-import { createAppContainer, createStackNavigator, StackActions, NavigationActions, createDrawerNavigator } from 'react-navigation'
-import { getForumList, getImageCDN } from '../modules/apis'
+import { Text, Button, View, Image, StyleSheet, FlatList, SafeAreaView, StatusBar, PanResponder, Dimensions, Animated, TouchableOpacity } from 'react-native'
+import { Header } from 'react-navigation'
+import { getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
-import { ListProcessView } from '../component/list-process-view'
 import { HomeScreen } from '../pages/main-page'
+import { ImageProcessView } from '../component/list-process-view'
+import ZoomImageViewer from 'react-native-image-zoom-viewer';
 
 const screenDisplaySize = {
-    height: Dimensions.get('window').height - 100,
+    height: Dimensions.get('window').height - Header.HEIGHT,
     width: Dimensions.get('window').width
 }
+
 const styles = StyleSheet.create({
     mainView: {
         top:0,
-        width: screenDisplaySize.width,
-        height: screenDisplaySize.height,
-        borderWidth:1,
-        borderColor:'red'
+        flex: 1
     },
     mainImage: {
-        width: screenDisplaySize.width,
-        height: screenDisplaySize.height,
+        left: 0,
+        top: 0
     }
 });
 
@@ -28,19 +27,58 @@ const styles = StyleSheet.create({
 class ImageViewer extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
-            title: '粉岛 - 图片预览'
+            title: '粉岛 - 图片预览',
+            left: 0,
+            top: 0
         };
     };
-    
+    constructor(props) {
+        super(props);
+        this.state = {
+            localImage: null,
+        };
+    }
+    unmount = true;
+    componentDidMount() {
+        this.unmount = false;
+        this._downloadImage();
+    }
+    _downloadImage = async () =>{
+        let res = await getImage('image', this.props.navigation.getParam('imgName', '-1'));
+        if(this.unmount) {
+            return;
+        }
+        if(res.status === 'ok') {
+            this.setState({
+                localImage: {url: res.path, props: {}}
+            });
+        }
+        else {
+            this.setState({
+                localImage: {url: '', source: require('../imgs/img-error.png')}
+            });
+        }
+    }
+    componentWillUnmount() {
+        this.unmount = true;
+    }
     render() {
-        console.log(this.props.navigation);
-        let imgUrl = getImageCDN() + 'image/' + this.props.navigation.getParam('imgName', '-1');
-        console.log(imgUrl)
-        return (
-            <View style={styles.mainView}>
-                <Image style={styles.mainImage} resizeMode='contain' source={{uri: imgUrl}}></Image>
-            </View>
-        );
+        if(this.state.localImage) {
+            return (
+                <View style={styles.mainView}>
+                    <ZoomImageViewer 
+                    imageUrls={[this.state.localImage]}
+                    backgroundColor={'#5F5F5F'}/>
+                </View>
+            );
+        }
+        else {
+            return (
+                <View style={[styles.mainView,{alignItems: 'center',justifyContent: 'center',}]}>
+                    <ImageProcessView height={40} width={40} />
+                </View>
+            );
+        }
     }
 }
 
