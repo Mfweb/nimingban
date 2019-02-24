@@ -128,12 +128,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         backgroundColor: globalColor,
         opacity: 0.3,
-        width: '100%',
+        width: '200%',
         height: '100%',
-        left: '-100%',
+        left: '-200%',
         top: 0,
         marginTop: 10,
         zIndex: 995,
+        borderTopRightRadius: 500,
+        borderBottomRightRadius: 500,
     },
     downloadImage: {
         position: 'absolute',
@@ -185,14 +187,13 @@ class MainListItem extends React.Component {
             this.state.translateNow,
             {
                 toValue: to,
-                duration: 300,
+                duration: 200,
                 useNativeDriver: true,
                 stiffness: 80
             }
         ).start(success);
     }
     _onPress = () => {
-        this._startAnime(Dimensions.get('window').width, ()=>this._startAnime(0));
         requestAnimationFrame(()=>{
             this.props.navigation.navigate('Details', {
                 threadDetail: {
@@ -210,6 +211,7 @@ class MainListItem extends React.Component {
                 }
             });
         });
+        this._startAnime(Dimensions.get('window').width * 2, ()=>this._startAnime(0));
     }
     _onPressImage = () => {
         if(this.state.fullImageDownloading) {
