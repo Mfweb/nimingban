@@ -37,7 +37,6 @@ class HistoryManager extends React.Component {
         }
     }
     componentDidMount() {
-        history.init();
     }
     componentWillUnmount() {
 

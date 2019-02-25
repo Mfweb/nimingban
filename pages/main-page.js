@@ -8,6 +8,7 @@ import { converDateTime } from '../modules/date-time'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configBase, configDynamic } from '../modules/config'
 import  { Toast, ToastApis } from '../component/toast'
+import { history } from '../modules/history'
 
 const globalColor = '#fa7296';
 var ToastRef = null;
@@ -218,6 +219,7 @@ class MainListItem extends React.Component {
                 }
             });
         });
+        history.addNewHistory('browse', this.props.itemDetail, Date.parse(new Date()));
         this._startAnime(Dimensions.get('window').width * 2, ()=>this._startAnime(0));
     }
     _onPressImage = () => {
@@ -387,6 +389,7 @@ class HomeScreen extends React.Component {
     }
 
     componentDidMount() {
+        this._initHistoryDataBase();
         this.fid = this.props.navigation.getParam('forumID', '-1');
         this.fname = this.props.navigation.getParam('name', '时间线');
 
@@ -398,7 +401,9 @@ class HomeScreen extends React.Component {
             menuFunctions: this._menuFunctions
         });
     }
-    
+    _initHistoryDataBase = async () => {
+        history.init();
+    }
     /**
      * 发新串
      */
