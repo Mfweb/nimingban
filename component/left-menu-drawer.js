@@ -242,6 +242,13 @@ class LeftDrawerNavigator extends React.Component {
             })
         ], 0);
     }
+    _gotoHistory = () => {
+        this.props.navigation._childrenNavigation.UserMember.reset([
+            NavigationActions.navigate({ 
+                routeName: 'HistoryManager'
+            })
+        ], 0);
+    }
     /**
      * 板块分组
      */
@@ -389,6 +396,12 @@ class LeftDrawerNavigator extends React.Component {
                             </TouchableOpacity>
                         </View>
 
+                        <View style={styles.bottomToolsItem}>
+                            <TouchableOpacity onPress={this._gotoHistory}>
+                                <Icon name={'book-open'} size={32} color={'#FFF'} />
+                            </TouchableOpacity>
+                        </View>
+                        
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity onPress={this._gotoMember}>
                                 <Icon name={'user'} size={32} color={'#FFF'} />
