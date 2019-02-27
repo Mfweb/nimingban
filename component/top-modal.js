@@ -64,7 +64,7 @@ class TopModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            top: -Header.HEIGHT,
+            top: 0,
             nowOpacity: new Animated.Value(0),
             nowScale: new Animated.Value(0.1),
             showx: false,
@@ -112,7 +112,7 @@ class TopModal extends React.Component {
         }
     }
     _keyboardWillHide = () => {
-        this.setState({top: -Header.HEIGHT});
+        this.setState({top: 0});
     }
     _onLayout = (res) => {
         this.modalSize = res.nativeEvent.layout;
@@ -249,7 +249,10 @@ class TopModal extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.modalTitleSplitLine}></View>
-                    <View style={{width: this.state.width}}>
+                    <View style={{
+                        width: this.state.width, 
+                        maxHeight: Dimensions.get('window').height - Header.HEIGHT - 50 - 40 - 20 // -button - title - 保留
+                        }}>
                         {this.state.item}
                     </View>
                     <View style={styles.modalTitleSplitLine}></View>
