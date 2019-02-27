@@ -25,8 +25,8 @@ function historyTableInit(tableName) {
 function init() {
     return new Promise((resolve, reject)=>{
         __historySQLite = SQLite.openDatabase({name: 'history.db', location: 'default'}, async ()=>{
-            await __clearHistory('UserBrowseHistory');
-            await __clearHistory('UserReplyHistory');
+            //await __clearHistory('UserBrowseHistory');
+            //await __clearHistory('UserReplyHistory');
             await historyTableInit('UserBrowseHistory');
             await historyTableInit('UserReplyHistory');
         }, (e)=>{

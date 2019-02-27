@@ -5,6 +5,8 @@ import { TopModal, TopModalApis } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
 import { ActionSheet, ActionSheetApis } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-crop-picker';
+import { history } from '../modules/history'
+
 const globalColor = '#fa7296';
 const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "(=ﾟωﾟ)=",
 "| ω・´)", "|-` )", "|д` )", "|ー` )", "|∀` )",
@@ -204,7 +206,15 @@ class NewPostScreen extends React.Component {
             sending: false,
         });
         if(res.status == 'ok') {
-            this.props.navigation.goBack();
+            if(this.props.navigation.getParam('mode', 1) == 1) {
+                history.addNewHistory('reply', this.props.navigation.getParam('threadDetail', 'null'),  Date.parse(new Date()))
+                .then(()=>{
+                    this.props.navigation.goBack();
+                });
+            }
+            else {
+                this.props.navigation.goBack();
+            }
         }
         else {
             TopModalApis.showMessage(this.refs['msgBox'], '错误', res.errmsg,'确认');

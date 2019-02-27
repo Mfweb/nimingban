@@ -337,6 +337,7 @@ class DetailsScreen extends React.Component {
 
     _replyThread = () => {
         this.props.navigation.push('NewPostScreen', {
+            threadDetail: this.state.replyList[0],
             mode: 1,
             replyId: this.threadDetail.id
         });
