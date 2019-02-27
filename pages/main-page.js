@@ -3,15 +3,15 @@ import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, 
 import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
-import { TopModal, TopModalApis } from '../component/top-modal'
+import { TopModal } from '../component/top-modal'
 import { converDateTime } from '../modules/date-time'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configBase, configDynamic } from '../modules/config'
-import  { Toast, ToastApis } from '../component/toast'
+import  { Toast } from '../component/toast'
 import { history } from '../modules/history'
 
 const globalColor = '#fa7296';
-var ToastRef = null;
+var mToast = null;
 
 const styles = StyleSheet.create({
     mainList: {
@@ -239,7 +239,7 @@ class MainListItem extends React.Component {
                 });
             }
             else {
-                ToastApis.show(ToastRef, '图片加载失败');
+                mToast.show('图片加载失败');
             }
         });
     }
@@ -409,7 +409,7 @@ class HomeScreen extends React.Component {
      */
     _newThread = () => {
         if(this.fid == '-1') {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误','时间线不能发串，请在左侧选择要发串的板块。','确认');
+            this.TopModal.showMessage('错误','时间线不能发串，请在左侧选择要发串的板块。','确认');
             this.setState({ 
                 footerLoading: 0 
             });
@@ -423,7 +423,7 @@ class HomeScreen extends React.Component {
     }
 
     _menuFunctions = () =>{
-        TopModalApis.showMessage(this.refs['msgBox'], '测试','功能未实现','确认');
+        this.TopModal.showMessage('测试','功能未实现','确认');
     }
 
     loadingImages = Array();
@@ -464,8 +464,8 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <View style={{flex:1}}>
-                <TopModal ref={'msgBox'} />
-                <Toast ref={(ref) => {ToastRef = ref}}/>
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <Toast ref={(ref) => {mToast = ref}}/>
                 <FlatList
                     data={this.state.threadList}
                     extraData={this.state}
@@ -510,13 +510,13 @@ class HomeScreen extends React.Component {
                     });
                 }
                 else {
-                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败:${res.errmsg}`,'确认');
+                    this.TopModal.showMessage('错误', `请求数据失败:${res.errmsg}`,'确认');
                     this.setState({ 
                         footerLoading: 0 
                     });
                 }
             }).catch(()=>{
-                TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败`,'确认');
+                this.TopModal.showMessage('错误', `请求数据失败`,'确认');
                 this.setState({ 
                     footerLoading: 0 
                 });
@@ -540,11 +540,11 @@ class HomeScreen extends React.Component {
                     });
                 }
                 else {
-                    TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${res.errmsg}`,'确认');
+                    this.TopModal.showMessage('错误', `请求数据失败${res.errmsg}`,'确认');
                     this.setState({ headerLoading: false });
                 }
             }).catch((error)=>{
-                TopModalApis.showMessage(this.refs['msgBox'],'错误', `请求数据失败${error}`,'确认');
+                this.TopModal.showMessage('错误', `请求数据失败${error}`,'确认');
                 console.log(error)
                 this.setState({ 
                     headerLoading: false 

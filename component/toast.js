@@ -105,6 +105,14 @@ class Toast extends React.Component {
             left: Dimensions.get('window').width / 2 - res.nativeEvent.layout.width / 2
         });
     }
+
+    show = (content, time=1000) => {
+        this.setState({
+            message: content
+        }, ()=>{
+            this.showToast(time);
+        });
+    }
     render() {
         if(this.state.showx === false) {
             return null;
@@ -129,19 +137,4 @@ class Toast extends React.Component {
     }
 }
 
-function showMessage(toastRef, content, time=1000) {
-    if(!toastRef) {
-        return;
-    }
-    toastRef.setState({
-        message: content
-    }, ()=>{
-        toastRef.showToast(time);
-    });
-}
-
-const ToastApis = {
-    show: showMessage,
-};
-
-export  { Toast, ToastApis }
+export  { Toast }

@@ -3,10 +3,10 @@ import { Text, View, Image, FlatList, TextInput, Dimensions, TouchableOpacity, K
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../../component/top-modal'
+import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo, getEnableUserCookie } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-import { ActionSheet, ActionSheetApis } from '../../component/action-sheet'
+import { ActionSheet } from '../../component/action-sheet'
 import { globalColor, styles } from './user-member-styles'
 import { Header } from 'react-navigation';
 
@@ -80,10 +80,7 @@ class UserMemberCookies extends React.Component {
      * 显示右侧菜单
      */
     _showRightMenu = () => {
-        ActionSheetApis.showActionSheet(this.refs['actMenu'],
-            Dimensions.get('window').width,
-            Header.HEIGHT,
-            '详细菜单',
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, '详细菜单',
             [
                 '获取新饼干',
                 '实名认证信息',
@@ -92,7 +89,7 @@ class UserMemberCookies extends React.Component {
                 '退出登录'
             ],
             (index) => {
-                ActionSheetApis.closeActionSheet(this.refs['actMenu'], ()=>{
+                this.ActionSheet.closeActionSheet(()=>{
                     switch(index) {
                         case 0:
                         this._getNewCookie();
@@ -122,21 +119,20 @@ class UserMemberCookies extends React.Component {
      * 获取名认证信息
      */
     _getVerifiedInfo = () => {
-        TopModalApis.showMessage(this.refs['msgBox'], '实名信息', 
+        this.TopModal.showMessage('实名信息', 
         (
             <View style={{height: 100, justifyContent: 'center', alignItems: 'center'}}>
                 <ImageProcessView 
                 height={25} 
                 width={25} />
             </View>
-        ), '确认', ()=>TopModalApis.closeModal(this.refs['msgBox']), null, null, async ()=>{
+        ), '确认', ()=>this.TopModal.closeModal(), null, null, async ()=>{
             let info = await getVerifiedInfo();
             if(info.status == 'error') {
-                TopModalApis.setContent(this.refs['msgBox'], '获取错误');
+                this.TopModal.setContent('获取错误');
             }
             else {
-                TopModalApis.setContent(this.refs['msgBox'], 
-                (
+                this.TopModal.setContent((
                     <View style={{height: 100, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{fontSize: 22, color:'#696969'}}>
                             {info.info.statusString}
@@ -153,9 +149,9 @@ class UserMemberCookies extends React.Component {
      * 退出登录
      */
     _logout = () => {
-        TopModalApis.showMessage(this.refs['msgBox'], '提示', '确认退出？', '确认', async () => {
+        this.TopModal.showMessage('提示', '确认退出？', '确认', async () => {
             await logout();
-            TopModalApis.closeModal(this.refs['msgBox'], () => {
+            this.TopModal.closeModal(() => {
                 this.props.navigation.reset([
                     NavigationActions.navigate({
                         routeName: 'UserMemberLogin'
@@ -171,10 +167,10 @@ class UserMemberCookies extends React.Component {
     _enableCookie = async (id) => {
         let sta = await getEnableUserCookie(id);
         if(sta.status == 'ok') {
-            TopModalApis.showMessage(this.refs['msgBox'], '提示', '应用成功','确认');
+            this.TopModal.showMessage('提示', '应用成功','确认');
         }
         else {
-            TopModalApis.showMessage(this.refs['msgBox'], '提示', sta.errmsg,'确认');
+            this.TopModal.showMessage('提示', sta.errmsg,'确认');
         }
     }
     inputVcode = '';
@@ -185,14 +181,14 @@ class UserMemberCookies extends React.Component {
         this.inputVcode = '';
         this._getVCode(() => {
             Keyboard.dismiss();
-            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+            this.TopModal.closeModal(async ()=>{
                 if(this.inputVcode.length != 5) {
-                    TopModalApis.showMessage(this.refs['msgBox'], '错误', '验证码输入错误','确认');
+                    this.TopModal.showMessage('错误', '验证码输入错误','确认');
                 }
                 else {
                     let deleteRes = await deleteUserCookie(id, this.inputVcode);
                     if(deleteRes.status != 'ok') {
-                        TopModalApis.showMessage(this.refs['msgBox'], '错误', deleteRes.errmsg,'确认');
+                        this.TopModal.showMessage('错误', deleteRes.errmsg,'确认');
                     }
                     else {
                         this._pullDownRefreshing();
@@ -208,14 +204,14 @@ class UserMemberCookies extends React.Component {
         this.inputVcode = '';
         this._getVCode(() => {
             Keyboard.dismiss();
-            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+            this.TopModal.closeModal(async ()=>{
                 if(this.inputVcode.length != 5) {
-                    TopModalApis.showMessage(this.refs['msgBox'], '错误', '验证码输入错误','确认');
+                    this.TopModal.showMessage('错误', '验证码输入错误','确认');
                 }
                 else {
                     let newRes = await getNewUserCookie(this.inputVcode);
                     if(newRes.status != 'ok') {
-                        TopModalApis.showMessage(this.refs['msgBox'], '错误', newRes.errmsg,'确认');
+                        this.TopModal.showMessage('错误', newRes.errmsg,'确认');
                     }
                     else {
                         this._pullDownRefreshing();
@@ -228,7 +224,7 @@ class UserMemberCookies extends React.Component {
      * 获取验证码
      */
     _getVCode = (checkCallback) => {
-        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
+        this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
                 <TouchableOpacity 
@@ -239,10 +235,10 @@ class UserMemberCookies extends React.Component {
                     width={25} />
                 </TouchableOpacity>
             </View>
-        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();this.TopModal.closeModal();},
         async () => {
             let vcode = await getVerifyCode();
-            TopModalApis.setContent(this.refs['msgBox'], (
+            this.TopModal.setContent((
                 <View style={{width: 280, height: 100}}>
                     <TouchableOpacity style={styles.vcode}
                     onPress={()=>this._getVCode(checkCallback)}>
@@ -321,8 +317,8 @@ class UserMemberCookies extends React.Component {
     render() {
         return (
             <View style={{flex: 1}}>
-                <TopModal ref={'msgBox'} />
-                <ActionSheet ref={'actMenu'} />
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}
@@ -356,7 +352,7 @@ class UserMemberCookies extends React.Component {
                     this._showRealName();
                 }
                 else {
-                    TopModalApis.showMessage(this.refs['msgBox'], '错误', userCookies.errmsg,'确认');
+                    this.TopModal.showMessage('错误', userCookies.errmsg,'确认');
                 }
             }
             else {

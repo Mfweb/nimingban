@@ -1,8 +1,8 @@
 import React from 'react'
 import { Text, View, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, RefreshControl, Platform, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../component/top-modal'
-import { ActionSheet, ActionSheetApis } from '../component/action-sheet'
+import { TopModal } from '../component/top-modal'
+import { ActionSheet } from '../component/action-sheet'
 import { Header } from 'react-navigation';
 import { configDynamic } from '../modules/config';
 import { RNCamera } from 'react-native-camera'
@@ -123,13 +123,10 @@ class UserCookieManager extends React.Component {
         if(configDynamic.islandMode != 'lw') {
             menuList.push('立即获取');
         }
-        ActionSheetApis.showActionSheet(this.refs['actMenu'],
-            Dimensions.get('window').width,
-            Header.HEIGHT,
-            '详细菜单',
+        this.ActionSheet.showActionSheet( Dimensions.get('window').width, Header.HEIGHT, '详细菜单',
             menuList,
             (index) => {
-                ActionSheetApis.closeActionSheet(this.refs['actMenu'], ()=>{
+                this.ActionSheet.closeActionSheet(()=>{
                     switch(index) {
                         case 0:
                             this._scanQRCode();
@@ -141,7 +138,7 @@ class UserCookieManager extends React.Component {
                             break;
                         case 3:
                             if(configDynamic.islandMode == 'lw') {
-                                TopModalApis.showMessage(this.refs['msgBox'], '错误', '该功能不支持芦苇岛', '确认');
+                                this.TopModal.showMessage('错误', '该功能不支持芦苇岛', '确认');
                                 return;
                             }
                             else {
@@ -155,11 +152,11 @@ class UserCookieManager extends React.Component {
     _autoGet = async () => {
         let res = await realAnonymousGetCookie();
         if(res.status == 'ok') {
-            TopModalApis.showMessage(this.refs['msgBox'], '提示', '获取完成', '确认');
+            this.TopModal.showMessage('提示', '获取完成', '确认');
             this._pullDownRefreshing();
         }
         else {
-            TopModalApis.showMessage(this.refs['msgBox'], '提示', res.errmsg, '确认');
+            this.TopModal.showMessage('提示', res.errmsg, '确认');
         }
     }
     /**
@@ -167,7 +164,7 @@ class UserCookieManager extends React.Component {
      */
     _manualInput = () => {
         this.__inputCookieString = '';
-        TopModalApis.showMessage(this.refs['msgBox'], '输入饼干内容', 
+        this.TopModal.showMessage('输入饼干内容', 
         (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
             <TextInput 
                 style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
@@ -175,7 +172,7 @@ class UserCookieManager extends React.Component {
                 textAlignVertical='center'
                 returnKeyType={'done'}
                 onSubmitEditing={()=>{
-                    TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+                    this.TopModal.closeModal(async ()=>{
                         this._addCookieToList(this.__inputCookieString);
                     });
                 }}
@@ -185,7 +182,7 @@ class UserCookieManager extends React.Component {
         </View>),
         '确认',
         ()=>{
-            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+            this.TopModal.closeModal(async ()=>{
                 this._addCookieToList(this.__inputCookieString);
             });
         }, '取消');
@@ -195,8 +192,7 @@ class UserCookieManager extends React.Component {
      */
     _scanQRCode = () => {
         this.cameraScan = true;
-        TopModalApis.showMessage(this.refs['msgBox'],
-            '扫码',
+        this.TopModal.showMessage('扫码',
             (
                 <RNCamera
                     style={{
@@ -214,8 +210,8 @@ class UserCookieManager extends React.Component {
                         if(this.cameraScan) {
                             this.cameraScan = false;
                             this.codeSound.play();
-                            TopModalApis.closeModal(this.refs['msgBox'], ()=>{
-                                TopModalApis.setContent(this.refs['msgBox'], null);
+                            this.TopModal.closeModal(()=>{
+                                this.TopModal.setContent(null);
                                 try{
                                     let cookieJSON = JSON.parse(data);
                                     if(cookieJSON && cookieJSON.hasOwnProperty('cookie')) {
@@ -223,10 +219,10 @@ class UserCookieManager extends React.Component {
                                     }
                                     else {
                                         console.log(cookieJSON);
-                                        TopModalApis.showMessage(this.refs['msgBox'], '错误', '该二维码中不包含饼干信息', '确认');
+                                        this.TopModal.showMessage('错误', '该二维码中不包含饼干信息', '确认');
                                     }
                                 }catch(err){
-                                    TopModalApis.showMessage(this.refs['msgBox'], '错误', '该二维码中不包含饼干信息', '确认');
+                                    this.TopModal.showMessage('错误', '该二维码中不包含饼干信息', '确认');
                                 }
                             });
                         }
@@ -242,11 +238,11 @@ class UserCookieManager extends React.Component {
         if(this._checkCookie(cookieValue)) {
             this._getUserMark(async (markStr)=>{
                 if(await addUserCookieList(markStr, cookieValue)) {
-                    TopModalApis.showMessage(this.refs['msgBox'], '提示', '添加成功', '确认');
+                    this.TopModal.showMessage('提示', '添加成功', '确认');
                     this._pullDownRefreshing();
                 }
                 else{
-                    TopModalApis.showMessage(this.refs['msgBox'], '错误', '饼干已存在', '确认');
+                    this.TopModal.showMessage('错误', '饼干已存在', '确认');
                 }
             });
         }
@@ -256,12 +252,12 @@ class UserCookieManager extends React.Component {
      */
     _checkCookie = (cookieValue) => {
         if(!cookieValue || cookieValue.length < 20) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', '必须输入饼干内容', '确认');
+            this.TopModal.showMessage('错误', '必须输入饼干内容', '确认');
             return false;
         }
         for(let i = 0; i < this.state.userCookies.length; i++) {
             if(this.state.userCookies[i].value == cookieValue) {
-                TopModalApis.showMessage(this.refs['msgBox'], '错误', '饼干已存在', '确认');
+                this.TopModal.showMessage('错误', '饼干已存在', '确认');
                 return false;
             }
         }
@@ -272,7 +268,7 @@ class UserCookieManager extends React.Component {
      */
     _getUserMark = (finish = ()=>{}) => {
         this.__inputMarkString = '';
-        TopModalApis.showMessage(this.refs['msgBox'], '输入备注(可以为空)', 
+        this.TopModal.showMessage('输入备注(可以为空)', 
         <View style={{height: 30, marginTop:20, marginBottom: 20}}>
             <TextInput 
                 style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
@@ -280,7 +276,7 @@ class UserCookieManager extends React.Component {
                 textAlignVertical='center'
                 returnKeyType={'done'}
                 onSubmitEditing={()=>{
-                    TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+                    this.TopModal.closeModal(async ()=>{
                         finish(this.__inputMarkString);
                     });
                 }}
@@ -289,7 +285,7 @@ class UserCookieManager extends React.Component {
                 }}/>
         </View>
         , '确认',()=>{
-            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+            this.TopModal.closeModal(async ()=>{
                 finish(this.__inputMarkString);
             });
         }, '取消');
@@ -385,8 +381,8 @@ class UserCookieManager extends React.Component {
      * 删除指定饼干
      */
     _deleteCookie = (value) => {
-        TopModalApis.showMessage(this.refs['msgBox'], '信息', '确认删除？', '确认', async ()=>{
-            TopModalApis.closeModal(this.refs['msgBox']);
+        this.TopModal.showMessage('信息', '确认删除？', '确认', async ()=>{
+            this.TopModal.closeModal();
             await removeUserCookieList(value);
             this._pullDownRefreshing();
         }, '取消');
@@ -401,8 +397,8 @@ class UserCookieManager extends React.Component {
     render() {
         return (
             <View style={{flex: 1}}>
-                <TopModal ref={'msgBox'} />
-                <ActionSheet ref={'actMenu'} />
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}

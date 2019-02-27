@@ -3,7 +3,7 @@ import { Text, View, Image, TextInput, TouchableOpacity, Keyboard } from 'react-
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../../component/top-modal'
+import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, login } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
@@ -122,7 +122,7 @@ class UserMemberLogin extends React.Component {
             this.setState({
                 checkingSession: false
             });
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', `检查状态失败：${sessionInfo.errmsg}，可能导致无法正常登录。`,'确认');
+            this.TopModal.showMessage('错误', `检查状态失败：${sessionInfo.errmsg}，可能导致无法正常登录。`,'确认');
         }
         else {
             this.setState({
@@ -148,7 +148,7 @@ class UserMemberLogin extends React.Component {
     _onLogin = async () => {
         Keyboard.dismiss();
         if(this.inputVcode.length != 5) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', `验证码长度错误`,'确认');
+            this.TopModal.showMessage('错误', `验证码长度错误`,'确认');
             return;
         }
         this.setState({
@@ -159,7 +159,7 @@ class UserMemberLogin extends React.Component {
             this.setState({
                 checkingSession: false
             });
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', loginRes.errmsg,'确认');
+            this.TopModal.showMessage('错误', loginRes.errmsg,'确认');
         }
         else {
             this.setState({
@@ -179,16 +179,16 @@ class UserMemberLogin extends React.Component {
     _onLoginStart = async () => {
         Keyboard.dismiss();
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', `账号格式错误`,'确认');
+            this.TopModal.showMessage('错误', `账号格式错误`,'确认');
             return;
         }
         if( this.inputPassWord.length < 5 ) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', `密码格式错误`,'确认');
+            this.TopModal.showMessage('错误', `密码格式错误`,'确认');
             return; 
         }
         this._getVCode(()=>{
             Keyboard.dismiss();
-            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+            this.TopModal.closeModal(async ()=>{
                 await this._onLogin();
             });
         });
@@ -198,7 +198,7 @@ class UserMemberLogin extends React.Component {
      * 获取验证码
      */
     _getVCode = (checkCallback) => {
-        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
+        this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
                 <TouchableOpacity 
@@ -209,10 +209,10 @@ class UserMemberLogin extends React.Component {
                     width={25} />
                 </TouchableOpacity>
             </View>
-        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();this.TopModal.closeModal();},
         async () => {
             let vcode = await getVerifyCode();
-            TopModalApis.setContent(this.refs['msgBox'], (
+            this.TopModal.setContent((
                 <View style={{width: 280, height: 100}}>
                     <TouchableOpacity style={styles.vcode}
                     onPress={()=>this._getVCode(checkCallback)}>
@@ -239,7 +239,7 @@ class UserMemberLogin extends React.Component {
     render() {
         return (
             <View style={styles.loginView}>
-                <TopModal ref={'msgBox'} />
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.loginTitleImg} 
                 resizeMode={'contain'} 

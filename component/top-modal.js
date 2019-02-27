@@ -161,7 +161,65 @@ class TopModal extends React.Component {
             }, success);
         });
     }
-   
+    /**
+     * 显示一个对话框
+     * @param {string} title 标题
+     * @param {string or object} content 内容
+     * @param {string} successButtonText 确认按钮
+     * @param {function} successButtonCallBack 确认回调
+     * @param {string} cancelButtonText 取消按钮
+     * @param {function} cancelButtonCallBack 取消回调
+     */
+    showMessage = ( title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null, 
+        showSuccess=()=>{}, onClosePress=null) => {
+        let tempContent = 
+            (typeof content == 'string') 
+            ?
+            (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
+                <Text style={{fontSize: 20, margin: 10}}>{content}</Text>
+            </ScrollView>)
+            :
+            content;
+        this.setState({
+            width: Dimensions.get('window').width * 0.8,
+            title: title,
+            item: tempContent,
+            leftButtonText: cancelButtonText,
+            onLeftButtonPress: cancelButtonCallBack == null?()=>this.hideModal():cancelButtonCallBack,
+            rightButtonText: successButtonText,
+            onRightButtonPress: successButtonCallBack == null?()=>this.hideModal():successButtonCallBack,
+            onClosePress: onClosePress==null ? ()=>this.hideModal() : onClosePress,
+        }, ()=>{
+            this.showModal(showSuccess);
+        });
+    }
+
+    /**
+     * 设置新内容
+     * @param {string or object} newContent 内容
+     */
+    setContent = (newContent) => {
+        let tempContent = 
+            (typeof newContent == 'string') 
+            ?
+            (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
+                <Text style={{fontSize: 20, margin: 10}}>{newContent}</Text>
+            </ScrollView>)
+            :
+            newContent;
+        this.setState({
+            item: tempContent,
+        });
+    }
+
+    /**
+     * 关闭窗口
+     * @param {function} success 动画完成回调
+     */
+    closeModal = (success = () =>{}) => {
+        this.hideModal(success);
+    }
+
     render() {
         return (
             <Animated.View 
@@ -227,84 +285,4 @@ class TopModal extends React.Component {
     }
 }
 
-/**
- * 显示一个对话框
- * @param {object} refx ref
- * @param {string} title 标题
- * @param {string or object} content 内容
- * @param {string} successButtonText 确认按钮
- * @param {function} successButtonCallBack 确认回调
- * @param {string} cancelButtonText 取消按钮
- * @param {function} cancelButtonCallBack 取消回调
- */
-function showMessage(refx = null, 
-    title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null, 
-    showSuccess=()=>{}, onClosePress=null) {
-    if(!refx) {
-        return;
-    }
-    let tempContent = 
-        (typeof content == 'string') 
-        ?
-        (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
-            <Text style={{fontSize: 20, margin: 10}}>{content}</Text>
-        </ScrollView>)
-        :
-        content;
-    refx.setState({
-        width: Dimensions.get('window').width * 0.8,
-        title: title,
-        item: tempContent,
-        leftButtonText: cancelButtonText,
-        onLeftButtonPress: cancelButtonCallBack == null?()=>refx.hideModal():cancelButtonCallBack,
-        rightButtonText: successButtonText,
-        onRightButtonPress: successButtonCallBack == null?()=>refx.hideModal():successButtonCallBack,
-        onClosePress: onClosePress==null ? ()=>refx.hideModal() : onClosePress,
-    }, ()=>{
-        refx.showModal(showSuccess);
-    });
-}
-
-/**
- * 设置新内容
- * @param {object} refx ref
- * @param {string or object} newContent 内容
- */
-function setContent(refx = null, 
-    newContent) {
-    if(!refx) {
-        return;
-    }
-    let tempContent = 
-        (typeof newContent == 'string') 
-        ?
-        (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
-            <Text style={{fontSize: 20, margin: 10}}>{newContent}</Text>
-        </ScrollView>)
-        :
-        newContent;
-    refx.setState({
-        item: tempContent,
-    });
-}
-
-/**
- * 关闭窗口
- * @param {object} refx ref
- * @param {function} success 动画完成回调
- */
-function closeModal(refx = null, 
-    success = () =>{}) {
-    if(!refx) {
-        return;
-    }
-    refx.hideModal(success);
-}
-
-const TopModalApis = {
-    showMessage: showMessage,
-    setContent: setContent,
-    closeModal: closeModal
-};
-
-export  { TopModal,TopModalApis }
+export  { TopModal }

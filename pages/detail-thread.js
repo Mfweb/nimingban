@@ -4,12 +4,12 @@ import { getReplyList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../component/top-modal'
+import { TopModal } from '../component/top-modal'
 import { converDateTime } from '../modules/date-time'
-import  { Toast, ToastApis } from '../component/toast'
+import  { Toast } from '../component/toast'
 
 const globalColor = '#fa7296';
-var ToastRef = null;
+var mToast = null;
 
 const styles = StyleSheet.create({
     mainList: {
@@ -174,7 +174,7 @@ class MainListItem extends React.Component {
                 });
             }
             else {
-                ToastApis.show(ToastRef, '图片加载失败');
+                mToast.show('图片加载失败');
             }
         });
     }
@@ -393,8 +393,8 @@ class DetailsScreen extends React.Component {
     render() {
         return (
             <View style={{flex:1}}>
-                <TopModal ref={'msgBox'} />
-                <Toast ref={(ref) => {ToastRef = ref}}/>
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <Toast ref={(ref) => {mToast = ref}}/>
                 <FlatList
                     data={this.state.replyList}
                     extraData={this.state}
@@ -471,13 +471,13 @@ class DetailsScreen extends React.Component {
                     }
                 }
                 else {
-                    TopModalApis.showMessage(this.refs['msgBox'], '错误', `请求数据失败:${res.errmsg}`,'确认');
+                    this.TopModal.showMessage('错误', `请求数据失败:${res.errmsg}`,'确认');
                     this.setState({
                         footerLoading: 0,
                     });
                 }
             }).catch((res)=>{
-                TopModalApis.showMessage(this.refs['msgBox'], '错误', `请求数据失败:${res}`,'确认');
+                this.TopModal.showMessage('错误', `请求数据失败:${res}`,'确认');
                 this.setState({
                     footerLoading: 0,
                 });
@@ -524,7 +524,7 @@ class DetailsScreen extends React.Component {
                 });
             }
             else {
-                TopModalApis.showMessage(this.refs['msgBox'], '错误', `请求数据失败:${res.errmsg}`,'确认');
+                this.TopModal.showMessage('错误', `请求数据失败:${res.errmsg}`,'确认');
                 this.setState({
                     headerLoading: false,
                     loadEnd: true

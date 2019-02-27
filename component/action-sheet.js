@@ -131,7 +131,7 @@ class ActionSheet extends React.Component {
         this.isUnmount = true;
     }
 
-    showActionSheet = (success=()=>{}) =>{
+    _showActionSheet = (success=()=>{}) =>{
         this.setState({
             showx: true
         }, ()=>{
@@ -139,7 +139,7 @@ class ActionSheet extends React.Component {
         });
     }
 
-    hideActionSheet = (success=()=>{}) =>{
+    _hideActionSheet = (success=()=>{}) =>{
         this.startAnime('out', ()=>{
             this.setState({
                 showx: false
@@ -203,6 +203,40 @@ class ActionSheet extends React.Component {
             });  
         }
     }
+
+
+    /**
+     * 显示一个actionSheet
+     * @param {number} x 箭头X坐标
+     * @param {number} y 箭头Y坐标
+     * @param {string} title 标题
+     * @param {object} items 内容
+     * @param {function} pressCallback 点击了项目回调
+     * @param {function} success 显示完成回调
+     * @param {function} close 关闭回调
+     */
+    showActionSheet = (x, y, title, items, pressCallback, success=()=>{} , close = null) => {
+        this.setState({
+            setTop: y,
+            setLeft: x,
+
+            items: items,
+            title: title,
+
+            onItemPress: pressCallback,
+            onClosePress: close?close:()=>this._hideActionSheet()
+        }, ()=>{
+            this._showActionSheet(success);
+        });
+    }
+
+    /**
+     * 关闭actionSheet
+     * @param {function} success 关闭回调
+     */
+    closeActionSheet = (success=()=>{}) => {
+        this._hideActionSheet(success);
+    }
     render() {
         let items = [];
         for(let i = 0; i < this.state.items.length; i++) {
@@ -253,50 +287,4 @@ class ActionSheet extends React.Component {
     }
 }
 
-/**
- * 显示一个actionSheet
- * @param {object} refx ref
- * @param {number} x 箭头X坐标
- * @param {number} y 箭头Y坐标
- * @param {string} title 标题
- * @param {object} items 内容
- * @param {function} pressCallback 点击了项目回调
- * @param {function} success 显示完成回调
- * @param {function} close 关闭回调
- */
-function showActionSheet(refx, x, y, title, items, pressCallback, success=()=>{} , close = null) {
-    if(!refx) {
-        return;
-    }
-    refx.setState({
-        setTop: y,
-        setLeft: x,
-
-        items: items,
-        title: title,
-
-        onItemPress: pressCallback,
-        onClosePress: close?close:()=>refx.hideActionSheet()
-    }, ()=>{
-        refx.showActionSheet(success);
-    });
-}
-
-/**
- * 关闭actionSheet
- * @param {object} refx ref
- * @param {function} success 关闭回调
- */
-function closeActionSheet(refx, success=()=>{}) {
-    if(!refx) {
-        return;
-    }
-    refx.hideActionSheet(success);
-}
-
-const ActionSheetApis = {
-    showActionSheet: showActionSheet,
-    closeActionSheet: closeActionSheet
-};
-
-export {ActionSheet, ActionSheetApis}
+export { ActionSheet }

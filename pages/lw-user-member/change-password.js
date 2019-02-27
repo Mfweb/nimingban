@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, TextInput, Keyboard } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../../component/top-modal'
+import { TopModal } from '../../component/top-modal'
 import { checkSession, changePassword, logout } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
@@ -113,7 +113,7 @@ class UserMemberChangePassword extends React.Component {
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
-            TopModalApis.showMessage(this.refs['msgBox'], `请求数据失败:${res}`,'确认');
+            this.TopModal.showMessage(`请求数据失败:${res}`,'确认');
             this.setState({
                 checkingSession: false
             });
@@ -132,15 +132,15 @@ class UserMemberChangePassword extends React.Component {
     _onChangeStart = async () => {
         Keyboard.dismiss();
         if( this.inputOldPassword.length < 5) {
-            TopModalApis.showMessage(this.refs['msgBox'],'错误', `旧密码长度太短`,'确认');
+            this.TopModal.showMessage('错误', `旧密码长度太短`,'确认');
             return;
         }
         if(this.inputNewPassword1 !== this.inputNewPassword2) {
-            TopModalApis.showMessage(this.refs['msgBox'],'错误', `新密码输入不相同`,'确认');
+            this.TopModal.showMessage('错误', `新密码输入不相同`,'确认');
             return;
         }
         if(this.inputNewPassword1.length < 5) {
-            TopModalApis.showMessage(this.refs['msgBox'],'错误', `新密码长度太短`,'确认');
+            this.TopModal.showMessage('错误', `新密码长度太短`,'确认');
             return; 
         }
         this.setState({checkSession: true}, async ()=>{
@@ -154,7 +154,7 @@ class UserMemberChangePassword extends React.Component {
                 ], 0);
             }
             else {
-                TopModalApis.showMessage(this.refs['msgBox'],'错误', info.errmsg,'确认');
+                this.TopModal.showMessage('错误', info.errmsg,'确认');
                 this.setState({
                     checkSession: false
                 });
@@ -166,7 +166,7 @@ class UserMemberChangePassword extends React.Component {
     render() {
         return (
             <View style={styles.memberView}>
-                <TopModal ref={'msgBox'} />
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.memberTitleImg} 
                 resizeMode={'contain'} 

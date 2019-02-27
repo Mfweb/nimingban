@@ -1,9 +1,9 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated, ActivityIndicator, SafeAreaView } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../component/top-modal'
+import { TopModal } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
-import { ActionSheet, ActionSheetApis } from '../component/action-sheet'
+import { ActionSheet } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-crop-picker';
 import { history } from '../modules/history'
 
@@ -185,7 +185,7 @@ class NewPostScreen extends React.Component {
             return;
         }
         if(!this.state.selectdeImage && this.state.inputText.length <= 0) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', '请输入内容','确认');
+            this.TopModal.showMessage('错误', '请输入内容','确认');
             return;
         }
         this._sending = true;
@@ -217,7 +217,7 @@ class NewPostScreen extends React.Component {
             }
         }
         else {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', res.errmsg,'确认');
+            this.TopModal.showMessage('错误', res.errmsg,'确认');
             this._setProgress(0);
         }
     }
@@ -227,15 +227,15 @@ class NewPostScreen extends React.Component {
      * @param {object} imgData 选择或拍照的数据
      */
     _selectImageHandle(imgData) {
-        TopModalApis.showMessage(this.refs['msgBox'], '提示', '图片添加水印？', '是', ()=>{
-            TopModalApis.closeModal(this.refs['msgBox'], ()=>{
+        this.TopModal.showMessage('提示', '图片添加水印？', '是', ()=>{
+            this.TopModal.closeModal(()=>{
                 this.setState({
                     imageWatermark: true,
                     selectdeImage: {uri: `file://${imgData}`}
                 });
             });
         }, '否', ()=>{
-            TopModalApis.closeModal(this.refs['msgBox'], ()=>{
+            this.TopModal.closeModal(()=>{
                 this.setState({
                     imageWatermark: false,
                     selectdeImage: {uri: `file://${imgData}`}
@@ -264,14 +264,11 @@ class NewPostScreen extends React.Component {
      */
     _selectImage = () => {
         Keyboard.dismiss();
-        ActionSheetApis.showActionSheet(
-            this.refs['actMenu'], 
-            Dimensions.get('window').width / 3 - 12 + 12,
-            Dimensions.get('window').height - 50,
+        this.ActionSheet.showActionSheet( Dimensions.get('window').width / 3 - 12 + 12, Dimensions.get('window').height - 50,
             '选择图片',
             ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘(未实现)'], 
             (index) => {
-                ActionSheetApis.closeActionSheet(this.refs['actMenu'], ()=>{
+                this.ActionSheet.closeActionSheet(()=>{
                     switch (index) {
                         case 0:
                             this._selectImageFromCamera();
@@ -280,10 +277,10 @@ class NewPostScreen extends React.Component {
                             this._selectImageFromLibrary();
                             break;
                         case 2:
-                            TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
+                            this.TopModal.showMessage('错误', '未实现','确认');
                             break;
                         case 3:
-                            TopModalApis.showMessage(this.refs['msgBox'], '错误', '未实现','确认');
+                            this.TopModal.showMessage('错误', '未实现','确认');
                             break;
                     }
                 });
@@ -307,7 +304,7 @@ class NewPostScreen extends React.Component {
                 return;
             }
             if(pickerImage.size > (2 * 1024 * 1024)) {
-                TopModalApis.showMessage(this.refs['msgBox'], '错误', '图片大于2M，请重新选择','确认');
+                this.TopModal.showMessage('错误', '图片大于2M，请重新选择','确认');
             }
             else {
                 this._selectImageHandle(pickerImage.path);
@@ -332,7 +329,7 @@ class NewPostScreen extends React.Component {
                 return;
             }
             if(pickerImage.size > (2 * 1024 * 1024)) {
-                TopModalApis.showMessage(this.refs['msgBox'], '错误', '图片大于2M，请重新选择','确认');
+                this.TopModal.showMessage('错误', '图片大于2M，请重新选择','确认');
             }
             else {
                 this._selectImageHandle(pickerImage.path);
@@ -352,7 +349,7 @@ class NewPostScreen extends React.Component {
                 <Text style={styles.emoticonText}>{emoticonList[i]}</Text>
             </TouchableOpacity>);
         }
-        TopModalApis.showMessage(this.refs['msgBox'], '颜文字', 
+        this.TopModal.showMessage('颜文字', 
         (
             <ScrollView>
                 <View style={styles.emoticonView}>
@@ -366,8 +363,8 @@ class NewPostScreen extends React.Component {
     render() {
         return(
             <View style={[styles.pageView, {paddingBottom: this.state.bottomHeight}]}>
-                <TopModal ref={'msgBox'} />
-                <ActionSheet ref={'actMenu'} />
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Animated.View style={[styles.progressView, { transform: [{ translateX: this.state.translateNow }]}]}/>
                 <View style={styles.inputView}>
                     <TextInput

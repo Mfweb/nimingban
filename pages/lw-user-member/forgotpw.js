@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../../component/top-modal'
+import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, forgotPassword } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
@@ -70,7 +70,7 @@ class UserMemberForgotPassword extends React.Component {
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', `检查状态失败：${sessionInfo.errmsg}。`,'确认');
+            this.TopModal.showMessage('错误', `检查状态失败：${sessionInfo.errmsg}。`,'确认');
             this.setState({
                 checkingSession: false
             });
@@ -90,7 +90,7 @@ class UserMemberForgotPassword extends React.Component {
     _onFindPW = async () => {
         Keyboard.dismiss();
         if(this.inputVcode.length != 5) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', `验证码长度错误`,'确认');  
+            this.TopModal.showMessage('错误', `验证码长度错误`,'确认');  
             return;
         }
         this.setState({
@@ -98,10 +98,10 @@ class UserMemberForgotPassword extends React.Component {
         });
         let forgetRes = await forgotPassword(this.inputUserName, this.inputVcode);
         if(forgetRes.status != 'ok') {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', forgetRes.errmsg,'确认');
+            this.TopModal.showMessage('错误', forgetRes.errmsg,'确认');
         }
         else {
-            TopModalApis.showMessage(this.refs['msgBox'], '完成', '邮件已发送，请检查邮箱。','确认');
+            this.TopModal.showMessage('完成', '邮件已发送，请检查邮箱。','确认');
         }
         this.setState({
             checkingSession: false
@@ -113,12 +113,12 @@ class UserMemberForgotPassword extends React.Component {
     _onFindStart = () => {
         Keyboard.dismiss();
         if( (this.inputUserName.length < 5) || (this.inputUserName.indexOf('@') <= 0) ) {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误','账号格式错误','确认');
+            this.TopModal.showMessage('错误','账号格式错误','确认');
             return;
         }
         this._getVCode(()=>{
             Keyboard.dismiss();
-            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+            this.TopModal.closeModal(async ()=>{
                 await this._onFindPW();
             });
         });
@@ -127,7 +127,7 @@ class UserMemberForgotPassword extends React.Component {
      * 获取验证码
      */
     _getVCode = (checkCallback) => {
-        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
+        this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
                 <TouchableOpacity 
@@ -138,10 +138,10 @@ class UserMemberForgotPassword extends React.Component {
                     width={25} />
                 </TouchableOpacity>
             </View>
-        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();this.TopModal.closeModal();},
         async () => {
             let vcode = await getVerifyCode();
-            TopModalApis.setContent(this.refs['msgBox'], (
+            this.TopModal.setContent((
                 <View style={{width: 280, height: 100}}>
                     <TouchableOpacity style={styles.vcode}
                     onPress={()=>this._getVCode(checkCallback)}>
@@ -168,7 +168,7 @@ class UserMemberForgotPassword extends React.Component {
     render() {
         return (
             <View style={styles.memberView}>
-               <TopModal ref={'msgBox'} />
+               <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.memberTitleImg} 
                 resizeMode={'contain'} 

@@ -3,7 +3,7 @@ import { Text, Button, View, Image, FlatList, TextInput, TouchableOpacity, Keybo
 import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../../component/top-modal'
+import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, startVerified, logout, checkVerifiedSMS } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { globalColor, styles } from './user-member-styles'
@@ -177,7 +177,7 @@ class RealNameAuth extends React.Component {
             });
         }
         this.props.navigation.setParams({ logout: ()=>{
-            TopModalApis.showMessage(this.refs['msgBox'], '提示', `确认退出登录?`,'确认',this._logout,'取消');
+            this.TopModal.showMessage('提示', `确认退出登录?`,'确认',this._logout,'取消');
         } })
     }
     /**
@@ -200,11 +200,11 @@ class RealNameAuth extends React.Component {
     _checkRealNameAuth = async () => {
         let info = await checkVerifiedSMS();
         if(info.status != 'ok') {
-            TopModalApis.showMessage(this.refs['msgBox'], '错误', info.errmsg,'确认');
+            this.TopModal.showMessage('错误', info.errmsg,'确认');
         }
         else {
             if(info.msg == 'false') {
-                TopModalApis.showMessage(this.refs['msgBox'], '信息', '还未收到短信或手机号已经绑定过其他账号。','确认');
+                this.TopModal.showMessage('信息', '还未收到短信或手机号已经绑定过其他账号。','确认');
             }
             else if(info.msg == 'true') {
                 this.props.navigation.reset([
@@ -214,7 +214,7 @@ class RealNameAuth extends React.Component {
                 ], 0);
             }
             else {
-                TopModalApis.showMessage(this.refs['msgBox'], '错误', info.msg,'确认');
+                this.TopModal.showMessage('错误', info.msg,'确认');
             }
         }
     }
@@ -232,20 +232,20 @@ class RealNameAuth extends React.Component {
     _startRealNameAuth = () => {
         Keyboard.dismiss();
         if (!(/^\d{5,}$/.test(this.inputPhone))) {
-            TopModalApis.showMessage(this.refs['msgBox'], '信息', '手机号格式错误','确认');
+            this.TopModal.showMessage('信息', '手机号格式错误','确认');
             return;
         }
         this.inputVcode = '';
         this._getVCode(() => {
             Keyboard.dismiss();
-            TopModalApis.closeModal(this.refs['msgBox'], async ()=>{
+            this.TopModal.closeModal(async ()=>{
                 if(this.inputVcode.length != 5) {
-                    TopModalApis.showMessage(this.refs['msgBox'], '信息', '验证码输入错误','确认');
+                    this.TopModal.showMessage('信息', '验证码输入错误','确认');
                 }
                 else {
                     let rnInfo = await startVerified(this.inputPhone, this.state.countryCode + 1, this.inputVcode);
                     if(rnInfo.status != 'ok') {
-                        TopModalApis.showMessage(this.refs['msgBox'], '信息', rnInfo.errmsg,'确认');
+                        this.TopModal.showMessage('信息', rnInfo.errmsg,'确认');
                     }
                     else {
                         this.setState({
@@ -261,7 +261,7 @@ class RealNameAuth extends React.Component {
      * 获取验证码
      */
     _getVCode = (checkCallback) => {
-        TopModalApis.showMessage(this.refs['msgBox'], '输入验证码',
+        this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
                 <TouchableOpacity 
@@ -272,10 +272,10 @@ class RealNameAuth extends React.Component {
                     width={25} />
                 </TouchableOpacity>
             </View>
-        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();TopModalApis.closeModal(this.refs['msgBox']);},
+        ), '确认', ()=>checkCallback(), '取消', ()=>{Keyboard.dismiss();this.TopModal.closeModal();},
         async () => {
             let vcode = await getVerifyCode();
-            TopModalApis.setContent(this.refs['msgBox'], (
+            this.TopModal.setContent((
                 <View style={{width: 280, height: 100}}>
                     <TouchableOpacity style={styles.vcode}
                     onPress={()=>this._getVCode(checkCallback)}>
@@ -303,7 +303,7 @@ class RealNameAuth extends React.Component {
      */
     _onCountryCodePress = () => {
         Keyboard.dismiss();
-        TopModalApis.showMessage(this.refs['msgBox'], '选择国家', 
+        this.TopModal.showMessage('选择国家', 
         (
             <FlatList
                 style={{height: 300, backgroundColor: '#F5F5F5'}}
@@ -314,7 +314,7 @@ class RealNameAuth extends React.Component {
                     return (
                         <TouchableOpacity 
                             style={{margin: 5,borderRadius:2, backgroundColor: this.state.countryCode==index?'#A9A9A9':'#F5F5F5'}}
-                            onPress={()=>{this.setState({countryCode: index}, TopModalApis.closeModal(this.refs['msgBox']));}}>
+                            onPress={()=>{this.setState({countryCode: index}, this.TopModal.closeModal());}}>
                             <Text style={{fontSize: 24, textAlign:'center'}}>
                                 {item}
                             </Text>
@@ -328,7 +328,7 @@ class RealNameAuth extends React.Component {
     render() {
         return (
             <View style={styles.loginView}>
-                <TopModal ref={'msgBox'} />
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.loginTitleImg} 
                 resizeMode={'contain'} 
