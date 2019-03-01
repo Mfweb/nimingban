@@ -9,6 +9,9 @@ const htmlConstStyles = StyleSheet.create({
     },
     strong: {
         fontWeight: 'bold'
+    },
+    del: {
+        textDecorationLine: 'line-through'
     }
 });
 function escape2Html(str) {
@@ -25,14 +28,12 @@ function escape2Html(str) {
  * @param {String} stringIn 输入字符串
  */
 function styleStringToObject(stringIn) {
-    let outPutArray = Array();
+    let outPutArray = {};
     let tags = stringIn.split(';');
     tags.forEach(tagString => {
         let tagsObj = tagString.split(':');
         if(tagsObj.length == 2) {
-            let tempObj = new Object();
-            tempObj[tagsObj[0].replace(' ','')] = tagsObj[1].replace(' ','');
-            outPutArray.push(tempObj);
+            outPutArray[tagsObj[0].replace(' ','')] = tagsObj[1].replace(' ','');
         }
     });
     return outPutArray;
@@ -45,9 +46,16 @@ var domKey = 0;
  * @param {string} tagName 递归传递的html标签名
  * @param {object} tagAttribs 递归传递的html表情属性
  */
-function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
+function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, parentAttribs) {
     let outPut = [];
     htmlJSONIn.forEach(htmlTag => {
+        if(!tagAttribs) {
+            tagAttribs = {};
+        }
+        else if (tagAttribs.hasOwnProperty('style')) {
+            tagAttribs = styleStringToObject(tagAttribs.style);
+        }
+        
         switch (htmlTag.type) {
             case 'text':
                 switch (tagName) {
@@ -56,16 +64,13 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
                         break;
                     case 'b':
                     case 'strong':
-                        outPut.push(<Text key={domKey++} style={htmlConstStyles.strong}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} style={Object.assign(tagAttribs, htmlConstStyles.strong)}>{htmlTag.data}</Text>);
                         break;
                     case '<br':
                     case 'br':
                         outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
                         break;
                     case 'font':
-                        if(tagAttribs.hasOwnProperty('style') ) {
-                            tagAttribs = styleStringToObject(tagAttribs.style);
-                        }
                         outPut.push(<Text key={domKey++} style={tagAttribs}>{htmlTag.data}</Text>);
                         break;
                     case null:
@@ -83,6 +88,12 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
                         outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
                         outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
                         break;
+                    case 's':
+                    case 'strike':
+                    case 'del':
+                        console.log(tagAttribs);
+                        outPut.push(<Text key={domKey++} style={Object.assign(tagAttribs, htmlConstStyles.del, parentAttribs)}>{htmlTag.data}</Text>);
+                        break;
                     default:
                         console.warn('Unknow HTML tag:' + tagName);
                         outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
@@ -90,7 +101,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null) {
                 }
                 break;
             case 'tag':
-                outPut = outPut.concat(_getHTMLDom(htmlTag.children, aCallback, htmlTag.name, htmlTag.attribs))
+                outPut = outPut.concat(_getHTMLDom(htmlTag.children, aCallback, htmlTag.name, htmlTag.attribs, tagAttribs))
                 break;
             default:
                 break;
