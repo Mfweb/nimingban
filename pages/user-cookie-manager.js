@@ -11,6 +11,9 @@ import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCook
 import { UIButton } from '../component/uibutton'
 import { NavigationActions } from 'react-navigation'
 import { realAnonymousGetCookie } from '../modules/apis'
+import ImagePicker from 'react-native-image-crop-picker';
+import JPEG from 'jpeg-js';
+import JSQR from 'jsqr';
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -119,7 +122,7 @@ class UserCookieManager extends React.Component {
      * 显示右侧菜单
      */
     _showRightMenu = () => {
-        let menuList = ['扫描二维码', '相册选择二维码(未实现)', '手动输入']
+        let menuList = ['扫描二维码', '相册选择二维码', '手动输入']
         if(configDynamic.islandMode != 'lw') {
             menuList.push('立即获取');
         }
@@ -132,6 +135,7 @@ class UserCookieManager extends React.Component {
                             this._scanQRCode();
                             break;
                         case 1:
+                            this._scanQRFromImage();
                             break;
                         case 2:
                             this._manualInput();
@@ -186,6 +190,50 @@ class UserCookieManager extends React.Component {
                 this._addCookieToList(this.__inputCookieString);
             });
         }, '取消');
+    }
+    _scanQRFromImage = async () => {
+        try{
+            var pickerImage = await ImagePicker.openPicker({
+                mediaType: 'photo',
+                cropping: false,
+                multiple: false,
+                writeTempFile: false,
+                includeBase64: true,
+                compressImageQuality: 0.8,
+                forceJpg: true
+            });
+            if(!pickerImage) {
+                return;
+            }
+        }catch(ex) {
+            console.warn(ex);
+        }
+        // 解码base64
+        let binaryString =  window.atob(pickerImage.data);
+        let len = binaryString.length;
+        // 转为Uint8Array
+        let bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++)        {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        // 解码jpeg
+        let jpegData = JPEG.decode(bytes.buffer, true);
+        // 二维码解析
+        let qrStr = JSQR(jpegData.data, jpegData.width, jpegData.height);
+        if(qrStr === null || !qrStr.data) {
+            this.TopModal.showMessage('错误', '图片中似乎不包含二维码', '确认');
+            return;
+        }
+        try{
+            let qrObj = JSON.parse(qrStr.data);
+            if(typeof qrObj !== 'object' || !qrObj.hasOwnProperty('cookie')) {
+                this.TopModal.showMessage('错误', '二维码中没有饼干', '确认');
+                return;
+            }
+            this._addCookieToList(qrObj['cookie']);
+        }catch{
+            this.TopModal.showMessage('错误', '二维码中没有饼干', '确认');
+        }
     }
     /**
      * 扫码添加饼干

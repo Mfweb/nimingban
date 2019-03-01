@@ -10,6 +10,8 @@
     "buffer": "^5.2.1",
     "events": "^3.0.0",
     "htmlparser2": "^3.10.0",
+    "jpeg-js": "^0.3.4",
+    "jsqr": "^1.2.0",
     "moment": "^2.24.0",
     "react": "16.6.3",
     "react-moment": "^0.8.4",
