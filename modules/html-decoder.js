@@ -46,7 +46,7 @@ var domKey = 0;
  * @param {string} tagName 递归传递的html标签名
  * @param {object} tagAttribs 递归传递的html表情属性
  */
-function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, parentAttribs) {
+function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, parentAttribs = {}) {
     let outPut = [];
     htmlJSONIn.forEach(htmlTag => {
         if(!tagAttribs) {
@@ -64,14 +64,14 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
                         break;
                     case 'b':
                     case 'strong':
-                        outPut.push(<Text key={domKey++} style={Object.assign(tagAttribs, htmlConstStyles.strong)}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} style={Object.assign(tagAttribs, htmlConstStyles.strong, parentAttribs)}>{htmlTag.data}</Text>);
                         break;
                     case '<br':
                     case 'br':
                         outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
                         break;
                     case 'font':
-                        outPut.push(<Text key={domKey++} style={tagAttribs}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} style={Object.assign(tagAttribs, parentAttribs)}>{htmlTag.data}</Text>);
                         break;
                     case null:
                         let checkURL = replaceUrl(htmlTag.data);
@@ -79,19 +79,18 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
                             outPut = outPut.concat(getHTMLDom(checkURL, aCallback));
                         }
                         else {
-                            outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
+                            outPut.push(<Text key={domKey++} style={parentAttribs}>{htmlTag.data}</Text>);
                         }
                         break;
                     case 'div':
                     case 'form':
                     case 'label':
-                        outPut.push(<Text key={domKey++}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} style={parentAttribs}>{htmlTag.data}</Text>);
                         outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
                         break;
                     case 's':
                     case 'strike':
                     case 'del':
-                        console.log(tagAttribs);
                         outPut.push(<Text key={domKey++} style={Object.assign(tagAttribs, htmlConstStyles.del, parentAttribs)}>{htmlTag.data}</Text>);
                         break;
                     default:
