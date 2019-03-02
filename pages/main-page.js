@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, Animated } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, Animated } from 'react-native'
 import { getThreadList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView, ImageProcessView } from '../component/list-process-view'
@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configBase, configDynamic } from '../modules/config'
 import  { Toast } from '../component/toast'
 import { history } from '../modules/history'
+import { MainListImage } from '../component/list-image-view'
+import { MainListItemHeader } from '../component/list-header'
 
 const globalColor = '#fa7296';
 var mToast = null;
@@ -32,69 +34,6 @@ const styles = StyleSheet.create({
         paddingLeft: 8,
         paddingRight: 8
     },
-    mainListItemHeader: {
-        paddingTop: 8,
-        paddingLeft: 8,
-        paddingRight: 8
-    },
-    mainListItemHeaderL1: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8
-    },
-    mainListItemHeaderL2: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-        paddingLeft: 8,
-        paddingRight: 8
-    },
-    mainListItemHeaderL2L: {
-        marginLeft: 5,
-    },
-    mainListItemHeaderL2R: {
-        marginRight: 5,
-    },
-    mainListItemUserCookieName: {
-        fontSize: 18,
-        color: globalColor
-    },
-    mainListItemUserCookieNameBigVIP: {
-        fontSize: 18,
-        color: 'red'
-    },
-    mainListItemTid: {
-        fontSize: 18,
-        color: globalColor
-    },
-    mainListItemTime: {
-        fontSize: 18,
-        color: globalColor
-    },
-    mainListItemTitle: {
-        fontSize: 16,
-        color: '#696969'
-    },
-    mainListItemName: {
-        fontSize: 16,
-        color: '#696969'
-    },
-    mainListItemSAGE: {
-        color: 'red',
-        fontWeight: 'bold',
-        fontSize: 22
-    },
-    mainListItemForumName: {
-        color: 'red',
-        fontSize: 20
-    },
-    displayNone: {
-        display: 'none'
-    },
     mainListItemBottom: {
         flex: 1,
         flexDirection: 'row',
@@ -108,20 +47,6 @@ const styles = StyleSheet.create({
         marginLeft: 3,
         color: '#696969',
         fontSize: 18
-    },
-    mainListItemImageTouch: {
-        marginTop: 5,
-        flex: 0,
-        width: Dimensions.get('window').width / 2.5,
-        height: Dimensions.get('window').width / 2.5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 8,
-    },
-    mainListItemImage: {
-        height: Dimensions.get('window').width / 2.5,
-        width: Dimensions.get('window').width / 2.5,
-        left: 0,
     },
     headerRightView: {
         flex: 1,
@@ -145,38 +70,8 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 500,
         borderBottomRightRadius: 500,
     },
-    downloadImage: {
-        position: 'absolute',
-        top: Dimensions.get('window').width / 2.5 / 2 - 20,
-        left: Dimensions.get('window').width / 2.5 / 2 - 20,
-        zIndex: 500
-    }
 });
 
-class MainListImage extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        if(this.props.localUri) {
-            // 图片已经下载到本地了
-            let imageSource = this.props.localUri
-            ?
-            this.props.localUri
-            :
-            require('../imgs/loading.png');
-            return (
-                <Image style={this.props.imgUri ? styles.mainListItemImage : styles.displayNone}
-                source={ imageSource } 
-                resizeMode='contain'
-                />
-            );
-        }
-        else {
-            return (<ImageProcessView height={40} width={40}/>);
-        }
-    }
-}
 
 class MainListItem extends React.Component {
     constructor(props) {
@@ -184,7 +79,6 @@ class MainListItem extends React.Component {
         this.state = {
             displayData:{},
             imgLocalUri: null,
-            imgUri: null,
             translateNow: new Animated.Value(0),
             fullImageDownloading: false
         }
@@ -222,27 +116,7 @@ class MainListItem extends React.Component {
         history.addNewHistory('browse', this.props.itemDetail, Date.parse(new Date()));
         this._startAnime(Dimensions.get('window').width * 2, ()=>this._startAnime(0));
     }
-    _onPressImage = () => {
-        if(this.state.fullImageDownloading) {
-            return;
-        }
-        this.setState({
-            fullImageDownloading: true
-        }, async () => {
-            let res = await getImage('image', this.props.itemDetail.img + this.props.itemDetail.ext);
-            this.setState({
-                fullImageDownloading: false
-            });
-            if(res.status === 'ok') {
-                this.props.navigation.push('ImageViewer', {
-                    imageUrl: res.path
-                });
-            }
-            else {
-                mToast.show('图片加载失败');
-            }
-        });
-    }
+
     componentDidMount() {
         this._updateData(this.props.itemDetail);
     }
@@ -289,7 +163,6 @@ class MainListItem extends React.Component {
         this.setState({
             displayData: displayData,
             imgLocalUri: null,
-            imgUri: itemDetail.img
         });
     }
     render() {
@@ -297,45 +170,16 @@ class MainListItem extends React.Component {
         return (
             <TouchableOpacity style={styles.mainListItem} onPress={this._onPress} activeOpacity={1}>
                 <Animated.View style={[styles.touchActiveView, {transform: [{ translateX: this.state.translateNow}]}]}/>
-                <View style={styles.mainListItemHeader}>
-                    <View style={styles.mainListItemHeaderL1}>
-                        <Text style={itemDetail.admin == 1 ? styles.mainListItemUserCookieNameBigVIP : styles.mainListItemUserCookieName}>
-                            {this.state.displayData['userID']}
-                        </Text>
-
-                        <Text style={styles.mainListItemTid}>
-                            No.{itemDetail.id}
-                        </Text>
-
-                        <Text style={styles.mainListItemTime}>
-                            {this.state.displayData['displayTime']}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.mainListItemHeaderL2}>
-                    <View style={styles.mainListItemHeaderL2L}>
-                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
-                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
-                    </View>
-
-                    <View style={styles.mainListItemHeaderL2R}>
-                        <Text style={this.state.displayData['fName'] ?styles.mainListItemForumName: styles.displayNone }>{this.state.displayData['fName']}</Text>
-                        <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
-                    </View>
-
-                </View>
+                <MainListItemHeader itemDetail={itemDetail} po={null}/>
 
                 <Text style={styles.mainListItemContent}>
                     {this.state.displayData['threadContent']}
                 </Text>
-                <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage} activeOpacity={0.5}>
-                    <MainListImage 
-                        localUri={this.state.imgLocalUri}
-                        imgUri={this.state.imgUri}/>
-                    <ImageProcessView style={this.state.fullImageDownloading?styles.downloadImage:styles.displayNone} height={40} width={40} />
-                </TouchableOpacity>
-
-
+                <MainListImage 
+                    navigation={this.props.navigation}
+                    Toast={mToast}
+                    localUri={this.state.imgLocalUri}
+                    imgUri={itemDetail.img + itemDetail.ext}/>
                 <View style={styles.mainListItemBottom}>
                     <Icon name={'bubble'} size={24} color={globalColor} />
                     <Text style={styles.mainListReplayCountText}>{this.state.displayData['replayCountText']}</Text>
@@ -401,6 +245,9 @@ class HomeScreen extends React.Component {
             menuFunctions: this._menuFunctions
         });
     }
+    /**
+     * 初始化历史数据库
+     */
     _initHistoryDataBase = async () => {
         history.init();
     }
@@ -421,7 +268,9 @@ class HomeScreen extends React.Component {
             fid: this.fid
         });
     }
-
+    /**
+     * 右上角菜单
+     */
     _menuFunctions = () =>{
         this.TopModal.showMessage('测试','功能未实现','确认');
     }
@@ -460,37 +309,7 @@ class HomeScreen extends React.Component {
             );
         }
     }
-
-    render() {
-        return (
-            <View style={{flex:1}}>
-                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Toast ref={(ref) => {mToast = ref}}/>
-                <FlatList
-                    data={this.state.threadList}
-                    extraData={this.state}
-                    style={styles.mainList}
-                    onRefresh={this._pullDownRefresh}
-                    refreshing={this.state.headerLoading}
-                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
-                    renderItem={this._renderItem}
-                    ListFooterComponent={this._footerComponent}
-                    onEndReachedThreshold={0.1}
-                    onEndReached={this._pullUpLoading}
-                    pageSize={20}
-                    removeClippedSubviews={true}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.headerLoading}
-                            onRefresh={this._pullDownRefresh}
-                            title="正在加载..."/>
-                    }
-                    /*viewabilityConfig={this.viewabilityConfig}*/
-                />
-            </View>
-        );
-    }
-
+    
     _pullUpLoading = () => {
         if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd) {
             return;
@@ -551,6 +370,36 @@ class HomeScreen extends React.Component {
                 });
             });
         });
+    }
+
+    render() {
+        return (
+            <View style={{flex:1}}>
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <Toast ref={(ref) => {mToast = ref}}/>
+                <FlatList
+                    data={this.state.threadList}
+                    extraData={this.state}
+                    style={styles.mainList}
+                    onRefresh={this._pullDownRefresh}
+                    refreshing={this.state.headerLoading}
+                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
+                    renderItem={this._renderItem}
+                    ListFooterComponent={this._footerComponent}
+                    onEndReachedThreshold={0.1}
+                    onEndReached={this._pullUpLoading}
+                    pageSize={20}
+                    removeClippedSubviews={true}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.headerLoading}
+                            onRefresh={this._pullDownRefresh}
+                            title="正在加载..."/>
+                    }
+                    /*viewabilityConfig={this.viewabilityConfig}*/
+                />
+            </View>
+        );
     }
 }
 

@@ -1,14 +1,14 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
 import { getReplyList, getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { ListProcessView,ImageProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
-import { converDateTime } from '../modules/date-time'
 import  { Toast } from '../component/toast'
+import { MainListImage } from '../component/list-image-view'
+import { MainListItemHeader } from '../component/list-header'
 
-const globalColor = '#fa7296';
 var mToast = null;
 
 const styles = StyleSheet.create({
@@ -28,77 +28,6 @@ const styles = StyleSheet.create({
         color: '#000',
         fontSize: 20
     },
-    mainListItemHeader: {
-
-    },
-    mainListItemHeaderL1: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8
-    },
-    mainListItemHeaderL2: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8
-    },
-    mainListItemHeaderL2L: {
-        marginLeft: 5,
-    },
-    mainListItemHeaderL2R: {
-        marginRight: 5,
-    },
-    mainListItemUserCookieName: {
-        fontSize: 18,
-        color: globalColor
-    },
-    mainListItemUserCookieNameBigVIP: {
-        fontSize: 18,
-        color: 'red'
-    },
-    mainListItemUserCookieNamePO: {
-        backgroundColor: '#FFE4E1'
-    },
-    mainListItemTid: {
-        fontSize: 18,
-        color: globalColor
-    },
-    mainListItemTime: {
-        fontSize: 18,
-        color: globalColor
-    },
-    mainListItemTitle: {
-        fontSize: 16,
-        color: '#696969'
-    },
-    mainListItemName: {
-        fontSize: 16,
-        color: '#696969'
-    },
-    mainListItemSAGE: {
-        color: 'red',
-        fontWeight: 'bold',
-        fontSize: 22
-    },
-    displayNone: {
-        display: 'none'
-    },
-    mainListItemImageTouch: {
-        marginTop: 5,
-        flex: 0,
-        width: Dimensions.get('window').width / 2.5,
-        height: Dimensions.get('window').width / 2.5,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    mainListItemImage: {
-        height: Dimensions.get('window').width / 2.5,
-        width: Dimensions.get('window').width / 2.5,
-        left: 0,
-    },
     ItemSeparator: {
         height: 1,
         backgroundColor: '#FFB6C1'
@@ -112,40 +41,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         padding: 8
-    },
-    downloadImage: {
-        position: 'absolute',
-        top: Dimensions.get('window').width / 2.5 / 2 - 20,
-        left: Dimensions.get('window').width / 2.5 / 2 - 20,
-        zIndex: 500
     }
 });
 
 var poID = '';
-class MainListImage extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        if(this.props.localUri) {
-            // 图片已经下载到本地了
-            let imageSource = this.props.localUri
-            ?
-            this.props.localUri
-            :
-            require('../imgs/loading.png');
-            return (
-                <Image style={this.props.imgUri ? styles.mainListItemImage : styles.displayNone}
-                source={ imageSource } 
-                resizeMode='contain'
-                />
-            );
-        }
-        else {
-            return (<ImageProcessView height={40} width={40}/>);
-        }
-    }
-}
+
 
 class MainListItem extends React.Component {
     constructor(props) {
@@ -153,7 +53,6 @@ class MainListItem extends React.Component {
         this.state = {
             displayData:{},
             imgLocalUri: null,
-            imgUri: null,
             fullImageDownloading: false
         }
     }
@@ -197,9 +96,6 @@ class MainListItem extends React.Component {
     _updateData = (itemDetail) => {
         let displayData = {};
         //console.log(this.props.itemDetail);
-        displayData['userID'] = getHTMLDom(itemDetail.userid);
-        displayData['displayTime'] = converDateTime(itemDetail.now);
-
         displayData['threadContent'] = getHTMLDom(itemDetail.content, (url)=>{
             if( (url.href.indexOf('/t/') >= 0) && (
                 (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
@@ -220,62 +116,25 @@ class MainListItem extends React.Component {
                 });
             }
         });
-        displayData['userIDStyle'] = [];
-        if(itemDetail.admin == 1) {
-            displayData['userIDStyle'].push(styles.mainListItemUserCookieNameBigVIP);
-        }
-        else {
-            displayData['userIDStyle'].push(styles.mainListItemUserCookieName);
-        }
-        if(itemDetail.userid == poID){
-            displayData['userIDStyle'].push(styles.mainListItemUserCookieNamePO);
-        }
+
         this.setState({
             displayData: displayData,
             imgLocalUri: null,
-            imgUri: itemDetail.img
         });
     }
     render() {
         let { itemDetail } = this.props;
         return (
             <View style={styles.mainListItem}>
-                <View style={styles.mainListItemHeader}>
-                    <View style={styles.mainListItemHeaderL1}>
-                        <Text style={this.state.displayData['userIDStyle']}>
-                            {this.state.displayData['userID']}
-                        </Text>
-
-                        <Text style={styles.mainListItemTid}>
-                            No.{itemDetail.id}
-                        </Text>
-
-                        <Text style={styles.mainListItemTime}>
-                            {this.state.displayData['displayTime']}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.mainListItemHeaderL2}>
-                    <View style={styles.mainListItemHeaderL2L}>
-                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
-                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
-                    </View>
-
-                    <View style={styles.mainListItemHeaderL2R}>
-                        <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
-                    </View>
-
-                </View>
-
+                <MainListItemHeader itemDetail={itemDetail} po={poID}/>
                 <Text style={styles.mainListItemContent}>
                     {this.state.displayData['threadContent']}
                 </Text>
-                <TouchableOpacity style={itemDetail.img?styles.mainListItemImageTouch:styles.displayNone} onPress={this._onPressImage}>
-                    <MainListImage 
-                        localUri={this.state.imgLocalUri}
-                        imgUri={this.state.imgUri}/>
-                    <ImageProcessView style={this.state.fullImageDownloading?styles.downloadImage:styles.displayNone} height={40} width={40} />
-                </TouchableOpacity>
+                <MainListImage 
+                    navigation={this.props.navigation}
+                    Toast={mToast}
+                    localUri={this.state.imgLocalUri}
+                    imgUri={itemDetail.img + itemDetail.ext}/>
             </View>
         );
     }
@@ -390,37 +249,6 @@ class DetailsScreen extends React.Component {
         }
     }
 
-    render() {
-        return (
-            <View style={{flex:1}}>
-                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Toast ref={(ref) => {mToast = ref}}/>
-                <FlatList
-                    data={this.state.replyList}
-                    extraData={this.state}
-                    style={styles.mainList}
-                    onRefresh={this._pullDownRefresh}
-                    refreshing={this.state.headerLoading}
-                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
-                    renderItem={this._renderItem}
-                    //onScroll={this._onScroll}
-                    ListFooterComponent={this._footerComponent}
-                    ItemSeparatorComponent={this._itemSeparator}
-                    onEndReachedThreshold={0.1}
-                    onEndReached={this._pullUpLoading}
-                    pageSize={20}
-                    removeClippedSubviews={true}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.headerLoading}
-                            onRefresh={this._pullDownRefresh}
-                            title="正在加载..."/>
-                    }
-                />
-            </View>
-        );
-    }
-
     _pullUpLoading = () => {
         if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd ) {
             return;
@@ -531,6 +359,37 @@ class DetailsScreen extends React.Component {
                 });
             }
         });
+    }
+    
+    render() {
+        return (
+            <View style={{flex:1}}>
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <Toast ref={(ref) => {mToast = ref}}/>
+                <FlatList
+                    data={this.state.replyList}
+                    extraData={this.state}
+                    style={styles.mainList}
+                    onRefresh={this._pullDownRefresh}
+                    refreshing={this.state.headerLoading}
+                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
+                    renderItem={this._renderItem}
+                    //onScroll={this._onScroll}
+                    ListFooterComponent={this._footerComponent}
+                    ItemSeparatorComponent={this._itemSeparator}
+                    onEndReachedThreshold={0.1}
+                    onEndReached={this._pullUpLoading}
+                    pageSize={20}
+                    removeClippedSubviews={true}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.headerLoading}
+                            onRefresh={this._pullDownRefresh}
+                            title="正在加载..."/>
+                    }
+                />
+            </View>
+        );
     }
 }
 
