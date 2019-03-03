@@ -55,9 +55,9 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
         else if (tagAttribs.hasOwnProperty('style')) {
             tagAttribs = styleStringToObject(tagAttribs.style);
         }
-        
         switch (htmlTag.type) {
             case 'text':
+                htmlTag.data = escape2Html(htmlTag.data);
                 switch (tagName) {
                     case 'a':
                         outPut.push(<Text key={domKey++} onPress={()=>aCallback(tagAttribs)} style={htmlConstStyles.a}>{htmlTag.data}</Text>);
@@ -115,7 +115,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
  * @param {function} aCallback 点击A标签的回调
  */
 function getHTMLDom(htmlTextIn, aCallback = ()=>{}) {
-    let domJSON = parseDOM( escape2Html(htmlTextIn) );
+    let domJSON = parseDOM(htmlTextIn);
     return _getHTMLDom(domJSON, aCallback);
 }
 /**
