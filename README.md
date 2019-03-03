@@ -4,7 +4,7 @@ A岛匿名版客户端
 暂时只会开发iOS版，安卓版将在整体完工后再适配。  
 
 
-![1](https://mimage.mfweb.top/blog/2019/01/logo40pt.png)图标为 Mfweb 所有，所有权利保留   
+![1](https://mimage.mfweb.top/blog/2019/01/logo40pt.png)![12](https://github.com/Mfweb/nimingban/raw/master/screenshot/logoa.png)图标为 Mfweb 所有，所有权利保留   
 ## 主页、板块选择、切换岛、回复
 ![2](https://github.com/Mfweb/nimingban/raw/master/screenshot/1.jpg)
 ![3](https://github.com/Mfweb/nimingban/raw/master/screenshot/2.jpg)
