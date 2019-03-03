@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8
     },
     mainListItemHeaderL2L: {
         marginLeft: 5,
@@ -106,7 +105,7 @@ class MainListItemHeader extends React.Component {
         let { itemDetail } = this.props;
         let { displayData } = this.state;
         return (
-            <View>
+            <View style={{padding: 8}}>
                 <View style={styles.mainListItemHeader}>
                     <View style={styles.mainListItemHeaderL1}>
                         <Text style={displayData['userIDStyle']}>

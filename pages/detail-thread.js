@@ -18,15 +18,17 @@ const styles = StyleSheet.create({
     },
     mainListItem: {
         backgroundColor: '#FFF',
-        padding: 8,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
         shadowColor: '#696969',
+        paddingBottom: 8
     },
     mainListItemContent: {
         color: '#000',
-        fontSize: 20
+        fontSize: 20,
+        paddingLeft: 8,
+        paddingRight: 8
     },
     ItemSeparator: {
         height: 1,
