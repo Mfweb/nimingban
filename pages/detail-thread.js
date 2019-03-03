@@ -1,34 +1,16 @@
 import React from 'react'
 import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
 import { getReplyList, getImage } from '../modules/apis'
-import { getHTMLDom } from '../modules/html-decoder'
-import { ListProcessView,ImageProcessView } from '../component/list-process-view'
+import { ListProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import  { Toast } from '../component/toast'
-import { MainListImage } from '../component/list-image-view'
-import { MainListItemHeader } from '../component/list-header'
-
-var mToast = null;
+import { DetailListItem } from '../component/list-detail-item'
 
 const styles = StyleSheet.create({
     mainList: {
         flex: 1,
         backgroundColor: '#DCDCDC'
-    },
-    mainListItem: {
-        backgroundColor: '#FFF',
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowColor: '#696969',
-        paddingBottom: 8
-    },
-    mainListItemContent: {
-        color: '#000',
-        fontSize: 20,
-        paddingLeft: 8,
-        paddingRight: 8
     },
     ItemSeparator: {
         height: 1,
@@ -46,101 +28,6 @@ const styles = StyleSheet.create({
     }
 });
 
-var poID = '';
-
-
-class MainListItem extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            displayData:{},
-            imgLocalUri: null,
-            fullImageDownloading: false
-        }
-    }
-    _onPressImage = () => {
-        if(this.state.fullImageDownloading) {
-            return;
-        }
-        this.setState({
-            fullImageDownloading: true
-        }, async () => {
-            let res = await getImage('image', this.props.itemDetail.img + this.props.itemDetail.ext);
-            this.setState({
-                fullImageDownloading: false
-            });
-            if(res.status === 'ok') {
-                this.props.navigation.push('ImageViewer', {
-                    imageUrl: res.path
-                });
-            }
-            else {
-                mToast.show('图片加载失败');
-            }
-        });
-    }
-    componentDidMount() {
-        this._updateData(this.props.itemDetail);
-    }
-    
-    componentWillReceiveProps(res) {
-        this._updateImage(res.itemDetail.localImage);
-    }
-    componentWillUnmount() {
-    }
-    _updateImage = (localUri) => {
-        if(this.state.imgLocalUri != localUri) {
-            this.setState({
-                imgLocalUri: localUri
-            });
-        }
-    }
-    _updateData = (itemDetail) => {
-        let displayData = {};
-        //console.log(this.props.itemDetail);
-        displayData['threadContent'] = getHTMLDom(itemDetail.content, (url)=>{
-            if( (url.href.indexOf('/t/') >= 0) && (
-                (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
-            ) ) {
-                let threadNo = url.href.split('/t/')[1];
-                this.props.navigation.push('Details', {
-                    threadDetail: {
-                        id: threadNo, 
-                        userid: 'null', 
-                        content: 'null',
-                        now: '2099-12-12 12:12:12'
-                    }
-                })
-            }
-            else {
-                this.props.navigation.push('WebView', {
-                    URL: url.href
-                });
-            }
-        });
-
-        this.setState({
-            displayData: displayData,
-            imgLocalUri: null,
-        });
-    }
-    render() {
-        let { itemDetail } = this.props;
-        return (
-            <View style={styles.mainListItem}>
-                <MainListItemHeader itemDetail={itemDetail} po={poID}/>
-                <Text style={styles.mainListItemContent}>
-                    {this.state.displayData['threadContent']}
-                </Text>
-                <MainListImage 
-                    navigation={this.props.navigation}
-                    Toast={mToast}
-                    localUri={this.state.imgLocalUri}
-                    imgUri={itemDetail.img + itemDetail.ext}/>
-            </View>
-        );
-    }
-}
 
 class DetailsScreen extends React.Component {
     constructor(props) {
@@ -154,7 +41,7 @@ class DetailsScreen extends React.Component {
             footerMessage: ''
         };
     }
-
+    poID = '';
     isUnMount = false;
     localReplyCount = 0;
     threadDetail = null;
@@ -179,7 +66,7 @@ class DetailsScreen extends React.Component {
     }
     componentDidMount() {
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
-        poID = this.threadDetail.userid;
+        this.poID = this.threadDetail.userid;
         this.props.navigation.setParams({ 
             openLDrawer: this.props.navigation.openDrawer,
             replyThread: this._replyThread
@@ -228,7 +115,7 @@ class DetailsScreen extends React.Component {
             });
         }
         return (
-        <MainListItem itemDetail={item} navigation={this.props.navigation} />)
+        <DetailListItem itemDetail={item} navigation={this.props.navigation} Toast={this.toast} po={this.poID} />)
     }
 
     _itemSeparator = () =>(
@@ -367,7 +254,7 @@ class DetailsScreen extends React.Component {
         return (
             <View style={{flex:1}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Toast ref={(ref) => {mToast = ref}}/>
+                <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
                     data={this.state.replyList}
                     extraData={this.state}

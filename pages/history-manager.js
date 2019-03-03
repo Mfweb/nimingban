@@ -12,6 +12,9 @@ import { UIButton } from '../component/uibutton'
 import { NavigationActions } from 'react-navigation'
 import { realAnonymousGetCookie } from '../modules/apis'
 import { history } from '../modules/history'
+import { getImage } from '../modules/apis'
+import { MainListItem } from '../component/list-main-item'
+import { Toast } from '../component/toast'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -47,7 +50,11 @@ const styles = StyleSheet.create({
         left: 0,
         backgroundColor: '#F5F5F5',
         height: '100%'
-    }
+    },
+    historyList: {
+        flex: 1,
+        backgroundColor: '#DCDCDC'
+    },
 });
 
 class HistoryHeader extends React.Component {
@@ -110,6 +117,10 @@ class HistoryHeader extends React.Component {
 class HistoryManager extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            historyList: [],
+            headerLoading: false
+        };
     }
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
@@ -144,10 +155,58 @@ class HistoryManager extends React.Component {
             mode: mode
         });
     }
+    loadingImages = Array();
+    _renderItem = ({ item, index }) => {
+        if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
+            this.loadingImages.push(index);
+            let imgName = item.img + item.ext;
+            getImage('thumb', imgName).then((res) => {
+                let imgUrl = require('../imgs/img-error.png');
+                if(res.status == 'ok') {
+                    imgUrl = {uri: 'file://' + res.path};
+                }
+                let tempList = this.state.threadList.slice();
+                tempList[index].localImage = imgUrl;
+                this.setState({ threadList: tempList });
+            }).catch(function() {
+                let tempList = this.state.threadList.slice();
+                tempList[index].localImage = require('../imgs/img-error.png');
+                this.setState({ threadList: tempList });
+            });
+        }
+        return (
+            <MainListItem itemDetail={item} navigation={this.props.navigation} Toast={this.toast} />
+        )
+    }
+    _pullDownRefresh = () => {
+
+    }
     render() {
         return (
             <View style={{flex: 1}}>
-
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <Toast ref={(ref) => {this.toast = ref}}/>
+                <FlatList
+                    data={this.state.historyList}
+                    extraData={this.state}
+                    style={styles.historyList}
+                    onRefresh={this._pullDownRefresh}
+                    refreshing={this.state.headerLoading}
+                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
+                    renderItem={this._renderItem}
+                    ListFooterComponent={this._footerComponent}
+                    ItemSeparatorComponent={this._itemSeparator}
+                    onEndReachedThreshold={0.1}
+                    onEndReached={this._pullUpLoading}
+                    pageSize={20}
+                    removeClippedSubviews={true}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.headerLoading}
+                            onRefresh={this._pullDownRefresh}
+                            title="正在加载..."/>
+                    }
+                />
             </View>
         );
     }

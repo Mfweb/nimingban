@@ -1,52 +1,18 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, Animated } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
 import { getThreadList, getImage } from '../modules/apis'
-import { getHTMLDom } from '../modules/html-decoder'
-import { ListProcessView, ImageProcessView } from '../component/list-process-view'
+import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
-import { converDateTime } from '../modules/date-time'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configBase, configDynamic } from '../modules/config'
-import  { Toast } from '../component/toast'
+import { Toast } from '../component/toast'
 import { history } from '../modules/history'
-import { MainListImage } from '../component/list-image-view'
-import { MainListItemHeader } from '../component/list-header'
-
-const globalColor = '#fa7296';
-var mToast = null;
+import { MainListItem } from '../component/list-main-item'
 
 const styles = StyleSheet.create({
     mainList: {
         flex: 1,
         backgroundColor: '#DCDCDC'
-    },
-    mainListItem: {
-        backgroundColor: '#FFF',
-        marginTop: 10,
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowColor: '#696969'
-    },
-    mainListItemContent: {
-        color: '#000',
-        fontSize: 20,
-        paddingLeft: 8,
-        paddingRight: 8
-    },
-    mainListItemBottom: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        marginBottom: 3,
-        paddingLeft: 8,
-        paddingRight: 13
-    },
-    mainListReplayCountText: {
-        marginLeft: 3,
-        color: '#696969',
-        fontSize: 18
     },
     headerRightView: {
         flex: 1,
@@ -58,136 +24,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 8
     },
-    touchActiveView: {
-        position: 'absolute',
-        backgroundColor: globalColor,
-        opacity: 0.3,
-        width: '200%',
-        height: '100%',
-        left: '-200%',
-        top: 0,
-        zIndex: 995,
-        borderTopRightRadius: 500,
-        borderBottomRightRadius: 500,
-    },
 });
 
 
-class MainListItem extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            displayData:{},
-            imgLocalUri: null,
-            translateNow: new Animated.Value(0),
-            fullImageDownloading: false
-        }
-    }
-    _startAnime(to, success=()=>{}) {
-        //this.state.translateNow.setValue(0);
-        Animated.timing(
-            this.state.translateNow,
-            {
-                toValue: to,
-                duration: 200,
-                useNativeDriver: true,
-                stiffness: 80
-            }
-        ).start(success);
-    }
-    _onPress = () => {
-        requestAnimationFrame(()=>{
-            this.props.navigation.navigate('Details', {
-                threadDetail: {
-                    id: this.props.itemDetail.id,
-                    img: this.props.itemDetail.img,
-                    ext: this.props.itemDetail.ext,
-                    now: this.props.itemDetail.now,
-                    userid: this.props.itemDetail.userid,
-                    name: this.props.itemDetail.name,
-                    email: this.props.itemDetail.email,
-                    title: this.props.itemDetail.title,
-                    content: this.props.itemDetail.content,
-                    sage: this.props.itemDetail.sage,
-                    admin: this.props.itemDetail.admin,
-                }
-            });
-        });
-        history.addNewHistory('browse', this.props.itemDetail, Date.parse(new Date()));
-        this._startAnime(Dimensions.get('window').width * 2, ()=>this._startAnime(0));
-    }
 
-    componentDidMount() {
-        this._updateData(this.props.itemDetail);
-    }
-    componentWillUnmount() {
-    }
-    componentWillReceiveProps(res) {
-        this._updateImage(res.itemDetail.localImage);
-    }
-    _updateImage = (localUri) => {
-        if(this.state.imgLocalUri != localUri) {
-            this.setState({
-                imgLocalUri: localUri
-            });
-        }
-    }
-
-    _updateData = (itemDetail)=>{
-        let displayData = {};
-        displayData['userID'] = getHTMLDom(itemDetail.userid);
-        displayData['threadContent'] = getHTMLDom(itemDetail.content, (url)=>{
-            if( (url.href.indexOf('/t/') >= 0) && (
-                (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
-            ) ) {
-                let threadNo = url.href.split('/t/')[1];
-                this.props.navigation.navigate('Details', {
-                    threadDetail: {
-                        id: threadNo, 
-                        userid: 'null', 
-                        content: 'null',
-                        now: '2099-12-12 12:12:12'
-                    }
-                })
-            }
-            else {
-                this.props.navigation.push('WebView', {
-                    URL: url.href
-                });
-            }
-        });
-        //let replayCountText = itemDetail.remainReplys ? (itemDetail.remainReplys.toString() + "(" + itemDetail.replyCount + ")") : itemDetail.replyCount;
-        displayData['replayCountText'] = itemDetail.replyCount;
-        displayData['fName'] = itemDetail.fname;
-        displayData['displayTime'] = converDateTime(itemDetail.now);
-        this.setState({
-            displayData: displayData,
-            imgLocalUri: null,
-        });
-    }
-    render() {
-        let { itemDetail } = this.props;
-        return (
-            <TouchableOpacity style={styles.mainListItem} onPress={this._onPress} activeOpacity={1}>
-                <Animated.View style={[styles.touchActiveView, {transform: [{ translateX: this.state.translateNow}]}]}/>
-                <MainListItemHeader itemDetail={itemDetail} po={null}/>
-
-                <Text style={styles.mainListItemContent}>
-                    {this.state.displayData['threadContent']}
-                </Text>
-                <MainListImage 
-                    navigation={this.props.navigation}
-                    Toast={mToast}
-                    localUri={this.state.imgLocalUri}
-                    imgUri={itemDetail.img + itemDetail.ext}/>
-                <View style={styles.mainListItemBottom}>
-                    <Icon name={'bubble'} size={24} color={globalColor} />
-                    <Text style={styles.mainListReplayCountText}>{this.state.displayData['replayCountText']}</Text>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-}
 
 class HomeScreen extends React.Component {
     constructor(props) {
@@ -295,7 +135,7 @@ class HomeScreen extends React.Component {
             });
         }
         return (
-        <MainListItem itemDetail={item} navigation={this.props.navigation} />)
+        <MainListItem itemDetail={item} navigation={this.props.navigation} Toast={this.toast} />)
     }
 
     _footerComponent = () => {
@@ -376,7 +216,7 @@ class HomeScreen extends React.Component {
         return (
             <View style={{flex:1}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Toast ref={(ref) => {mToast = ref}}/>
+                <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
                     data={this.state.threadList}
                     extraData={this.state}
