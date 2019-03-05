@@ -42,6 +42,12 @@ class MainListImage extends React.Component {
             fullImageDownloading: false
         }
     }
+    componentDidMount() {
+        this.isUnmount = false;
+    }
+    componentWillUnmount() {
+        this.isUnmount = true;
+    }
     _onPressImage = () => {
         if(this.state.fullImageDownloading) {
             return;
@@ -50,17 +56,19 @@ class MainListImage extends React.Component {
             fullImageDownloading: true
         }, async () => {
             let res = await getImage('image', this.props.imgUri);
-            this.setState({
-                fullImageDownloading: false
-            });
             if(res.status === 'ok') {
                 this.props.navigation.push('ImageViewer', {
                     imageUrl: res.path
                 });
             }
             else {
+                if(this.isUnmount) return;
                 this.props.Toast.show('图片加载失败');
             }
+            if(this.isUnmount) return;
+            this.setState({
+                fullImageDownloading: false
+            });
         });
     }
     render() {
