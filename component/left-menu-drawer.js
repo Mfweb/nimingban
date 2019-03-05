@@ -243,7 +243,7 @@ class LeftDrawerNavigator extends React.Component {
         ], 0);
     }
     _gotoHistory = () => {
-        this.props.navigation._childrenNavigation.UserMember.reset([
+        this.props.navigation._childrenNavigation.Home.reset([
             NavigationActions.navigate({ 
                 routeName: 'HistoryManager'
             })

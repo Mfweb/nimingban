@@ -28,7 +28,9 @@ const MainStackNavigator = createStackNavigator({
     //图片预览
     ImageViewer: { screen: ImageViewer },
     //Web
-    WebView: { screen: PinkWebView }
+    WebView: { screen: PinkWebView },
+    // 历史
+    HistoryManager: { screen: HistoryManager },
 }, {
     initialRouteName: 'Home',
     //顶栏配置
@@ -56,8 +58,6 @@ const UserMemberStackNavigator = createStackNavigator({
     UserMemberAugh: { screen: RealNameAuth },
     //修改密码
     UserMemberChangePassword: {screen: UserMemberChangePassword},
-    // 历史
-    HistoryManager: { screen: HistoryManager },
     //Web
     WebView: { screen: PinkWebView }
 }, {

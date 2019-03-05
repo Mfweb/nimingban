@@ -48,7 +48,7 @@ class HomeScreen extends React.Component {
     }
     fid = -1;
     fname = '时间线';
-
+    isUnmount = true;
 
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
@@ -73,6 +73,7 @@ class HomeScreen extends React.Component {
     }
 
     componentDidMount() {
+        this.isUnmount = false;
         this._initHistoryDataBase();
         this.fid = this.props.navigation.getParam('forumID', '-1');
         this.fname = this.props.navigation.getParam('name', '时间线');
@@ -84,6 +85,9 @@ class HomeScreen extends React.Component {
             newThread: this._newThread,
             menuFunctions: this._menuFunctions
         });
+    }
+    componentWillUnmount() {
+        this.isUnmount = true;
     }
     /**
      * 初始化历史数据库
@@ -121,6 +125,7 @@ class HomeScreen extends React.Component {
             this.loadingImages.push(index);
             let imgName = item.img + item.ext;
             getImage('thumb', imgName).then((res) => {
+                if(this.isUnmount) return;
                 let imgUrl = require('../imgs/img-error.png');
                 if(res.status == 'ok') {
                     imgUrl = {uri: 'file://' + res.path};
@@ -129,6 +134,7 @@ class HomeScreen extends React.Component {
                 tempList[index].localImage = imgUrl;
                 this.setState({ threadList: tempList });
             }).catch(function() {
+                if(this.isUnmount)return;
                 let tempList = this.state.threadList.slice();
                 tempList[index].localImage = require('../imgs/img-error.png');
                 this.setState({ threadList: tempList });
@@ -156,6 +162,7 @@ class HomeScreen extends React.Component {
         }
         this.setState({ footerLoading: 1 }, async function() {
             getThreadList(this.fid, this.state.page).then((res) => {
+                if(this.isUnmount)return;
                 if (res.status == 'ok') {
                     let nextPage = this.state.page + 1;
                     var tempList = this.state.threadList.slice()
@@ -175,6 +182,7 @@ class HomeScreen extends React.Component {
                     });
                 }
             }).catch(()=>{
+                if(this.isUnmount)return;
                 this.TopModal.showMessage('错误', `请求数据失败`,'确认');
                 this.setState({ 
                     footerLoading: 0 
@@ -189,6 +197,7 @@ class HomeScreen extends React.Component {
         }
         this.setState({ headerLoading: true, page: 1 }, function() {
             getThreadList(this.fid, this.state.page).then((res) => {
+                if(this.isUnmount)return;
                 if (res.status == 'ok') {
                     this.loadingImages = [];
                     this.setState({
@@ -203,6 +212,7 @@ class HomeScreen extends React.Component {
                     this.setState({ headerLoading: false });
                 }
             }).catch((error)=>{
+                if(this.isUnmount)return;
                 this.TopModal.showMessage('错误', `请求数据失败${error}`,'确认');
                 console.log(error)
                 this.setState({ 

@@ -109,6 +109,9 @@ class DetailsScreen extends React.Component {
                 tempList[index].localImage = imgUrl;
                 this.setState({ replyList: tempList });
             }).catch(function() {
+                if(this.isUnMount) {
+                    return;
+                }
                 let tempList = this.state.threadList.slice();
                 tempList[index].localImage = require('../imgs/img-error.png');
                 this.setState({ threadList: tempList });
@@ -194,6 +197,9 @@ class DetailsScreen extends React.Component {
                     });
                 }
             }).catch((res)=>{
+                if(this.isUnMount) {
+                    return;
+                }
                 this.TopModal.showMessage('错误', `请求数据失败:${res}`,'确认');
                 this.setState({
                     footerLoading: 0,
@@ -209,6 +215,9 @@ class DetailsScreen extends React.Component {
         }
         this.setState({ headerLoading: true, page: 1 }, async () => {
             let res = await getReplyList(this.threadDetail.id, this.state.page);
+            if(this.isUnMount) {
+                return;
+            }
             if (res.status == 'ok') {
                 this.props.navigation.setParams({
                     threadDetail: res.res

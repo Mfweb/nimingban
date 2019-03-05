@@ -47,8 +47,19 @@ function addNewHistory(mode, detail, time) {
     });
 }
 
+function getHistory(mode, page) {
+    return new Promise((resolve, reject) => {
+        __historySQLite.transaction((tx) => {
+            tx.executeSql(`SELECT * FROM ${mode==='browse'?'UserBrowseHistory':'UserReplyHistory'} WHERE island='${configDynamic.islandMode}' GROUP BY tid ORDER BY addtime DESC LIMIT ((${page}-1)*20),20`, [], (tx, results) => {
+                resolve(results);
+            });
+        });
+    });
+}
+
 const history = {
     init: init,
-    addNewHistory: addNewHistory
+    addNewHistory: addNewHistory,
+    getHistory: getHistory
 }
 export { history }

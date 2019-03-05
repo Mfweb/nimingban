@@ -15,6 +15,7 @@ import { history } from '../modules/history'
 import { getImage } from '../modules/apis'
 import { MainListItem } from '../component/list-main-item'
 import { Toast } from '../component/toast'
+import { ListProcessView } from '../component/list-process-view'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -54,6 +55,12 @@ const styles = StyleSheet.create({
     historyList: {
         flex: 1,
         backgroundColor: '#DCDCDC'
+    },
+    footerMessage: {
+        color: '#696969',
+        fontSize: 18,
+        textAlign: 'center',
+        padding: 8
     },
 });
 
@@ -119,7 +126,12 @@ class HistoryManager extends React.Component {
         super(props);
         this.state = {
             historyList: [],
-            headerLoading: false
+            headerLoading: false,
+            footerLoading: 0,
+            loadEnd: false,
+            footerMessage: '',
+            page: 1,
+            mode: 0
         };
     }
     static navigationOptions = ({ navigation }) => {
@@ -142,18 +154,27 @@ class HistoryManager extends React.Component {
             )
         }
     }
+    modeString = ['browse', 'reply', 'image']
+    isUnmount = true;
     componentDidMount() {
+        this.isUnmount = false;
         this.props.navigation.setParams({
             changeMode: this._changeMode,
         });
+        this._pullDownRefresh();
     }
     componentWillUnmount() {
-
+        this.isUnmount = true;
     }
     _changeMode = (mode) => {
         this.props.navigation.setParams({
             mode: mode
         });
+        if(mode !== this.state.mode) {
+            this.setState({
+                mode: mode
+            }, this._pullDownRefresh);
+        }
     }
     loadingImages = Array();
     _renderItem = ({ item, index }) => {
@@ -161,17 +182,19 @@ class HistoryManager extends React.Component {
             this.loadingImages.push(index);
             let imgName = item.img + item.ext;
             getImage('thumb', imgName).then((res) => {
+                if(this.isUnmount)return;
                 let imgUrl = require('../imgs/img-error.png');
                 if(res.status == 'ok') {
                     imgUrl = {uri: 'file://' + res.path};
                 }
-                let tempList = this.state.threadList.slice();
+                let tempList = this.state.historyList.slice();
                 tempList[index].localImage = imgUrl;
-                this.setState({ threadList: tempList });
+                this.setState({ historyList: tempList });
             }).catch(function() {
-                let tempList = this.state.threadList.slice();
+                if(this.isUnmount) return;
+                let tempList = this.state.historyList.slice();
                 tempList[index].localImage = require('../imgs/img-error.png');
-                this.setState({ threadList: tempList });
+                this.setState({ historyList: tempList });
             });
         }
         return (
@@ -179,7 +202,65 @@ class HistoryManager extends React.Component {
         )
     }
     _pullDownRefresh = () => {
-
+        if (this.state.footerLoading != 0 || this.state.headerLoading) {
+            return;
+        }
+        this.setState({ headerLoading: true, page: this.state.page }, async () => {
+            this.loadingImages = [];
+            let items = [];
+            let res = await history.getHistory(this.modeString[this.state.mode], 1);
+            for(let i = 0; i< res.rows.length; i++) {
+                items.push(JSON.parse(res.rows.item(i).cache));
+                items[items.length - 1].localImage = null;
+            }
+            this.setState({
+                historyList: items,
+                page: 2,
+                headerLoading: false,
+                loadEnd: false,
+            });
+        });
+    }
+    _pullUpLoading = () => {
+        if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd) {
+            return;
+        }
+        this.setState({ footerLoading: 1 }, async function() {
+            this.loadingImages = [];
+            let items = [];
+            let res = await history.getHistory(this.modeString[this.state.mode], this.state.page);
+            if(res.rows.length === 0) {
+                this.setState({
+                    footerLoading: false,
+                    footerMessage: '到底啦',
+                    loadEnd: true
+                });
+                return;
+            }
+            for(let i = 0; i< res.rows.length; i++) {
+                items.push(JSON.parse(res.rows.item(i).cache));
+                items[items.length - 1].localImage = null;
+            }
+            let tempList = this.state.historyList.slice()
+            tempList = tempList.concat(items);
+            let nextPage = this.state.page + 1;
+            this.setState({
+                historyList: tempList,
+                page: nextPage,
+                footerLoading: false,
+            });
+        });
+    }
+    _footerComponent = () => {
+        if(this.state.footerLoading == 0) {
+            return (<Text style={styles.footerMessage}>{this.state.footerMessage}</Text>);
+        }
+        else {
+            let windowWidth = Dimensions.get('window').width;
+            return (
+                <ListProcessView toMax={windowWidth} height={8} />
+            );
+        }
     }
     render() {
         return (
@@ -195,7 +276,6 @@ class HistoryManager extends React.Component {
                     keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
                     renderItem={this._renderItem}
                     ListFooterComponent={this._footerComponent}
-                    ItemSeparatorComponent={this._itemSeparator}
                     onEndReachedThreshold={0.1}
                     onEndReached={this._pullUpLoading}
                     pageSize={20}
