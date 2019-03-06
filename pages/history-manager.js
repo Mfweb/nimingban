@@ -208,6 +208,7 @@ class HistoryManager extends React.Component {
         this.setState({ headerLoading: true, page: this.state.page }, async () => {
             this.loadingImages = [];
             let items = [];
+            //await history.getHistory('image' ,1);
             let res = await history.getHistory(this.modeString[this.state.mode], 1);
             for(let i = 0; i< res.rows.length; i++) {
                 items.push(JSON.parse(res.rows.item(i).cache));

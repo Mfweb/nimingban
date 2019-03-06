@@ -154,6 +154,7 @@ class MainListItem extends React.Component {
                     {this.state.displayData['threadContent']}
                 </Text>
                 <MainListImage 
+                    tid={itemDetail.id}
                     navigation={this.props.navigation}
                     Toast={this.props.Toast}
                     localUri={this.state.imgLocalUri}

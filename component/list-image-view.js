@@ -2,6 +2,7 @@ import React from 'react'
 import { Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import { ImageProcessView } from '../component/list-process-view'
 import { getImage } from '../modules/apis'
+import { history } from '../modules/history'
 
 const styles = StyleSheet.create({
     mainListItemImage: {
@@ -57,6 +58,7 @@ class MainListImage extends React.Component {
         }, async () => {
             let res = await getImage('image', this.props.imgUri);
             if(res.status === 'ok') {
+                history.addNewHistory('image', {id: this.props.tid, url: res.path}, Date.parse(new Date()));
                 this.props.navigation.push('ImageViewer', {
                     imageUrl: res.path
                 });

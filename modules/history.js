@@ -2,6 +2,12 @@ import SQLite from 'react-native-sqlite-storage'
 import { configDynamic, configLocal } from './config'
 import RNFS from 'react-native-fs'
 
+const modeString = {
+    browse: 'UserBrowseHistory',
+    reply: 'UserReplyHistory',
+    image: 'UserImageHistory'
+};
+
 var __historySQLite = null;
 function __clearHistory(tableName) {
     return new Promise((resolve, reject) => {
@@ -28,10 +34,11 @@ function historyTableInit(tableName) {
 function init() {
     return new Promise((resolve, reject)=>{
         __historySQLite = SQLite.openDatabase({name: 'history.db', location: 'default'}, async ()=>{
-            await __clearHistory('UserBrowseHistory');
-            await __clearHistory('UserReplyHistory');
+            //await __clearHistory('UserBrowseHistory');
+            //await __clearHistory('UserReplyHistory');
             await historyTableInit('UserBrowseHistory');
             await historyTableInit('UserReplyHistory');
+            await historyTableInit('UserImageHistory');
         }, (e)=>{
             resolve({status: 'error', errmsg: e});
         });
@@ -41,7 +48,7 @@ function init() {
 function addNewHistory(mode, detail, time) {
     return new Promise((resolve, reject) => {
         __historySQLite.transaction((tx) => {
-            tx.executeSql(`REPLACE INTO ${mode==='browse'?'UserBrowseHistory':'UserReplyHistory'}(island, tid, cache, addtime) VALUES('${configDynamic.islandMode}',${detail.id},'${JSON.stringify(detail)}',${time})`, [], (tx, results) => {
+            tx.executeSql(`REPLACE INTO ${modeString[mode]}(island, tid, cache, addtime) VALUES('${configDynamic.islandMode}',${detail.id},'${JSON.stringify(detail)}',${time})`, [], (tx, results) => {
                 console.log(results);
                 resolve();
             });
@@ -52,7 +59,7 @@ function addNewHistory(mode, detail, time) {
 async function getHistory(mode, page) {
     return new Promise((resolve, reject) => {
         __historySQLite.transaction((tx) => {
-            tx.executeSql(`SELECT * FROM ${mode==='browse'?'UserBrowseHistory':'UserReplyHistory'} WHERE island='${configDynamic.islandMode}' ORDER BY addtime DESC LIMIT ((${page}-1)*20),20`, [], (tx, results) => {
+            tx.executeSql(`SELECT * FROM ${modeString[mode]} WHERE island='${configDynamic.islandMode}' ORDER BY addtime DESC LIMIT ((${page}-1)*20),20`, [], (tx, results) => {
                 resolve(results);
             });
         });
