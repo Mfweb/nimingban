@@ -175,11 +175,11 @@ async function getReplyList(tid, page) {
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }
-    if(response.body == '"该主题不存在"') {
-        return { status: 'error', errmsg: '该主题不存在' };
-    }
     try {
         let resJSON = JSON.parse(response.body);
+        if(resJSON === '该主题不存在') {
+            return { status: 'error', errmsg: resJSON };
+        }
         return { status: 'ok', res: resJSON };
     } catch (error) {
         return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
