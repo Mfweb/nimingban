@@ -53,11 +53,12 @@ class DetailListItem extends React.Component {
         });
     }
     componentDidMount() {
-        this._updateData(this.props.itemDetail);
+        //this._updateData(this.props.itemDetail);
     }
     
     componentWillReceiveProps(res) {
         this._updateImage(res.itemDetail.localImage);
+        this._updateData(res.itemDetail);
     }
     componentWillUnmount() {
     }
@@ -94,7 +95,6 @@ class DetailListItem extends React.Component {
 
         this.setState({
             displayData: displayData,
-            imgLocalUri: null,
         });
     }
     render() {

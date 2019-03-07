@@ -93,7 +93,7 @@ class DetailsScreen extends React.Component {
 
     loadingImages = Array();
     _renderItem = ({ item, index }) => {
-        if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
+        if( item.img && (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
             this.loadingImages.push(index);
             let imgName = item.img + item.ext;
             //console.log(imgName);
@@ -228,6 +228,7 @@ class DetailsScreen extends React.Component {
                 }
                 this.loadingImages = [];
                 let tempList = Array();
+                
                 tempList.push({
                     id: res.res.id,
                     img: res.res.img,
@@ -242,9 +243,10 @@ class DetailsScreen extends React.Component {
                     admin: res.res.admin,
                 });
                 tempList = tempList.concat(res.res.replys);
+                console.log(tempList);
                 this.setState({
                     replyList: tempList,
-                    page: tempList.length >= 19?2:1,
+                    page: res.res.replys >= 20?2:1,
                     headerLoading: false,
                     loadEnd: false
                 });

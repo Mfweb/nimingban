@@ -82,8 +82,12 @@ class MainListItemHeader extends React.Component {
     }
 
     componentDidMount () {
+    }
+    componentWillReceiveProps(newProps) {
+        this._updateData(newProps.itemDetail);
+    }
+    _updateData = (itemDetail) => {
         let displayData = {};
-        let { itemDetail } = this.props;
         displayData['userIDStyle'] = [];
         if(itemDetail.admin == 1) {
             displayData['userIDStyle'].push(styles.mainListItemUserCookieNameBigVIP);
