@@ -140,7 +140,17 @@ async function getThreadList(fid, page) {
         return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
     }
 }
-
+/**
+ * 根据板块ID获取板块名字
+ * @param {string} fid 板块ID
+ */
+async function getForumNameByID(fid) {
+    let forumNameList = await _getForumNameCache();
+    if(forumNameList === null) {
+        return 'Unknow';
+    }
+    return forumNameList[fid.toString()];
+}
 /**
  * 获取串回复
  * @param {Number} tid 串ID
@@ -398,5 +408,6 @@ export {
     getImage, /* 获取串中的缩略图或原图 */
     clearImageCache, /* 清空缩略图缓存 */
     replyNewThread,
-    realAnonymousGetCookie
+    realAnonymousGetCookie,
+    getForumNameByID
 };
