@@ -243,7 +243,6 @@ class DetailsScreen extends React.Component {
                     admin: res.res.admin,
                 });
                 tempList = tempList.concat(res.res.replys);
-                console.log(tempList);
                 this.setState({
                     replyList: tempList,
                     page: res.res.replys >= 20?2:1,

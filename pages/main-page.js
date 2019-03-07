@@ -107,6 +107,7 @@ class HomeScreen extends React.Component {
         if(islandFullNameList[islandMode] !== configDynamic.islandMode) {
             configDynamic.islandMode = islandFullNameList[islandMode];
         }
+        this.props.navigation.popToTop();
         if(viewMode === 'f') {
             getForumNameByID(viewID).then((res)=>{
                 this.props.navigation.setParams({
