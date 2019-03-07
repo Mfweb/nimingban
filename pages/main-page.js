@@ -86,6 +86,10 @@ class HomeScreen extends React.Component {
             menuFunctions: this._menuFunctions
         });
         Linking.addEventListener('url', this.handleOpenURL);
+        if(!configDynamic.initUrlLoaded) {
+            Linking.getInitialURL().then((url)=>this.handleOpenURL({url: url}));
+            configDynamic.initUrlLoaded = true;
+        }
     }
     componentWillUnmount() {
         this.isUnmount = true;
