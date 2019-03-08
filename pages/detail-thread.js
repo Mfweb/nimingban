@@ -245,9 +245,13 @@ class DetailsScreen extends React.Component {
                 tempList = tempList.concat(res.res.replys);
                 this.setState({
                     replyList: tempList,
-                    page: res.res.replys >= 20?2:1,
+                    page: res.res.replys.length >= 19 ? 2 : 1,
                     headerLoading: false,
-                    loadEnd: false
+                    loadEnd: res.res.replys.length >= 19 ? false : true,
+                    footerMessage: res.res.replys.length >= 19 ? 
+                        `上拉继续加载 ${res.res.replys.length}/${res.res.replyCount}`    
+                        :
+                        `加载完成,点击再次加载 ${res.res.replys.length}/${res.res.replyCount}`
                 });
             }
             else {
