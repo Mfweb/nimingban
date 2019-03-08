@@ -1,6 +1,6 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, Linking } from 'react-native'
-import { getThreadList, getImage, getForumNameByID } from '../modules/apis'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
+import { getThreadList, getImage } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -85,55 +85,9 @@ class HomeScreen extends React.Component {
             newThread: this._newThread,
             menuFunctions: this._menuFunctions
         });
-        Linking.addEventListener('url', this.handleOpenURL);
-        if(!configDynamic.initUrlLoaded) {
-            Linking.getInitialURL().then((url)=>this.handleOpenURL({url: url}));
-            configDynamic.initUrlLoaded = true;
-        }
     }
     componentWillUnmount() {
         this.isUnmount = true;
-        Linking.removeEventListener('url', this.handleOpenURL);
-    }
-    handleOpenURL = (event) => {
-        if(!event.url || !/^((tnmb)|(adnmb))+:\/\/(f|t){1}\/\d+$/.test(event.url)) {
-            return;
-        }
-        const islandFullNameList = {
-            tnmb: 'bt',
-            adnmb: 'lw'
-        };
-        let urlParams = event.url.split('://');
-        let viewPrograms = urlParams[1].split('/');
-        let islandMode = urlParams[0];
-        let viewMode = viewPrograms[0];
-        let viewID = viewPrograms[1];
-        if(islandFullNameList[islandMode] !== configDynamic.islandMode) {
-            configDynamic.islandMode = islandFullNameList[islandMode];
-        }
-        this.props.navigation.popToTop();
-        if(viewMode === 'f') {
-            getForumNameByID(viewID).then((res)=>{
-                this.props.navigation.setParams({
-                    forumID: viewID,
-                    name: res,
-                });
-            });
-        }
-        else if(viewMode === 't') {
-            this.props.navigation.setParams({
-                forumID: -1,
-                name: '时间线',
-            });
-            this.props.navigation.navigate('Details', {
-                threadDetail: {
-                    id: viewID,
-                    userid: 'null', 
-                    content: 'null',
-                    now: '2099-12-12 12:12:12'
-                }
-            });
-        }
     }
     /**
      * 初始化历史数据库

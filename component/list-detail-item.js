@@ -53,7 +53,7 @@ class DetailListItem extends React.Component {
         });
     }
     componentDidMount() {
-        //this._updateData(this.props.itemDetail);
+        this._updateData(this.props.itemDetail);
     }
     
     componentWillReceiveProps(res) {

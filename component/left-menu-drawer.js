@@ -1,7 +1,7 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, SafeAreaView, SectionList, Dimensions, TouchableOpacity, Animated } from 'react-native'
+import { Text, View, Image, StyleSheet, SafeAreaView, SectionList, Dimensions, TouchableOpacity, Animated, Linking } from 'react-native'
 import { NavigationActions } from 'react-navigation'
-import { getForumList } from '../modules/apis'
+import { getForumList, getForumNameByID } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
@@ -216,8 +216,52 @@ class LeftDrawerNavigator extends React.Component {
 
     componentDidMount() {
         this._pullDownRefresh(false);
+        Linking.addEventListener('url', this.handleOpenURL);
+        if(!configDynamic.initUrlLoaded) {
+            Linking.getInitialURL().then((url)=>this.handleOpenURL({url: url}));
+            configDynamic.initUrlLoaded = true;
+        }
     }
-
+    componentWillUnmount() {
+        Linking.removeEventListener('url', this.handleOpenURL);
+    }
+    handleOpenURL = (event) => {
+        if(!event.url || !/^((tnmb)|(adnmb))+:\/\/(f|t){1}\/\d+$/.test(event.url)) {
+            return;
+        }
+        const islandFullNameList = {
+            tnmb: 'bt',
+            adnmb: 'lw'
+        };
+        let urlParams = event.url.split('://');
+        let viewPrograms = urlParams[1].split('/');
+        let islandMode = urlParams[0];
+        let viewMode = viewPrograms[0];
+        let viewID = viewPrograms[1];
+        if(islandFullNameList[islandMode] !== configDynamic.islandMode) {
+            configDynamic.islandMode = islandFullNameList[islandMode];
+            this._pullDownRefresh(false);
+        }
+        //this.props.navigation.popToTop();
+        if(viewMode === 'f') {
+            getForumNameByID(viewID).then((res)=>{
+                this._gotoFroum(viewID, res);
+                this.props.navigation.closeDrawer();
+            });
+        }
+        else if(viewMode === 't') {
+            this._gotoFroum(-1, '时间线');
+            this.props.navigation._childrenNavigation.Home.navigate('Details', {
+                threadDetail: {
+                    id: viewID,
+                    userid: 'null', 
+                    content: 'null',
+                    now: '2099-12-12 12:12:12'
+                }
+            }, 0);
+            this.props.navigation.closeDrawer();
+        }
+    }
     /**
      * 复位路由并跳转到板块
      */
