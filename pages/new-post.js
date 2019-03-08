@@ -109,7 +109,8 @@ class NewPostScreen extends React.Component {
             imageWatermark: false,
             selectdeImage: null,
             translateNow: new Animated.Value(0),
-            sending: false
+            sending: false,
+            displayHeight: null
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -363,10 +364,11 @@ class NewPostScreen extends React.Component {
     render() {
         return(
             <View style={[styles.pageView, {paddingBottom: this.state.bottomHeight}]}>
-                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <TopModal ref={(ref)=>{this.TopModal=ref;}} maxHeight={this.state.displayHeight} />
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Animated.View style={[styles.progressView, { transform: [{ translateX: this.state.translateNow }]}]}/>
-                <View style={styles.inputView}>
+                <View style={styles.inputView}
+                        onLayout={(e)=>{this.setState({displayHeight:e.nativeEvent.layout.height});}}>
                     <TextInput
                         value={this.state.inputText}
                         style={styles.inputText}

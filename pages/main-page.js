@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView } from 'react-native'
 import { getThreadList, getImage } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
@@ -224,7 +224,7 @@ class HomeScreen extends React.Component {
 
     render() {
         return (
-            <View style={{flex:1}}>
+            <SafeAreaView style={{flex:1}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
@@ -248,7 +248,7 @@ class HomeScreen extends React.Component {
                     }
                     /*viewabilityConfig={this.viewabilityConfig}*/
                 />
-            </View>
+            </SafeAreaView>
         );
     }
 }

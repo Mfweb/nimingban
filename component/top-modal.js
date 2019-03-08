@@ -251,7 +251,7 @@ class TopModal extends React.Component {
                     <View style={styles.modalTitleSplitLine}></View>
                     <View style={{
                         width: this.state.width, 
-                        maxHeight: Dimensions.get('window').height - Header.HEIGHT - 50 - 40 - 20 // -button - title - 保留
+                        maxHeight: (this.props.maxHeight ? this.props.maxHeight:(Dimensions.get('window').height - Header.HEIGHT)) - 50 - 40 - 20 // -button - title - 保留
                         }}>
                         {this.state.item}
                     </View>

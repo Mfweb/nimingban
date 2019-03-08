@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView } from 'react-native'
 import { getReplyList, getImage } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -266,7 +266,7 @@ class DetailsScreen extends React.Component {
     
     render() {
         return (
-            <View style={{flex:1}}>
+            <SafeAreaView style={{flex:1, backgroundColor: '#DCDCDC'}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
@@ -291,7 +291,7 @@ class DetailsScreen extends React.Component {
                             title="正在加载..."/>
                     }
                 />
-            </View>
+            </SafeAreaView>
         );
     }
 }
