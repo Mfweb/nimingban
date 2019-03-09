@@ -317,12 +317,11 @@ class LeftDrawerNavigator extends React.Component {
      * 板块item
      */
     _renderItem = ({item}) => {
-        let displayName = item.showName?getHTMLDom(item.showName):getHTMLDom(item.name);
         return(
             <TouchableOpacity onPress={()=>this._onPressItem(item)}>
                 <View style={styles.itemView}>
                     <Text style={styles.itemText}>
-                    {displayName}
+                    {item.displayName}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -339,12 +338,22 @@ class LeftDrawerNavigator extends React.Component {
             let res = await getForumList(force);
             if(res.status == 'ok') {
                 let tempList = Array();
-                res.res.forEach(forumGroup => {
+                for(let gIndex = 0; gIndex < res.res.length; gIndex++) {
+                    let tempItem = Array();
+                    for(let iIndex = 0; iIndex < res.res[gIndex].forums.length; iIndex ++) {
+                        let itm = res.res[gIndex].forums[iIndex];
+                        tempItem.push({
+                            displayName: itm.showName?getHTMLDom(itm.showName):getHTMLDom(itm.name),
+                            name: itm.name,
+                            id: itm.id
+                        });
+                    }
                     tempList.push({
-                        groupName: forumGroup.name,
-                        data: forumGroup.forums.slice()
+                        groupName: res.res[gIndex].name,
+                        data: tempItem
                     });
-                });
+                }
+
                 this.setState({
                     forumList: tempList,
                     headerLoading: false
