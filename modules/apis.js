@@ -63,7 +63,10 @@ async function _saveForumNameCache(forumNames) {
 async function _getForumNameCache() {
     if(configDynamic.forumNamecache[configDynamic.islandMode] == null) {
         let localData = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].forumNameCache);
-        if(localData != null) {
+        if(localData == null) {
+            await getForumList(true);
+        }
+        else {
             configDynamic.forumNamecache[configDynamic.islandMode] = JSON.parse(localData);
         }
     }

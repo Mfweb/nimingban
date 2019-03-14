@@ -4,6 +4,7 @@ import { getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { MainListImage } from './list-image-view'
 import { MainListItemHeader } from './list-header'
+import { ItemQuote } from './item-quote'
 
 const styles = StyleSheet.create({
     mainListItem: {
@@ -71,7 +72,11 @@ class DetailListItem extends React.Component {
     }
     _updateData = (itemDetail) => {
         let displayData = {};
-        //console.log(this.props.itemDetail);
+        let quote = itemDetail.content.split(/((&gt;){2}|(>){2})(No\.){0,1}\d{1,11}/);
+        if(quote !== null) {
+            console.log(quote);
+        }
+       
         displayData['threadContent'] = getHTMLDom(itemDetail.content, (url)=>{
             if( (url.href.indexOf('/t/') >= 0) && (
                 (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
@@ -92,7 +97,6 @@ class DetailListItem extends React.Component {
                 });
             }
         });
-
         this.setState({
             displayData: displayData,
         });

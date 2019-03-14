@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import  { Toast } from '../component/toast'
 import { DetailListItem } from '../component/list-detail-item'
+import { history } from '../modules/history'
 
 const styles = StyleSheet.create({
     mainList: {
@@ -165,6 +166,7 @@ class DetailsScreen extends React.Component {
                         if( res.res.replys[0].id == 9999999 ) {
                             res.res.replys.splice(0, 1);
                         }
+                        history.addNewHistory('cache', {replyTo: res.res.id ,datas: res.res.replys});
                         //计算上次拉到哪里
                         let cpCount = (this.localReplyCount > 0) ? (res.res.replys.length - this.localReplyCount) : res.res.replys.length;
                         //本页是否填满
@@ -241,8 +243,11 @@ class DetailsScreen extends React.Component {
                     content: res.res.content,
                     sage: res.res.sage,
                     admin: res.res.admin,
+                    replyCount: res.res.replyCount
                 });
                 tempList = tempList.concat(res.res.replys);
+                history.addNewHistory('cache', {replyTo: 0, datas: [tempList[0]]});
+                history.addNewHistory('cache', {replyTo: res.res.id, datas: res.res.replys});
                 this.setState({
                     replyList: tempList,
                     page: res.res.replys.length >= 19 ? 2 : 1,
