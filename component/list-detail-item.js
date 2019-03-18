@@ -70,33 +70,49 @@ class DetailListItem extends React.Component {
             });
         }
     }
+    _onPressUrl = (url)=>{
+        if( (url.href.indexOf('/t/') >= 0) && (
+            (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
+        ) ) {
+            let threadNo = url.href.split('/t/')[1];
+            this.props.navigation.push('Details', {
+                threadDetail: {
+                    id: threadNo, 
+                    userid: 'null', 
+                    content: 'null',
+                    now: '2099-12-12 12:12:12'
+                }
+            })
+        }
+        else {
+            this.props.navigation.push('WebView', {
+                URL: url.href
+            });
+        }
+    }
     _updateData = (itemDetail) => {
         let displayData = {};
-        let quote = itemDetail.content.split(/((&gt;){2}|(>){2})(No\.){0,1}\d{1,11}/);
-        if(quote !== null) {
-            console.log(quote);
-        }
-       
-        displayData['threadContent'] = getHTMLDom(itemDetail.content, (url)=>{
-            if( (url.href.indexOf('/t/') >= 0) && (
-                (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
-            ) ) {
-                let threadNo = url.href.split('/t/')[1];
-                this.props.navigation.push('Details', {
-                    threadDetail: {
-                        id: threadNo, 
-                        userid: 'null', 
-                        content: 'null',
-                        now: '2099-12-12 12:12:12'
-                    }
-                })
+        let contentBlocks = itemDetail.content.split(/((?:&gt;|\>){2}No\.\d{1,11}(?:<br \/>)*)/);
+        displayData['threadContent'] = [];
+        for(let i = 0; i < contentBlocks.length; i++) {
+            let content = contentBlocks[i];
+            if(content === '' || content === null) {
+                continue;
+            }
+            if(/((&gt;){2}|(>){2})(No\.){0,1}\d{1,11}/.test(content)) {
+                displayData['threadContent'].push(
+                    <ItemQuote key={'quote-' + i} id={content}></ItemQuote>
+                );
             }
             else {
-                this.props.navigation.push('WebView', {
-                    URL: url.href
-                });
+                let contentDom = getHTMLDom(content, this._onPressUrl);
+                displayData['threadContent'].push(
+                    <Text key={'text-' + i} style={styles.mainListItemContent}>
+                        {contentDom}
+                    </Text>
+                );
             }
-        });
+        }
         this.setState({
             displayData: displayData,
         });
@@ -106,9 +122,7 @@ class DetailListItem extends React.Component {
         return (
             <View style={styles.mainListItem}>
                 <MainListItemHeader itemDetail={itemDetail} po={this.props.po}/>
-                <Text style={styles.mainListItemContent}>
-                    {this.state.displayData['threadContent']}
-                </Text>
+                {this.state.displayData['threadContent']}
                 <MainListImage 
                     tid={itemDetail.id}
                     navigation={this.props.navigation}
