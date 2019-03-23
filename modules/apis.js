@@ -3,7 +3,7 @@ import RNFS from 'react-native-fs';
 import { request, uploadFile } from './network'
 import { configNetwork, configLocal, configDynamic } from './config'
 import { getUserCookie, addUserCookieFromString } from './cookie-manager'
-
+import { history } from './history'
 /**
  * 检查并返回最新的host，
  * 免得之后30x出问题
@@ -403,6 +403,49 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
         return { status: 'error', errmsg: error };
     }
 }
+
+/**
+ * 从服务器获取某个回复的内容
+ * @param {string} id ID
+ */
+async function getDetailFromNet(id) {
+    let url = await getUrl(configNetwork.apiUrl.getDetail + `&id=${id}`);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+
+    var response = await request(url);
+    if(response.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
+    }
+    
+    try {
+        let resJSON = JSON.parse(response.body);
+        if(resJSON === '该主题不存在') {
+            return { status: 'error', errmsg: resJSON };
+        }
+        return { status: 'ok', res: resJSON };
+    } catch (error) {
+        return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
+    }
+}
+/**
+ * 获取某个ID的内容
+ * 如果之前查看过，那主串和回复都能直接从缓存读取
+ * 如果之前没有查看过，那会首先当作主串获取，如果不存在则当作普通串获取
+ * @param {string} id ID
+ */
+async function getDetail(id) {
+    let detailCatch = await history.getDetailFromCache(id);
+    if(detailCatch.rows.length === 0) { // 缓存中没有
+        detailCatch = await getDetailFromNet(id);
+        return detailCatch;
+    }
+    else {
+        return { status: 'ok', res: detailCatch.rows.item(0) };
+    }
+}
+
 export { 
     getUrl, /* 拼接URL */
     getForumList, /* 获取板块列表 */
@@ -412,5 +455,6 @@ export {
     clearImageCache, /* 清空缩略图缓存 */
     replyNewThread,
     realAnonymousGetCookie,
-    getForumNameByID
+    getForumNameByID,
+    getDetail
 };

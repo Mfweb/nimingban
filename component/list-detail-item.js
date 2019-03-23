@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     mainListItemContent: {
         color: '#000',
         fontSize: 20,
+        lineHeight: 20,
         paddingLeft: 8,
         paddingRight: 8
     },
@@ -92,7 +93,7 @@ class DetailListItem extends React.Component {
     }
     _updateData = (itemDetail) => {
         let displayData = {};
-        let contentBlocks = itemDetail.content.split(/((?:&gt;|\>){2}No\.\d{1,11}(?:<br \/>)*)/);
+        let contentBlocks = itemDetail.content.split(/((?:&gt;|\>){2}No\.\d{1,11}(?:<br \/>)*(?:\n)*)/);
         displayData['threadContent'] = [];
         for(let i = 0; i < contentBlocks.length; i++) {
             let content = contentBlocks[i];

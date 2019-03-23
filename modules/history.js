@@ -122,9 +122,24 @@ async function getHistory(mode, page) {
     });
 }
 
+/**
+ * 从缓存获取某个ID的内容
+ * @param {string} id ID
+ */
+async function getDetailFromCache(id) {
+    return new Promise((resolve, reject) => {
+        __historySQLite.transaction((tx) => {
+            tx.executeSql(`SELECT * FROM UserThreadCache WHERE island='${configDynamic.islandMode}' AND id=${id}`, [], (tx, results) => {
+                resolve(results);
+            });
+        });
+    });
+}
+
 const history = {
     init: init,
     addNewHistory: addNewHistory,
-    getHistory: getHistory
+    getHistory: getHistory,
+    getDetailFromCache: getDetailFromCache
 }
 export { history }
