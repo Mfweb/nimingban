@@ -18,6 +18,13 @@ const styles = StyleSheet.create({
     mainListItemContent: {
         color: '#000',
         fontSize: 20,
+        lineHeight: 21,
+        paddingLeft: 8,
+        paddingRight: 8
+    },
+    quoteText: {
+        color: '#789922',
+        fontSize: 20,
         lineHeight: 20,
         paddingLeft: 8,
         paddingRight: 8
@@ -101,16 +108,18 @@ class DetailListItem extends React.Component {
                 continue;
             }
             if(/((&gt;){2}|(>){2})(No\.){0,1}\d{1,11}/.test(content)) {
+                let contentDom = getHTMLDom(content.replace('\n','').replace('<br />', ''), this._onPressUrl);
                 displayData['threadContent'].push(
-                    <ItemQuote key={'quote-' + i} id={content}></ItemQuote>
+                    <Text key={'text-' + i}  style={styles.quoteText}>{contentDom}</Text>
+                );
+                displayData['threadContent'].push(
+                    <ItemQuote key={'quote-' + i} id={content} navigation={this.props.navigation} po={this.props.po}></ItemQuote>
                 );
             }
             else {
                 let contentDom = getHTMLDom(content, this._onPressUrl);
                 displayData['threadContent'].push(
-                    <Text key={'text-' + i} style={styles.mainListItemContent}>
-                        {contentDom}
-                    </Text>
+                    <Text key={'text-' + i} style={styles.mainListItemContent}>{contentDom}</Text>
                 );
             }
         }
