@@ -421,7 +421,7 @@ async function getDetailFromNet(id) {
     
     try {
         let resJSON = JSON.parse(response.body);
-        if(resJSON === '该主题不存在') {
+        if(resJSON === 'thread不存在') {
             return { status: 'error', errmsg: resJSON };
         }
         return { status: 'ok', res: resJSON };
