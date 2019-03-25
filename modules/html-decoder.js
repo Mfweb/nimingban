@@ -15,8 +15,8 @@ const htmlConstStyles = StyleSheet.create({
     }
 });
 function escape2Html(str) {
-    var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
-    return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function(all,t){
+    var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"','bull':'•'};
+    return str.replace(/&(lt|gt|nbsp|amp|quot|bull);/ig, function(all,t){
         return arrEntities[t];
     });
 }
@@ -82,11 +82,11 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
                             outPut.push(<Text key={domKey++} style={parentAttribs}>{htmlTag.data}</Text>);
                         }
                         break;
+                    case 'p':
                     case 'div':
                     case 'form':
                     case 'label':
                         outPut.push(<Text key={domKey++} style={parentAttribs}>{htmlTag.data}</Text>);
-                        outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
                         break;
                     case 's':
                     case 'strike':
@@ -101,6 +101,9 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
                 break;
             case 'tag':
                 outPut = outPut.concat(_getHTMLDom(htmlTag.children, aCallback, htmlTag.name, htmlTag.attribs, tagAttribs))
+                if(htmlTag.name === 'p' || htmlTag.name === 'div') {
+                    outPut.push(<Text key={domKey++}>{'\r\n'}</Text>);
+                }
                 break;
             default:
                 break;
