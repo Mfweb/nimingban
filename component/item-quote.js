@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(250,114,150,0.3)',
     },
     quoteOriginalText: {
-        color: '#A9A9A9',
+        color: '#696969',
         fontSize: 18
     },
     quoteHeader: {
