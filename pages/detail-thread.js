@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView } from 'react-native'
-import { getReplyList, getImage } from '../modules/apis'
+import { getReplyList, getImage, getDetail } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
@@ -216,17 +216,24 @@ class DetailsScreen extends React.Component {
             return;
         }
         this.setState({ headerLoading: true, page: 1 }, async () => {
+            let isReply = false;
             let res = await getReplyList(this.threadDetail.id, this.state.page);
+            if(res.status !== 'ok' && res.errmsg === '该主题不存在') {
+                res = await getDetail(this.threadDetail.id);
+                isReply = true;
+            }
             if(this.isUnMount) {
                 return;
             }
-            if (res.status == 'ok') {
+            if (res.status === 'ok') {
                 this.props.navigation.setParams({
                     threadDetail: res.res
                 });
-                this.localReplyCount = res.res.replys.length >= 19? 0: res.res.replys.length;
-                if(res.res.replys.length > 0 && res.res.replys[0].id==9999999 && this.localReplyCount > 0) {
-                    this.localReplyCount --;
+                if(!isReply) {
+                    this.localReplyCount = res.res.replys.length >= 19? 0: res.res.replys.length;
+                    if(res.res.replys.length > 0 && res.res.replys[0].id==9999999 && this.localReplyCount > 0) {
+                        this.localReplyCount --;
+                    }
                 }
                 this.loadingImages = [];
                 let tempList = Array();
@@ -245,19 +252,33 @@ class DetailsScreen extends React.Component {
                     admin: res.res.admin,
                     replyCount: res.res.replyCount
                 });
-                tempList = tempList.concat(res.res.replys);
-                history.addNewHistory('cache', {replyTo: 0, datas: [tempList[0]]});
-                history.addNewHistory('cache', {replyTo: res.res.id, datas: res.res.replys});
-                this.setState({
-                    replyList: tempList,
-                    page: res.res.replys.length >= 19 ? 2 : 1,
-                    headerLoading: false,
-                    loadEnd: res.res.replys.length >= 19 ? false : true,
-                    footerMessage: res.res.replys.length >= 19 ? 
+                if(!isReply) {
+                    tempList = tempList.concat(res.res.replys);
+                    history.addNewHistory('cache', {replyTo: 0, datas: [tempList[0]]});
+                    history.addNewHistory('cache', {replyTo: res.res.id, datas: res.res.replys});
+                }
+
+                if(isReply) {
+                    this.setState({
+                        replyList: tempList,
+                        page: 1,
+                        headerLoading: false,
+                        loadEnd: true,
+                        footerMessage: '此id为回应串，不能继续加载'
+                    });
+                }
+                else {
+                    this.setState({
+                        replyList: tempList,
+                        page: res.res.replys.length >= 19 ? 2 : 1,
+                        headerLoading: false,
+                        loadEnd: res.res.replys.length >= 19 ? false : true,
+                        footerMessage: res.res.replys.length >= 19 ? 
                         `上拉继续加载 ${res.res.replys.length}/${res.res.replyCount}`    
                         :
                         `加载完成,点击再次加载 ${res.res.replys.length}/${res.res.replyCount}`
-                });
+                    });
+                }
             }
             else {
                 this.TopModal.showMessage('错误', `请求数据失败:${res.errmsg}`,'确认');

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { getDetail } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { converDateTime } from '../modules/date-time'
@@ -60,18 +60,18 @@ class ItemQuote extends React.Component {
             userID: '',
             sendTime: '',
             userIDStyles: [],
-            content: [<Text style={styles.quoteOriginalText}>正在获取...</Text>]
+            content: [<Text key={-1} style={styles.quoteOriginalText}>正在获取...</Text>]
         }
     }
-   
+    isUnmount = true
     componentDidMount() {
+        this.isUnmount = false;
         let dpId = this.props.id.match(/\d{1,11}/)[0];
         this._getDetail(dpId);
     }
     _getDetail = async (id) => {
         let detail = await getDetail(id);
         if(detail.status === 'ok') {
-            console.log(detail);
             var userIDStyles = [];
             if(detail.res.admin == 1) {
                 userIDStyles.push(styles.sendCookieNameBigVIP);
@@ -106,7 +106,9 @@ class ItemQuote extends React.Component {
                     );
                 }
             }
-
+            if(this.isUnmount) {
+                return;
+            }
             this.setState({
                 content: tempContent,
                 userID: getHTMLDom(detail.res.userid, null),
@@ -115,6 +117,9 @@ class ItemQuote extends React.Component {
             });
         }
         else {
+            if(this.isUnmount) {
+                return;
+            }
             this.setState({
                 content: <Text>{'获取引用失败：' + detail.errmsg}</Text>
             });
@@ -144,11 +149,22 @@ class ItemQuote extends React.Component {
 
     }
     componentWillUnmount() {
+        this.isUnmount = true;
     }
-
+    _goToDetailPage = () => {
+        let dpId = this.props.id.match(/\d{1,11}/)[0];
+        this.props.navigation.push('Details', {
+            threadDetail: {
+                id: dpId, 
+                userid: 'null', 
+                content: 'null',
+                now: '2099-12-12 12:12:12'
+            }
+        })
+    }
     render() {
         return (
-            <View style={styles.quoteView}>
+            <TouchableOpacity style={styles.quoteView} onPress={this._goToDetailPage} activeOpacity={0.7}>
                 <View style={styles.quoteHeader}>
                     <Text style={this.state.userIDStyles}>
                         {this.state.userID}
@@ -158,7 +174,7 @@ class ItemQuote extends React.Component {
                     </Text>
                 </View>
                 {this.state.content}
-            </View>
+            </TouchableOpacity>
         );
     }
 }
