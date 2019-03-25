@@ -1,6 +1,6 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView } from 'react-native'
-import { getThreadList, getImage } from '../modules/apis'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, ScrollView } from 'react-native'
+import { getThreadList, getImage, getForumList, getForumIDByName } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -8,6 +8,9 @@ import { configBase, configDynamic } from '../modules/config'
 import { Toast } from '../component/toast'
 import { history } from '../modules/history'
 import { MainListItem } from '../component/list-main-item'
+import { ActionSheet } from '../component/action-sheet'
+import { Header } from 'react-navigation'
+import { getHTMLDom } from '../modules/html-decoder'
 
 const styles = StyleSheet.create({
     mainList: {
@@ -116,9 +119,86 @@ class HomeScreen extends React.Component {
      * 右上角菜单
      */
     _menuFunctions = () =>{
-        this.TopModal.showMessage('测试','功能未实现','确认');
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, this.fname,
+        [
+            '版规',
+            '搜索',
+            '跳转'
+        ],
+        (index) => {
+            this.ActionSheet.closeActionSheet(() => {
+                switch(index) {
+                    case 0:
+                    this._showRule();
+                    break;
+                    case 1:
+                    break;
+                    case 2:
+                    break;
+                }
+            });
+        });
     }
-
+    _showRule = async () => {
+        let allForums = await getForumList();
+        if(allForums.status !== 'ok') {
+            this.TopModal.showMessage('错误', allForums.errmsg,'确认');
+            return;
+        }
+        allForums.res.forEach(forumGroup => {
+            forumGroup.forums.forEach(forumItem => {
+                if(forumItem.id == this.fid) {
+                    let rule = getHTMLDom(forumItem.msg.replace('\n', ''), this._onPressUrl);
+                    this.TopModal.showMessage('版规-' + this.fname, (<ScrollView><Text style={{fontSize: 18}}>{rule}</Text></ScrollView>), '确认');
+                    return;
+                }
+            });
+        });
+        /*this.TopModal.showMessage(getHTMLDom());
+        console.log(allForums);*/
+    }
+    _onPressUrl = (url)=>{
+        this.TopModal.closeModal();
+        // 站内可跳转链接
+        if( (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun') >=0 || url.href.indexOf('/') == 0 ) ) {
+            // 站内串
+            if( url.href.indexOf('/t/') >= 0 ) {
+                let threadNo = url.href.split('/t/')[1];
+                this.props.navigation.push('Details', {
+                    threadDetail: {
+                        id: threadNo, 
+                        userid: 'null', 
+                        content: 'null',
+                        now: '2099-12-12 12:12:12'
+                    }
+                })
+            }
+            // 站内板块
+            else if( (url.href.indexOf('/f/') >= 0) ) {
+                let fName = decodeURI(url.href.split('/f/')[1]);
+                getForumIDByName(fName).then((res) => {
+                    this.props.navigation.setParams({
+                        forumID: res,
+                        name: fName
+                    });
+                    this.fid = res;
+                    this._pullDownRefresh();
+                });
+            }
+            // 站内链接
+            else {
+                this.props.navigation.push('WebView', {
+                    URL: 'https://adnmb.com' + url.href
+                });
+            }
+        }
+        // 站外链接
+        else {
+            this.props.navigation.push('WebView', {
+                URL: url.href
+            });
+        }
+    }
     loadingImages = Array();
     _renderItem = ({ item, index }) => {
         if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
@@ -226,6 +306,7 @@ class HomeScreen extends React.Component {
         return (
             <SafeAreaView style={{flex:1}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
                     data={this.state.threadList}

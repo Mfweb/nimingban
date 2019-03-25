@@ -155,6 +155,17 @@ async function getForumNameByID(fid) {
     return forumNameList[fid.toString()];
 }
 /**
+ * 根据名字查找板块ID
+ * @param {string} name 板块名字
+ */
+async function getForumIDByName(name) {
+    let forumNameList = await _getForumNameCache();
+    if(forumNameList === null) {
+        return 'Unknow';
+    }
+    return Object.keys(forumNameList).find(k => {return forumNameList[k] == name})
+}
+/**
  * 获取串回复
  * @param {Number} tid 串ID
  * @param {Number} page 分页
@@ -456,5 +467,6 @@ export {
     replyNewThread,
     realAnonymousGetCookie,
     getForumNameByID,
-    getDetail
+    getDetail,
+    getForumIDByName
 };
