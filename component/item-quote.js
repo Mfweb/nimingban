@@ -1,9 +1,7 @@
 import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
-import { getImage, getDetail } from '../modules/apis'
+import { getDetail } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
-import { MainListImage } from './list-image-view'
-import { MainListItemHeader } from './list-header'
 import { converDateTime } from '../modules/date-time'
 
 const globalColor = '#fa7296';
@@ -45,6 +43,13 @@ const styles = StyleSheet.create({
     sendCookieNamePO: {
         backgroundColor: '#FFE4E1'
     },
+    quoteText: {
+        color: '#789922',
+        fontSize: 20,
+        lineHeight: 20,
+        paddingLeft: 8,
+        paddingRight: 8
+    },
 });
 
 class ItemQuote extends React.Component {
@@ -52,10 +57,10 @@ class ItemQuote extends React.Component {
         super(props);
         this.state = {
             displayText: "",
-            originalText: '正在获取',
             userID: '',
             sendTime: '',
-            userIDStyles: []
+            userIDStyles: [],
+            content: [<Text style={styles.quoteOriginalText}>正在获取...</Text>]
         }
     }
    
@@ -77,8 +82,33 @@ class ItemQuote extends React.Component {
             if(detail.res.userid == this.props.po){
                 userIDStyles.push(styles.sendCookieNamePO);
             }
+
+            let contentBlocks = detail.res.content.split(/((?:&gt;|\>){2}No\.\d{1,11}(?:<br \/>)*(?:\n)*)/);
+            let tempContent = [];
+            for(let i = 0; i < contentBlocks.length; i++) {
+                let content = contentBlocks[i];
+                if(content === '' || content === null) {
+                    continue;
+                }
+                if(/((&gt;){2}|(>){2})(No\.){0,1}\d{1,11}/.test(content)) {
+                    let contentDom = getHTMLDom(content.replace('\n','').replace('<br />', ''), this._onPressUrl);
+                    tempContent.push(
+                        <Text key={'text-' + i}  style={styles.quoteText}>{contentDom}</Text>
+                    );
+                    tempContent.push(
+                        <ItemQuote key={'quote-' + i} id={content} navigation={this.props.navigation} po={this.props.po}></ItemQuote>
+                    );
+                }
+                else {
+                    let contentDom = getHTMLDom(content, this._onPressUrl);
+                    tempContent.push(
+                        <Text key={'text-' + i} style={styles.quoteOriginalText}>{contentDom}</Text>
+                    );
+                }
+            }
+
             this.setState({
-                originalText: getHTMLDom(detail.res.content, this._onPressUrl),
+                content: tempContent,
                 userID: getHTMLDom(detail.res.userid, null),
                 sendTime: converDateTime(detail.res.now),
                 userIDStyles: userIDStyles
@@ -86,7 +116,7 @@ class ItemQuote extends React.Component {
         }
         else {
             this.setState({
-                originalText: '获取引用失败：' + detail.errmsg
+                content: <Text>{'获取引用失败：' + detail.errmsg}</Text>
             });
         }
     }
@@ -127,9 +157,7 @@ class ItemQuote extends React.Component {
                         {this.state.sendTime}
                     </Text>
                 </View>
-                <Text style={styles.quoteOriginalText}>
-                {this.state.originalText}
-                </Text>
+                {this.state.content}
             </View>
         );
     }
