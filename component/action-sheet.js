@@ -251,14 +251,12 @@ class ActionSheet extends React.Component {
                 </View>
             );
         }
+        if(!this.state.showx) {
+            return null;
+        }
         return (
             <Animated.View
-            style = {[
-                this.state.showx ? styles.modalMask : styles.displayNone, 
-                {
-                    opacity: this.state.nowOpacity
-                }
-            ]}>
+            style = {[ styles.modalMask, { opacity: this.state.nowOpacity } ]}>
                 <Animated.View 
                 style={[
                     this.state.invert?styles.bottomArrorView:styles.topArrowView, 
