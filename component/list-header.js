@@ -14,7 +14,10 @@ const styles = StyleSheet.create({
         color: globalColor
     },
     mainListItemUserCookieNamePO: {
-        backgroundColor: '#FFE4E1'
+        backgroundColor: '#FFE4E1',
+        borderWidth: 1,
+        borderRadius: 2,
+        borderColor: globalColor,
     },
     mainListItemHeader: {
 

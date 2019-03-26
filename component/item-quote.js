@@ -7,13 +7,15 @@ import { converDateTime } from '../modules/date-time'
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     quoteView: {
-        borderLeftColor: globalColor,
-        borderLeftWidth: 8,
+        borderColor: globalColor,
+        borderWidth: 1,
+        borderLeftWidth: 6,
+        borderRadius: 4,
         marginLeft: 8,
         marginRight: 8,
         marginBottom: 3,
         width: 'auto',
-        backgroundColor: 'rgba(250,114,150,0.3)',
+        backgroundColor: '#FFE4E1',
     },
     quoteOriginalText: {
         color: '#696969',
@@ -41,6 +43,9 @@ const styles = StyleSheet.create({
         color: 'red'
     },
     sendCookieNamePO: {
+        borderWidth: 1,
+        borderRadius: 2,
+        borderColor: globalColor,
         backgroundColor: '#FFE4E1'
     },
     quoteText: {
