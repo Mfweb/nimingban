@@ -12,6 +12,7 @@ import { ActionSheet } from '../component/action-sheet'
 import { Header } from 'react-navigation'
 import { getHTMLDom } from '../modules/html-decoder'
 
+const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     mainList: {
         flex: 1,
@@ -27,6 +28,21 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 8
     },
+    headerRightPage: {
+        backgroundColor: globalColor,
+        borderColor: '#FFE4E1',
+        borderWidth: 1,
+        minWidth: 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 11,
+        marginRight: 13, 
+        marginTop: 2
+    },
+    headerRightPageText: {
+        color: '#FFF',
+        fontSize: 20,
+    }
 });
 
 
@@ -64,6 +80,9 @@ class HomeScreen extends React.Component {
             ),
             headerRight: (
                 <View style={styles.headerRightView}>
+                    <View style={styles.headerRightPage}>
+                        <Text style={styles.headerRightPageText}>{navigation.getParam('page', '1')}</Text>
+                    </View>
                     <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.newThread} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'note'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
@@ -139,6 +158,9 @@ class HomeScreen extends React.Component {
             });
         });
     }
+    /**
+     * 显示版规
+     */
     _showRule = async () => {
         let allForums = await getForumList();
         if(allForums.status !== 'ok') {
@@ -254,6 +276,9 @@ class HomeScreen extends React.Component {
                         loadEnd: res.res.length == 0? true: false,
                         footerMessage: res.res.length == 0?`加载完成 ${this.state.threadList.length}`:''
                     });
+                    this.props.navigation.setParams({
+                        page: nextPage - 1
+                    });
                 }
                 else {
                     this.TopModal.showMessage('错误', `请求数据失败:${res.errmsg}`,'确认');
@@ -285,6 +310,9 @@ class HomeScreen extends React.Component {
                         page: 2,
                         headerLoading: false,
                         loadEnd: false,
+                    });
+                    this.props.navigation.setParams({
+                        page: 1
                     });
                 }
                 else {

@@ -8,6 +8,7 @@ import  { Toast } from '../component/toast'
 import { DetailListItem } from '../component/list-detail-item'
 import { history } from '../modules/history'
 
+const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     mainList: {
         flex: 1,
@@ -26,6 +27,21 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         padding: 8
+    },
+    headerRightPage: {
+        backgroundColor: globalColor,
+        borderColor: '#FFE4E1',
+        borderWidth: 1,
+        minWidth: 24,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 11,
+        marginRight: 13, 
+        marginTop: 2
+    },
+    headerRightPageText: {
+        color: '#FFF',
+        fontSize: 20,
     }
 });
 
@@ -52,6 +68,9 @@ class DetailsScreen extends React.Component {
             title: navigation.getParam('threadDetail', null).title,
             headerRight: (
                 <View style={styles.headerRightView}>
+                    <View style={styles.headerRightPage}>
+                        <Text style={styles.headerRightPageText}>{navigation.getParam('page', '1')}</Text>
+                    </View>
                     <TouchableOpacity onPress={params.replyThread} style={{ marginRight: 8, marginTop: 2 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'note'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
@@ -184,6 +203,9 @@ class DetailsScreen extends React.Component {
                             loadEnd: cpCount > 0 ? false : true,
                             footerMessage: cpCount > 0 ? `上拉继续加载 ${tempList.length-1}/${res.res.replyCount}` : `加载完成,点击再次加载 ${tempList.length-1}/${res.res.replyCount}`
                         });
+                        this.props.navigation.setParams({
+                            page: nextPage - 1
+                        });
                         if(pageLength >= 19) {
                             this.localReplyCount = 0;
                         }
@@ -277,6 +299,9 @@ class DetailsScreen extends React.Component {
                         `上拉继续加载 ${res.res.replys.length}/${res.res.replyCount}`    
                         :
                         `加载完成,点击再次加载 ${res.res.replys.length}/${res.res.replyCount}`
+                    });
+                    this.props.navigation.setParams({
+                        page: 1
                     });
                 }
             }
