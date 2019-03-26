@@ -42,6 +42,16 @@ const styles = StyleSheet.create({
     headerRightPageText: {
         color: '#FFF',
         fontSize: 20,
+    },
+    headerTitle: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    headerTitleText: {
+        color: '#FFF',
+        fontSize: 20
     }
 });
 
@@ -65,7 +75,16 @@ class DetailsScreen extends React.Component {
     static navigationOptions = ({navigation}) => {
         const { params = {} } = navigation.state;
         return {
-            title: navigation.getParam('threadDetail', null).title,
+            headerTitle: navigation.getParam('threadDetail', null).title,
+            headerTitle: (
+                <View style={styles.headerTitle}>
+                    <Text style={styles.headerTitleText}>
+                        http://adnmb.com/
+                    </Text>
+                    <Text style={styles.headerTitleText}>
+                        No.{navigation.getParam('threadDetail', null).id}
+                    </Text>
+                </View>),
             headerRight: (
                 <View style={styles.headerRightView}>
                     <View style={styles.headerRightPage}>
