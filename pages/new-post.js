@@ -105,7 +105,7 @@ class NewPostScreen extends React.Component {
         super(props);
         this.state = {
             bottomHeight: 0,
-            inputText: '',
+            inputText: this.props.navigation.getParam('content', ''),
             imageWatermark: false,
             selectdeImage: null,
             translateNow: new Animated.Value(0),

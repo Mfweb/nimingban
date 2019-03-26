@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { getImage } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { MainListImage } from './list-image-view'
@@ -37,7 +37,8 @@ class DetailListItem extends React.Component {
         this.state = {
             displayData:{},
             imgLocalUri: null,
-            fullImageDownloading: false
+            fullImageDownloading: false,
+            selected: false
         }
     }
     _onPressImage = () => {
@@ -127,10 +128,22 @@ class DetailListItem extends React.Component {
             displayData: displayData,
         });
     }
+    _longPressItem = (res) => {
+        this.setState({
+            selected: true
+        });
+        if(this.props.longPressItem && typeof this.props.longPressItem == 'function') {
+            this.props.longPressItem(res, this.props.itemDetail.id, ()=>{
+                this.setState({
+                    selected: false
+                });
+            });
+        }
+    }
     render() {
         let { itemDetail } = this.props;
         return (
-            <View style={styles.mainListItem}>
+            <TouchableOpacity style={[styles.mainListItem, this.state.selected?{backgroundColor: '#FFE4E1'}:{}]} onLongPress={this._longPressItem} activeOpacity={1}>
                 <MainListItemHeader itemDetail={itemDetail} po={this.props.po}/>
                 {this.state.displayData['threadContent']}
                 <MainListImage 
@@ -139,7 +152,7 @@ class DetailListItem extends React.Component {
                     Toast={this.props.Toast}
                     localUri={this.state.imgLocalUri}
                     imgUri={itemDetail.img + itemDetail.ext}/>
-            </View>
+            </TouchableOpacity>
         );
     }
 }

@@ -7,6 +7,7 @@ import { TopModal } from '../component/top-modal'
 import  { Toast } from '../component/toast'
 import { DetailListItem } from '../component/list-detail-item'
 import { history } from '../modules/history'
+import { ActionSheet } from '../component/action-sheet'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -157,9 +158,35 @@ class DetailsScreen extends React.Component {
             });
         }
         return (
-        <DetailListItem itemDetail={item} navigation={this.props.navigation} Toast={this.toast} po={this.poID} />)
+            <DetailListItem 
+            itemDetail={item} 
+            navigation={this.props.navigation} 
+            Toast={this.toast} 
+            po={this.poID} 
+            longPressItem={this._actionItem}/>
+        )
     }
-
+    _actionItem = (target, id, closeMark) => {
+        let { pageX, pageY } = target.nativeEvent;
+        this.ActionSheet.showActionSheet(pageX, pageY, `操作>>No.${id}`, 
+        ['回复', '添加到引用缓存', '举报', '屏蔽饼干', '屏蔽串号'], (index)=>{
+            this.ActionSheet.closeActionSheet();
+            closeMark();
+            switch (index) {
+                case 0:
+                    this.props.navigation.push('NewPostScreen', {
+                        threadDetail: this.state.replyList[0],
+                        mode: 1,
+                        replyId: this.threadDetail.id,
+                        content: `>>No.${id}\r\n`
+                    });
+                    break;
+            }
+        }, ()=>{}, ()=> {
+            this.ActionSheet.closeActionSheet();
+            closeMark();
+        });
+    }
     _itemSeparator = () =>(
         <View style={styles.ItemSeparator}></View>
     )
@@ -338,6 +365,7 @@ class DetailsScreen extends React.Component {
         return (
             <SafeAreaView style={{flex:1, backgroundColor: '#DCDCDC'}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
+                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
                     data={this.state.replyList}
