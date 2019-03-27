@@ -14,9 +14,25 @@ const htmlConstStyles = StyleSheet.create({
         textDecorationLine: 'line-through'
     }
 });
+
+const arrEntities = {
+    'lt': '<', 'gt': '>', 'amp': '&', 'quot': '"',
+    'nbsp': ' ', 'emsp': ' ', 'ensp': ' ', 'thinsp': ' ',
+    'mdash': '—', 'ndash': '–', 'minus': '−', '-': '-',
+    'oline': '‾', 'cent': '¢', 'pound': '£', 'euro': '€', 
+    'sect': '§', 'dagger': '†', 'Dagger': '‡', 'lsquo': '‘',
+    'rsquo': '’', '\'': '\'', '#x263a': '☺', '#x2605':'★', 
+    '#x2606': '☆', '#x2610': '☐', 'middot': '·', 'bull': '•',
+    'copy': '©', 'reg': '®', 'trade': '™', 'iquest': '¿','iexcl': '¡',
+    'Aring': 'Å', 'hellip': '…', '#x2295': '⊕', '#x2299': '⊙','#x2640': '♀',
+    '#x2642': '♂', 'ldquo': '“', 'rdquo': '”'
+};
+
+var arrEntityKeys = '';
+Object.keys(arrEntities).forEach((item)=>{arrEntityKeys += item + '|';});
+const entityReg = eval(`/&(${arrEntityKeys.substring(0, arrEntityKeys.length - 1)});/ig`);
 function escape2Html(str) {
-    var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"','bull':'•'};
-    return str.replace(/&(lt|gt|nbsp|amp|quot|bull);/ig, function(all,t){
+    return str.replace(entityReg, function(all,t){
         return arrEntities[t];
     });
 }
@@ -29,11 +45,12 @@ function escape2Html(str) {
  */
 function styleStringToObject(stringIn) {
     let outPutArray = {};
+    stringIn = stringIn.replace(/(\ |\r|\n)/ig, '');
     let tags = stringIn.split(';');
     tags.forEach(tagString => {
         let tagsObj = tagString.split(':');
         if(tagsObj.length == 2) {
-            outPutArray[tagsObj[0].replace(' ','')] = tagsObj[1].replace(' ','');
+            outPutArray[tagsObj[0]] = tagsObj[1];
         }
     });
     return outPutArray;
@@ -44,10 +61,11 @@ var domKey = 0;
  * 将DOM转为JSX MAP
  * @param {object} htmlJSONIn DOM JSON结构
  * @param {string} tagName 递归传递的html标签名
- * @param {object} tagAttribs 递归传递的html表情属性
+ * @param {object} tagAttribs 递归传递的html标签属性
  */
 function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, parentAttribs = {}) {
     let outPut = [];
+    delete parentAttribs.class;
     htmlJSONIn.forEach(htmlTag => {
         if(!tagAttribs) {
             tagAttribs = {};
