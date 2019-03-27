@@ -8,6 +8,7 @@ import  { Toast } from '../component/toast'
 import { DetailListItem } from '../component/list-detail-item'
 import { history } from '../modules/history'
 import { ActionSheet } from '../component/action-sheet'
+import { configNetwork, configDynamic } from '../modules/config'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -80,7 +81,7 @@ class DetailsScreen extends React.Component {
             headerTitle: (
                 <View style={styles.headerTitle}>
                     <Text style={styles.headerTitleText}>
-                        http://adnmb.com/
+                        {configNetwork.baseUrl[configDynamic.islandMode].base}
                     </Text>
                     <Text style={styles.headerTitleText}>
                         No.{navigation.getParam('threadDetail', null).id}
