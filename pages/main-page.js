@@ -4,7 +4,7 @@ import { getThreadList, getImage, getForumList, getForumIDByName } from '../modu
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configBase, configDynamic } from '../modules/config'
+import { configBase, configDynamic, configNetwork } from '../modules/config'
 import { Toast } from '../component/toast'
 import { history } from '../modules/history'
 import { MainListItem } from '../component/list-main-item'
@@ -212,7 +212,7 @@ class HomeScreen extends React.Component {
             // 站内链接
             else {
                 this.props.navigation.push('WebView', {
-                    URL: 'https://adnmb.com' + url.href
+                    URL: configNetwork.baseUrl[configDynamic.islandMode].base + url.href
                 });
             }
         }
