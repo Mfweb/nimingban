@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     headerRightView: {
         flex: 1,
         flexDirection: 'row',
+        alignItems: 'center'
     },
     footerMessage: {
         color: '#696969',
@@ -30,9 +31,10 @@ const styles = StyleSheet.create({
     },
     headerRightPage: {
         backgroundColor: globalColor,
-        borderColor: '#FFE4E1',
-        borderWidth: 1,
+        borderColor: '#FFF',
+        borderWidth: 2,
         minWidth: 24,
+        height: 24,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 11,
@@ -171,7 +173,7 @@ class HomeScreen extends React.Component {
             forumGroup.forums.forEach(forumItem => {
                 if(forumItem.id == this.fid) {
                     let rule = getHTMLDom(forumItem.msg.replace('\n', ''), this._onPressUrl);
-                    this.TopModal.showMessage('版规-' + this.fname, (<ScrollView><Text style={{fontSize: 18}}>{rule}</Text></ScrollView>), '确认');
+                    this.TopModal.showMessage('版规-' + this.fname, (<ScrollView style={{padding: 5}}><Text style={{fontSize: 18}}>{rule}</Text></ScrollView>), '确认');
                     return;
                 }
             });

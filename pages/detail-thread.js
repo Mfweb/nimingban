@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     headerRightView: {
         flex: 1,
         flexDirection: 'row',
+        alignItems: 'center'
     },
     footerMessage: {
         color: '#696969',
@@ -32,9 +33,10 @@ const styles = StyleSheet.create({
     },
     headerRightPage: {
         backgroundColor: globalColor,
-        borderColor: '#FFE4E1',
-        borderWidth: 1,
+        borderColor: '#FFF',
+        borderWidth: 2,
         minWidth: 24,
+        height: 24,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 11,
