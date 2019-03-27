@@ -76,6 +76,7 @@ class DetailsScreen extends React.Component {
     isUnMount = false;
     localReplyCount = 0;
     threadDetail = null;
+    quoteIds = '';
     static navigationOptions = ({navigation}) => {
         const { params = {} } = navigation.state;
         return {
@@ -108,6 +109,7 @@ class DetailsScreen extends React.Component {
         
     }
     componentDidMount() {
+        this.quoteIds = '';
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
         this.poID = this.threadDetail.userid;
         this.props.navigation.setParams({ 
@@ -130,7 +132,8 @@ class DetailsScreen extends React.Component {
         this.props.navigation.push('NewPostScreen', {
             threadDetail: this.state.replyList[0],
             mode: 1,
-            replyId: this.threadDetail.id
+            replyId: this.threadDetail.id,
+            content: this.quoteIds
         });
     }
 
@@ -172,7 +175,7 @@ class DetailsScreen extends React.Component {
     _actionItem = (target, id, closeMark) => {
         let { pageX, pageY } = target.nativeEvent;
         this.ActionSheet.showActionSheet(pageX, pageY, `操作>>No.${id}`, 
-        ['回复', '添加到引用缓存', '举报', '屏蔽饼干', '屏蔽串号'], (index)=>{
+        ['回复', '添加到引用缓存', '复制串号(未实现)', '举报(未实现)', '屏蔽饼干(未实现)', '屏蔽串号(未实现)'], (index)=>{
             this.ActionSheet.closeActionSheet();
             closeMark();
             switch (index) {
@@ -181,8 +184,12 @@ class DetailsScreen extends React.Component {
                         threadDetail: this.state.replyList[0],
                         mode: 1,
                         replyId: this.threadDetail.id,
-                        content: `>>No.${id}\r\n`
+                        content: `${this.quoteIds}>>No.${id}\r\n`
                     });
+                    break;
+                case 1:
+                    this.quoteIds += `>>No.${id}\r\n`;
+                    this.toast.show('添加完成');
                     break;
             }
         }, ()=>{}, ()=> {

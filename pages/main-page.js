@@ -143,7 +143,7 @@ class HomeScreen extends React.Component {
         this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, this.fname,
         [
             '版规',
-            '搜索',
+            '搜索(未实现)',
             '跳转'
         ],
         (index) => {
