@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, ScrollView, TextInput } from 'react-native'
 import { getThreadList, getImage, getForumList, getForumIDByName } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
@@ -155,10 +155,29 @@ class HomeScreen extends React.Component {
                     case 1:
                     break;
                     case 2:
+                    this._gotoPage();
                     break;
                 }
             });
         });
+    }
+    /**
+     * 跳转到某一页
+     */
+    _gotoPage = () => {
+        this.inputPage = this.state.page.toString();
+        this.TopModal.showMessage('输入页码', 
+        (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
+            <TextInput 
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                autoFocus={true}
+                textAlignVertical='center'
+                returnKeyType={'done'}
+                keyboardType={'numeric'}
+                onSubmitEditing={()=>this.TopModal.closeModal(()=>this._pullDownRefresh(this.inputPage))}
+                onChangeText={(text)=>{this.inputPage = text.replace(/[^\d]+/, '');}}/>
+        </View>),'确认',
+        ()=>this.TopModal.closeModal(()=>this._pullDownRefresh(this.inputPage)), '取消');
     }
     /**
      * 显示版规
@@ -298,23 +317,23 @@ class HomeScreen extends React.Component {
         });
     }
 
-    _pullDownRefresh = async () => {
+    _pullDownRefresh = (startPage = 1) => {
         if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        this.setState({ headerLoading: true, page: 1 }, function() {
+        this.setState({ headerLoading: true, page: startPage }, () => {
             getThreadList(this.fid, this.state.page).then((res) => {
                 if(this.isUnmount)return;
                 if (res.status == 'ok') {
                     this.loadingImages = [];
                     this.setState({
                         threadList: res.res,
-                        page: 2,
+                        page: startPage + 1,
                         headerLoading: false,
                         loadEnd: false,
                     });
                     this.props.navigation.setParams({
-                        page: 1
+                        page: startPage
                     });
                 }
                 else {
