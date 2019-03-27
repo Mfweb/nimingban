@@ -100,6 +100,8 @@ const styles = StyleSheet.create({
     }
 });
 
+const modeTitleText = ['', '回复', '发串', '举报'];
+
 class NewPostScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -115,11 +117,9 @@ class NewPostScreen extends React.Component {
     }
     static navigationOptions = ({ navigation }) => {
         //const { params = {} } = navigation.state;
+        const nMode = navigation.getParam('mode', 1);
         return {
-            title: navigation.getParam('mode', 1) == 1 ? 
-                `回复 No.${navigation.getParam('replyId', '0')}`
-                :
-                `发串 (${navigation.getParam('fname', '错误')})`
+            title: `${modeTitleText[nMode]}-` + ( nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?') )
         }
     }
     replyId = 0;
