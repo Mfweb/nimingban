@@ -219,7 +219,9 @@ class UserCookieManager extends React.Component {
                 writeTempFile: false,
                 includeBase64: true,
                 compressImageQuality: 0.5,
-                forceJpg: true
+                forceJpg: true,
+                compressImageMaxWidth: 500,
+                compressImageMaxHeight: 500
             });
             if(!pickerImage) {
                 return;
