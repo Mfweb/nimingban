@@ -143,23 +143,63 @@ class HomeScreen extends React.Component {
         this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, this.fname,
         [
             '版规',
+            '跳转串号',
             '搜索(未实现)',
-            '跳转'
+            '跳转页码'
         ],
         (index) => {
             this.ActionSheet.closeActionSheet(() => {
                 switch(index) {
                     case 0:
-                    this._showRule();
-                    break;
+                        this._showRule();
+                        break;
                     case 1:
-                    break;
+                        this._gotoID();
+                        break;
                     case 2:
-                    this._gotoPage();
-                    break;
+                        break;
+                    case 3:
+                        this._gotoPage();
+                        break;
                 }
             });
         });
+    }
+    /**
+     * 跳转到串号
+     */
+    _gotoID = () => {
+        this.inputID = 1;
+        this.TopModal.showMessage('输入串号', 
+        (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
+            <TextInput 
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                autoFocus={true}
+                textAlignVertical='center'
+                returnKeyType={'done'}
+                keyboardType={'numeric'}
+                onSubmitEditing={()=>this.TopModal.closeModal(()=>{
+                    this.props.navigation.navigate('Details', {
+                        threadDetail: {
+                            id: this.inputID,
+                            userid: 'null', 
+                            content: 'null',
+                            now: '2099-12-12 12:12:12'
+                        }
+                    });
+                })}
+                onChangeText={(text)=>{this.inputID = text.replace(/[^\d]+/, '');}}/>
+        </View>),'确认',
+        ()=>this.TopModal.closeModal(()=>{
+            this.props.navigation.navigate('Details', {
+                threadDetail: {
+                    id: this.inputID,
+                    userid: 'null', 
+                    content: 'null',
+                    now: '2099-12-12 12:12:12'
+                }
+            });
+        }), '取消');
     }
     /**
      * 跳转到某一页
