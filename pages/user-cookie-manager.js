@@ -80,6 +80,25 @@ const styles = StyleSheet.create({
     }
 });
 
+function atob(input = '') {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    let str = input.replace(/=+$/, '');
+    let output = '';
+
+    if (str.length % 4 == 1) {
+      throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
+    }
+    for (let bc = 0, bs = 0, buffer, i = 0;
+        buffer = str.charAt(i++);
+
+        ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
+        bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
+    ) {
+        buffer = chars.indexOf(buffer);
+    }
+    return output;
+}
+
 class UserCookieManager extends React.Component {
     constructor(props) {
         super(props);
@@ -199,7 +218,7 @@ class UserCookieManager extends React.Component {
                 multiple: false,
                 writeTempFile: false,
                 includeBase64: true,
-                compressImageQuality: 0.8,
+                compressImageQuality: 0.5,
                 forceJpg: true
             });
             if(!pickerImage) {
@@ -209,7 +228,7 @@ class UserCookieManager extends React.Component {
             console.warn(ex);
         }
         // 解码base64
-        let binaryString =  window.atob(pickerImage.data);
+        let binaryString =  atob(pickerImage.data);
         let len = binaryString.length;
         // 转为Uint8Array
         let bytes = new Uint8Array(len);
