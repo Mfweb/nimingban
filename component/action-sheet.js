@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     },
     itemText: {
         color: '#1E90FF',
-        fontSize: 25,
+        fontSize: 22,
         textAlign: 'center'
     },
     topArrowView: {
