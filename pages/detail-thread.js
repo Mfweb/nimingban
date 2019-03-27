@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, Clipboard } from 'react-native'
 import { getReplyList, getImage, getDetail } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -175,7 +175,7 @@ class DetailsScreen extends React.Component {
     _actionItem = (target, id, closeMark) => {
         let { pageX, pageY } = target.nativeEvent;
         this.ActionSheet.showActionSheet(pageX, pageY, `操作>>No.${id}`, 
-        ['回复', '添加到引用缓存', '复制串号(未实现)', '举报(未实现)', '屏蔽饼干(未实现)', '屏蔽串号(未实现)'], (index)=>{
+        ['回复', '添加到引用缓存', '复制串号', '举报(未实现)', '屏蔽饼干(未实现)', '屏蔽串号(未实现)'], (index)=>{
             this.ActionSheet.closeActionSheet();
             closeMark();
             switch (index) {
@@ -190,6 +190,10 @@ class DetailsScreen extends React.Component {
                 case 1:
                     this.quoteIds += `>>No.${id}\r\n`;
                     this.toast.show('添加完成');
+                    break;
+                case 2:
+                    Clipboard.setString(id.toString());
+                    this.toast.show('复制完成');
                     break;
             }
         }, ()=>{}, ()=> {
