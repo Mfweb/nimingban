@@ -189,10 +189,16 @@ class ActionSheet extends React.Component {
     _onLayout = (res) => {
         if(Dimensions.get('window').height - 70 - this.state.setTop < res.nativeEvent.layout.height) {
             //下面放不开了，倒置显示
+            let tempTop = this.state.setTop - Header.HEIGHT - res.nativeEvent.layout.height - 8;
+            let tempArrorTop = this.state.setTop - Header.HEIGHT - 8;
+            if(tempTop < 0) {
+                tempTop = 5;
+                tempArrorTop = tempTop + res.nativeEvent.layout.height;
+            }
             this.setState({
                 invert: true,
-                top: this.state.setTop - Header.HEIGHT - res.nativeEvent.layout.height - 8,
-                arrorTop: this.state.setTop - Header.HEIGHT - 8
+                top: tempTop,
+                arrorTop: tempArrorTop
             });
         }
         else {
