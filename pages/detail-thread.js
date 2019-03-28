@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, Clipboard } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, Clipboard, TextInput } from 'react-native'
 import { getReplyList, getImage, getDetail } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -9,6 +9,7 @@ import { DetailListItem } from '../component/list-detail-item'
 import { history } from '../modules/history'
 import { ActionSheet } from '../component/action-sheet'
 import { configNetwork, configDynamic } from '../modules/config'
+import { Header } from 'react-navigation'
 
 const globalColor = '#fa7296';
 const styles = StyleSheet.create({
@@ -98,7 +99,7 @@ class DetailsScreen extends React.Component {
                     <TouchableOpacity onPress={params.replyThread} style={{ marginRight: 8, marginTop: 2 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'note'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                    <TouchableOpacity onPress={params.menuFunctions} style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <Icon name={'options'} size={24} color={'#FFF'} />
                     </TouchableOpacity>
                 </View>
@@ -114,7 +115,8 @@ class DetailsScreen extends React.Component {
         this.poID = this.threadDetail.userid;
         this.props.navigation.setParams({ 
             openLDrawer: this.props.navigation.openDrawer,
-            replyThread: this._replyThread
+            replyThread: this._replyThread,
+            menuFunctions: this._menuFunctions
         });
         this.isUnMount = false;
         this.localReplyCount = 0;
@@ -128,6 +130,9 @@ class DetailsScreen extends React.Component {
         this.isUnMount = true;
     }
 
+    /**
+     * 右上角回复
+     */
     _replyThread = () => {
         this.props.navigation.push('NewPostScreen', {
             threadDetail: this.state.replyList[0],
@@ -172,6 +177,60 @@ class DetailsScreen extends React.Component {
             longPressItem={this._actionItem}/>
         )
     }
+    /**
+     * 右上角菜单
+     */
+    _menuFunctions = ()=>{
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, `>>No.${this.threadDetail.id}`,
+        [
+            '举报',
+            '跳转',
+            '收藏',
+        ],
+        (index) => {
+            this.ActionSheet.closeActionSheet(() => {
+                switch(index) {
+                    case 0:
+                        this.props.navigation.push('NewPostScreen', {
+                            mode: 3,
+                            fname: '值班室',
+                            fid: 18,
+                            repId: this.threadDetail.id,
+                            content: `${this.quoteIds}>>No.${this.threadDetail.id}\r\n理由：`
+                        });
+                        break;
+                    case 1:
+                        this._gotoPage();
+                        break;
+                    case 2:
+                        break;
+                }
+            });
+        });
+    }
+
+    /**
+     * 跳转到某一页
+     */
+    _gotoPage = () => {
+        this.inputPage = this.state.page.toString();
+        let replyCount = this.state.replyList[0].replyCount ? this.state.replyList[0].replyCount: 0;
+        this.TopModal.showMessage(`输入页码 1~${Math.ceil(replyCount / 19)}`, 
+        (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
+            <TextInput 
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                autoFocus={true}
+                textAlignVertical='center'
+                returnKeyType={'done'}
+                keyboardType={'numeric'}
+                onSubmitEditing={()=>this.TopModal.closeModal(()=>this._pullDownRefresh(this.inputPage))}
+                onChangeText={(text)=>{this.inputPage = text.replace(/[^\d]+/, '');}}/>
+        </View>),'确认',
+        ()=>this.TopModal.closeModal(()=>this._pullDownRefresh(this.inputPage)), '取消');
+    }
+    /**
+     * 长按回复操作
+     */
     _actionItem = (target, id, closeMark) => {
         let { pageX, pageY } = target.nativeEvent;
         this.ActionSheet.showActionSheet(pageX, pageY, `操作>>No.${id}`, 
@@ -306,11 +365,11 @@ class DetailsScreen extends React.Component {
         });
     }
 
-    _pullDownRefresh = async () => {
+    _pullDownRefresh = async (startPage = 1) => {
         if (this.state.footerLoading != 0 || this.state.headerLoading) {
             return;
         }
-        this.setState({ headerLoading: true, page: 1 }, async () => {
+        this.setState({ headerLoading: true, page: startPage }, async () => {
             let isReply = false;
             let res = await getReplyList(this.threadDetail.id, this.state.page);
             if(res.status !== 'ok' && res.errmsg === '该主题不存在') {
@@ -356,7 +415,7 @@ class DetailsScreen extends React.Component {
                 if(isReply) {
                     this.setState({
                         replyList: tempList,
-                        page: 1,
+                        page: startPage,
                         headerLoading: false,
                         loadEnd: true,
                         footerMessage: '此id为回应串，不能继续加载'
@@ -365,7 +424,7 @@ class DetailsScreen extends React.Component {
                 else {
                     this.setState({
                         replyList: tempList,
-                        page: res.res.replys.length >= 19 ? 2 : 1,
+                        page: res.res.replys.length >= 19 ? (startPage + 1) : startPage,
                         headerLoading: false,
                         loadEnd: res.res.replys.length >= 19 ? false : true,
                         footerMessage: res.res.replys.length >= 19 ? 
@@ -374,7 +433,7 @@ class DetailsScreen extends React.Component {
                         `加载完成,点击再次加载 ${res.res.replys.length}/${res.res.replyCount}`
                     });
                     this.props.navigation.setParams({
-                        page: 1
+                        page: startPage
                     });
                 }
             }
