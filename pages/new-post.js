@@ -142,12 +142,14 @@ class NewPostScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         const nMode = navigation.getParam('mode', 1);
+        const userCookieText = navigation.getParam('userCookieText', '无');
         return {
             title: `${modeTitleText[nMode]}-` + ( nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?') ),
             headerRight: (
                 <View style={styles.headerRightView}>
                     <TouchableOpacity style={styles.headerCookieView} onPress={params.openCookieSelect} underlayColor={'#ffafc9'} activeOpacity={0.5} >
                         <MDIcon name={'cookie'} size={24} color={'#FFF'} />
+                        <Text style={styles.headerCookieText}>{userCookieText}</Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -169,6 +171,7 @@ class NewPostScreen extends React.Component {
         this.props.navigation.setParams({
             openCookieSelect: this._openCookieSelect,
         });
+        this._getUseCookieMark();
     }
     componentWillUnmount() {
         this.keyboardWillShowListener.remove();
@@ -184,6 +187,18 @@ class NewPostScreen extends React.Component {
                 stiffness: 80
             }
         ).start();
+    }
+    _getUseCookieMark = async () => {
+        let cookieList = await getUserCookieList();
+        if(cookieList.length > 0) {
+            cookieList.forEach(item => {
+                if(`userhash=${item.value}` == configDynamic.userCookie[configDynamic.islandMode]) {
+                    this.props.navigation.setParams({
+                        userCookieText: item.mark
+                    });
+                }
+            });
+        }
     }
     /**
      * 打开饼干选择
@@ -208,6 +223,9 @@ class NewPostScreen extends React.Component {
         (index) => {
             this.ActionSheet.closeActionSheet();
             setUserCookie(cookieList[index].value);
+            this.props.navigation.setParams({
+                userCookieText: cookieList[index].mark
+            });
         });
     }
     /**
