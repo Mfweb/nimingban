@@ -85,7 +85,7 @@ async function getCookie() {
  * 从原始数据获取并应用一个饼干
  * @param {string} rawString 原始数据
  */
-async function setUserCookieFromString(rawString) {
+async function setUserCookieFromString(rawString, saveMark = 'userMember') {
     let cookieLine = _cookieStrToJson(rawString);
     if(cookieLine == null) {
         return false;
@@ -93,7 +93,7 @@ async function setUserCookieFromString(rawString) {
 
     if(cookieLine.hasOwnProperty('userhash')) {
         setUserCookie(cookieLine['userhash']);
-        await addUserCookieList('userMember', cookieLine['userhash']);//添加到饼干列表
+        await addUserCookieList(saveMark, cookieLine['userhash']);//添加到饼干列表
         return true;
     }
     else {

@@ -164,8 +164,8 @@ class UserMemberCookies extends React.Component {
     /**
      * 获取并应用一个饼干
      */
-    _enableCookie = async (id) => {
-        let sta = await getEnableUserCookie(id);
+    _enableCookie = async (item) => {
+        let sta = await getEnableUserCookie(item.id, item.value);
         if(sta.status == 'ok') {
             this.TopModal.showMessage('提示', '应用成功','确认');
         }
@@ -308,7 +308,7 @@ class UserMemberCookies extends React.Component {
                     style={{backgroundColor: globalColor, width: 45, height: 30}}
                     textStyle={{color:'#FFF', fontSize: 19}}
                     showLoading={false}
-                    onPress={()=>this._enableCookie(item.id)}
+                    onPress={()=>this._enableCookie(item)}
                     />
                 </View>
             </View>

@@ -561,7 +561,7 @@ async function changePassword(oldpw, newpw, newpw2) {
  * 获取并应用一个用户饼干
  * @param {string} id 饼干id
  */
-async function getEnableUserCookie(id) {
+async function getEnableUserCookie(id, saveMark = 'userMember') {
     let url = await getUrl(`${configNetwork.memberUrl.memberGetCookieDetail}${id}.html`);
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
@@ -576,7 +576,7 @@ async function getEnableUserCookie(id) {
         return { status: 'error', errmsg: `http:${res.stateCode},${res.errMsg}` };
     }//setUserCookieFromString
     if(res.headers.hasOwnProperty('Set-Cookie')) {
-        let sta = await setUserCookieFromString(res.headers['Set-Cookie']);
+        let sta = await setUserCookieFromString(res.headers['Set-Cookie'], saveMark);
         if(sta === true) {
             return { status: 'ok' };
         }
