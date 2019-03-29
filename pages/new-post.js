@@ -1,11 +1,15 @@
 import React from 'react'
 import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity, TextInput, Keyboard, Animated, ActivityIndicator, SafeAreaView } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import MDIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TopModal } from '../component/top-modal'
 import { replyNewThread } from '../modules/apis'
 import { ActionSheet } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-crop-picker';
 import { history } from '../modules/history'
+import { Header } from 'react-navigation'
+import { getUserCookieList, setUserCookie } from '../modules/cookie-manager'
+import { configDynamic } from '../modules/config';
 
 const globalColor = '#fa7296';
 const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "(=ﾟωﾟ)=",
@@ -97,6 +101,26 @@ const styles = StyleSheet.create({
         left: 0,
         backgroundColor: '#00BFFF',
         zIndex: 500
+    },
+    headerRightView: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    headerCookieView: {
+        height: Header.HEIGHT,
+        display: 'flex',
+        marginRight: 8,
+        marginLeft: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    headerCookieText: {
+        color: '#FFF',
+        lineHeight: Header.HEIGHT,
+        textAlign: 'center'
     }
 });
 
@@ -116,10 +140,17 @@ class NewPostScreen extends React.Component {
         }
     }
     static navigationOptions = ({ navigation }) => {
-        //const { params = {} } = navigation.state;
+        const { params = {} } = navigation.state;
         const nMode = navigation.getParam('mode', 1);
         return {
-            title: `${modeTitleText[nMode]}-` + ( nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?') )
+            title: `${modeTitleText[nMode]}-` + ( nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?') ),
+            headerRight: (
+                <View style={styles.headerRightView}>
+                    <TouchableOpacity style={styles.headerCookieView} onPress={params.openCookieSelect} underlayColor={'#ffafc9'} activeOpacity={0.5} >
+                        <MDIcon name={'cookie'} size={24} color={'#FFF'} />
+                    </TouchableOpacity>
+                </View>
+            )
         }
     }
     replyId = 0;
@@ -135,6 +166,9 @@ class NewPostScreen extends React.Component {
         this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
         this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
         this._setProgress(0);
+        this.props.navigation.setParams({
+            openCookieSelect: this._openCookieSelect,
+        });
     }
     componentWillUnmount() {
         this.keyboardWillShowListener.remove();
@@ -150,6 +184,31 @@ class NewPostScreen extends React.Component {
                 stiffness: 80
             }
         ).start();
+    }
+    /**
+     * 打开饼干选择
+     */
+    _openCookieSelect = async () => {
+        let cookieList = await getUserCookieList();
+        if(cookieList.length === 0) {
+            this.TopModal.showMessage('错误', '你没有饼干，请先在饼干管理器导入饼干','确认');
+            return;
+        }
+        let cookieNameList = [];
+        cookieList.forEach(item => {
+            if(`userhash=${item.value}` == configDynamic.userCookie[configDynamic.islandMode]) {
+                cookieNameList.push(`${item.mark}✔`);
+            }
+            else {
+                cookieNameList.push(item.mark);
+            }
+        });
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, '选择要使用的饼干',
+        cookieNameList,
+        (index) => {
+            this.ActionSheet.closeActionSheet();
+            setUserCookie(cookieList[index].value);
+        });
     }
     /**
      * 键盘打开或改变
