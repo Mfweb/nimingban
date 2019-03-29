@@ -336,7 +336,7 @@ class DetailsScreen extends React.Component {
                             footerMessage: cpCount > 0 ? `上拉继续加载 ${tempList.length-1}/${res.res.replyCount}` : `加载完成,点击再次加载 ${tempList.length-1}/${res.res.replyCount}`
                         });
                         this.props.navigation.setParams({
-                            page: nextPage - 1
+                            page: nextPage > 1 ? (nextPage - 1) : 1
                         });
                         if(pageLength >= 19) {
                             this.localReplyCount = 0;
