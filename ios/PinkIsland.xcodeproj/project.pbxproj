@@ -16,7 +16,6 @@
 		0211DBAAD6CC4F189649BED6 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11919D4F9F1F4BAA942470FE /* FontAwesome5_Solid.ttf */; };
 		05FD0C5FBA33421FAA5ADB92 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C81D3AF58617446CAFA7F418 /* FontAwesome5_Brands.ttf */; };
 		0D1E5401EA1E4C18A171F2B4 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DD5DAB92C6046A5999E43F0 /* EvilIcons.ttf */; };
-		11A064CC01FA4F1992AFF7AC /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9E6B4F7D7914F5D90C95EC4 /* libRNImagePicker.a */; };
 		11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
@@ -541,7 +540,6 @@
 				38F406908DE4489F8C59ABD0 /* libRNFS.a in Frameworks */,
 				BFC039A016504834998D58B5 /* libRNVectorIcons.a in Frameworks */,
 				B85F7458A29B4F3E82A30C92 /* libRNGestureHandler.a in Frameworks */,
-				11A064CC01FA4F1992AFF7AC /* libRNImagePicker.a in Frameworks */,
 				9F2D2129CAF742E38DF9E72A /* libRNCamera.a in Frameworks */,
 				3765169FE3C2444B97DB7F65 /* libRNSound.a in Frameworks */,
 				534759D0530C43779C720F6C /* libRNCWebView.a in Frameworks */,
@@ -1006,7 +1004,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = QJ4KPKGV4S;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1024,6 +1022,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1715,8 +1714,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = QJ4KPKGV4S;
@@ -1740,9 +1739,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = mfweb.PinkIsland;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mfweb.PinkIsland;
 				PRODUCT_NAME = PinkIsland;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = pinkIsland;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1752,8 +1751,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Kang Sun (QJ4KPKGV4S)";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QJ4KPKGV4S;
 				HEADER_SEARCH_PATHS = (
@@ -1776,9 +1775,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = mfweb.PinkIsland;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mfweb.PinkIsland;
 				PRODUCT_NAME = PinkIsland;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = pinkIsland;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -2073,7 +2072,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Kang Sun (QJ4KPKGV4S)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Kang Sun (QJ4KPKGV4S)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
