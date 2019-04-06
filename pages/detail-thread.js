@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, Clipboard, TextInput } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, Clipboard, TextInput } from 'react-native'
 import { getReplyList, getImage, getDetail } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -65,8 +65,8 @@ class DetailsScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            headerLoading: false,
-            footerLoading: 0,
+            headerLoading: true,
+            footerLoading: 1,
             replyList: Array(),
             page: 1,
             loadEnd: false,
@@ -123,7 +123,7 @@ class DetailsScreen extends React.Component {
         this.setState({
             replyList: [this.threadDetail]
         }, ()=>{
-            this._pullDownRefresh();
+            this._pullDownRefresh(1, true);
         });
     }
     componentWillUnmount() {
@@ -365,8 +365,8 @@ class DetailsScreen extends React.Component {
         });
     }
 
-    _pullDownRefresh = async (startPage = 1) => {
-        if (this.state.footerLoading != 0 || this.state.headerLoading) {
+    _pullDownRefresh = async (startPage = 1, force = false) => {
+        if ( !force && (this.state.footerLoading != 0 || this.state.headerLoading) ) {
             return;
         }
         this.setState({ headerLoading: true, page: startPage }, async () => {
@@ -417,6 +417,7 @@ class DetailsScreen extends React.Component {
                         replyList: tempList,
                         page: startPage,
                         headerLoading: false,
+                        footerLoading: 0,
                         loadEnd: true,
                         footerMessage: '此id为回应串，不能继续加载'
                     });
@@ -426,6 +427,7 @@ class DetailsScreen extends React.Component {
                         replyList: tempList,
                         page: res.res.replys.length >= 19 ? (startPage + 1) : startPage,
                         headerLoading: false,
+                        footerLoading: 0,
                         loadEnd: res.res.replys.length >= 19 ? false : true,
                         footerMessage: res.res.replys.length >= 19 ? 
                         `上拉继续加载 ${res.res.replys.length}/${res.res.replyCount}`    
@@ -441,7 +443,8 @@ class DetailsScreen extends React.Component {
                 this.TopModal.showMessage('错误', `请求数据失败:${res.errmsg}`,'确认');
                 this.setState({
                     headerLoading: false,
-                    loadEnd: true
+                    loadEnd: true,
+                    footerLoading: 0
                 });
             }
         });
@@ -468,12 +471,6 @@ class DetailsScreen extends React.Component {
                     onEndReached={this._pullUpLoading}
                     pageSize={20}
                     removeClippedSubviews={true}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.headerLoading}
-                            onRefresh={this._pullDownRefresh}
-                            title="正在加载..."/>
-                    }
                 />
             </SafeAreaView>
         );

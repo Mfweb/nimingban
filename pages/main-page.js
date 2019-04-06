@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, ScrollView, TextInput } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TextInput } from 'react-native'
 import { getThreadList, getImage, getForumList, getForumIDByName } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
@@ -54,7 +54,7 @@ class HomeScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            headerLoading: false,
+            headerLoading: true,
             footerLoading: 0,
             threadList: Array(),
             page: 1,
@@ -103,7 +103,7 @@ class HomeScreen extends React.Component {
         this.fname = this.props.navigation.getParam('name', '时间线');
 
         //clearImageCache();
-        this._pullDownRefresh();
+        this._pullDownRefresh(1, true);
         this.props.navigation.setParams({
             openLDrawer: this.props.navigation.openDrawer,
             newThread: this._newThread,
@@ -357,8 +357,8 @@ class HomeScreen extends React.Component {
         });
     }
 
-    _pullDownRefresh = (startPage = 1) => {
-        if (this.state.footerLoading != 0 || this.state.headerLoading) {
+    _pullDownRefresh = (startPage = 1, force = false) => {
+        if ( !force && (this.state.footerLoading != 0 || this.state.headerLoading) ) {
             return;
         }
         this.setState({ headerLoading: true, page: startPage }, () => {
@@ -410,12 +410,6 @@ class HomeScreen extends React.Component {
                     onEndReached={this._pullUpLoading}
                     pageSize={20}
                     removeClippedSubviews={true}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.headerLoading}
-                            onRefresh={this._pullDownRefresh}
-                            title="正在加载..."/>
-                    }
                     /*viewabilityConfig={this.viewabilityConfig}*/
                 />
             </SafeAreaView>

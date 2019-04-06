@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, FlatList, TextInput, Dimensions, TouchableOpacity, Keyboard, RefreshControl, Platform, StyleSheet } from 'react-native'
+import { Text, View, FlatList, TextInput, Dimensions, TouchableOpacity, Platform, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { ActionSheet } from '../component/action-sheet'
@@ -478,12 +478,6 @@ class UserCookieManager extends React.Component {
                     renderItem={this._renderItem}
                     ListHeaderComponent={this._headerComponent}
                     ListFooterComponent={this._footerComponent}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.cookieListLoading}
-                            onRefresh={this._pullDownRefreshing}
-                            title="正在加载..."/>
-                    }
                 />
             </View>
         );

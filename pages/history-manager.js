@@ -1,16 +1,7 @@
 import React from 'react'
-import { Text, View, FlatList, Animated, Dimensions, TouchableOpacity, Keyboard, RefreshControl, Platform, StyleSheet } from 'react-native'
+import { Text, View, FlatList, Animated, Dimensions, TouchableOpacity, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { TopModal, TopModalApis } from '../component/top-modal'
-import { ActionSheet, ActionSheetApis } from '../component/action-sheet'
-import { Header } from 'react-navigation';
-import { configDynamic } from '../modules/config';
-import { RNCamera } from 'react-native-camera'
-import SoundPlayer from 'react-native-sound'
-import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCookie } from '../modules/cookie-manager'
-import { UIButton } from '../component/uibutton'
-import { NavigationActions } from 'react-navigation'
-import { realAnonymousGetCookie } from '../modules/apis'
+import { TopModal } from '../component/top-modal'
 import { history } from '../modules/history'
 import { getImage } from '../modules/apis'
 import { MainListItem } from '../component/list-main-item'
@@ -281,12 +272,6 @@ class HistoryManager extends React.Component {
                     onEndReached={this._pullUpLoading}
                     pageSize={20}
                     removeClippedSubviews={true}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={this.state.headerLoading}
-                            onRefresh={this._pullDownRefresh}
-                            title="正在加载..."/>
-                    }
                 />
             </View>
         );

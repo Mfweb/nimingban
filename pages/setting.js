@@ -1,8 +1,8 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, RefreshControl, SafeAreaView, ScrollView, TextInput } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput } from 'react-native'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configBase, configDynamic, configNetwork } from '../modules/config'
+import { configBase, configDynamic } from '../modules/config'
 import { Toast } from '../component/toast'
 import { ActionSheet } from '../component/action-sheet'
 
