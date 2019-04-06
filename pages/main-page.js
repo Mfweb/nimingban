@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
     headerRightPageText: {
         color: '#FFF',
         fontSize: 20,
+        lineHeight: 20,
+        marginTop: 2
     }
 });
 
@@ -74,6 +76,7 @@ class HomeScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
+            headerBackTitle: navigation.getParam('name', '时间线'),
             title:  `${configBase.islandList[configDynamic.islandMode].displayName}(${navigation.getParam('name', '时间线')})`,
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >

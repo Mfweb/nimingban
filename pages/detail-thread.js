@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
     headerRightPageText: {
         color: '#FFF',
         fontSize: 20,
+        lineHeight: 20,
+        marginTop: 2
     },
     headerTitle: {
         flex: 1,
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
     },
     headerTitleText: {
         color: '#FFF',
-        fontSize: 20
+        fontSize: 18
     }
 });
 
@@ -81,7 +83,6 @@ class DetailsScreen extends React.Component {
     static navigationOptions = ({navigation}) => {
         const { params = {} } = navigation.state;
         return {
-            headerTitle: navigation.getParam('threadDetail', null).title,
             headerTitle: (
                 <View style={styles.headerTitle}>
                     <Text style={styles.headerTitleText}>
