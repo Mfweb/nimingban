@@ -15,6 +15,7 @@ import { UserMemberChangePassword } from './pages/lw-user-member/change-password
 import { UserCookieManager } from './pages/user-cookie-manager'
 import { NewPostScreen } from './pages/new-post'
 import { HistoryManager } from './pages/history-manager'
+import { SettingScreen } from './pages/setting'
 const globalColor = '#fa7296';
 
 // 串浏览页面
@@ -58,6 +59,8 @@ const UserMemberStackNavigator = createStackNavigator({
     UserMemberAugh: { screen: RealNameAuth },
     //修改密码
     UserMemberChangePassword: {screen: UserMemberChangePassword},
+    //设置
+    UserSetting: { screen: SettingScreen },
     //Web
     WebView: { screen: PinkWebView }
 }, {

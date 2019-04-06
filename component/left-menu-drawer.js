@@ -286,6 +286,13 @@ class LeftDrawerNavigator extends React.Component {
             })
         ], 0);
     }
+    _goSetting = () => {
+        this.props.navigation._childrenNavigation.UserMember.reset([
+            NavigationActions.navigate({ 
+                routeName: 'UserSetting'
+            })
+        ], 0);
+    }
     _gotoHistory = () => {
         this.props.navigation._childrenNavigation.Home.reset([
             NavigationActions.navigate({ 
@@ -438,7 +445,7 @@ class LeftDrawerNavigator extends React.Component {
                 <SafeAreaView>
                     <View style={styles.bottomTools}>
                         <View style={styles.bottomToolsItem}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={this._goSetting}>
                                 <Icon name={'settings'} size={32} color={'#FFF'} />
                             </TouchableOpacity>
                         </View>
