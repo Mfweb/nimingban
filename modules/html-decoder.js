@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet } from 'react-native'
 import { parseDOM } from 'htmlparser2'
+import { UISetting } from './config'
 
 const htmlConstStyles = StyleSheet.create({
     a: {
-        color: '#4169E1',
+        color: UISetting.colors.linkColor,
         textDecorationLine: 'underline'
     },
     strong: {

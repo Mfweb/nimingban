@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, StyleSheet, Dimensions } from 'react-native'
 import { Header } from 'react-navigation'
 import ZoomImageViewer from 'react-native-image-zoom-viewer';
+import { UISetting } from '../modules/config'
 
 const screenDisplaySize = {
     height: Dimensions.get('window').height - Header.HEIGHT,
@@ -38,7 +39,7 @@ class ImageViewer extends React.Component {
                 <ZoomImageViewer 
                 saveToLocalByLongPress={false}
                 imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}
-                backgroundColor={'#5F5F5F'}/>
+                backgroundColor={UISetting.colors.defaultBackgroundColor}/>
             </View>
         );
     }

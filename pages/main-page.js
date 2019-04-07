@@ -4,7 +4,7 @@ import { getThreadList, getImage, getForumList, getForumIDByName } from '../modu
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configBase, configDynamic, configNetwork } from '../modules/config'
+import { configBase, configDynamic, configNetwork, UISetting } from '../modules/config'
 import { Toast } from '../component/toast'
 import { history } from '../modules/history'
 import { MainListItem } from '../component/list-main-item'
@@ -12,11 +12,10 @@ import { ActionSheet } from '../component/action-sheet'
 import { Header } from 'react-navigation'
 import { getHTMLDom } from '../modules/html-decoder'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     mainList: {
         flex: 1,
-        backgroundColor: '#DCDCDC'
+        backgroundColor: UISetting.colors.defaultBackgroundColor
     },
     headerRightView: {
         flex: 1,
@@ -24,14 +23,14 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     footerMessage: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 18,
         textAlign: 'center',
         padding: 8
     },
     headerRightPage: {
-        backgroundColor: globalColor,
-        borderColor: '#FFF',
+        backgroundColor: UISetting.colors.globalColor,
+        borderColor: UISetting.colors.fontColor,
         borderWidth: 2,
         minWidth: 24,
         height: 24,
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
         marginTop: 2
     },
     headerRightPageText: {
-        color: '#FFF',
+        color: UISetting.colors.fontColor,
         fontSize: 20,
         lineHeight: 20,
         marginTop: 2
@@ -79,8 +78,8 @@ class HomeScreen extends React.Component {
             headerBackTitle: navigation.getParam('name', '时间线'),
             title:  `${configBase.islandList[configDynamic.islandMode].displayName}(${navigation.getParam('name', '时间线')})`,
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             ),
             headerRight: (
@@ -88,11 +87,11 @@ class HomeScreen extends React.Component {
                     <View style={styles.headerRightPage}>
                         <Text style={styles.headerRightPageText}>{navigation.getParam('page', '1')}</Text>
                     </View>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.newThread} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                        <Icon name={'note'} size={24} color={'#FFF'} />
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.newThread} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                        <Icon name={'note'} size={24} color={UISetting.colors.fontColor} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} onPress={params.menuFunctions} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                        <Icon name={'options'} size={24} color={'#FFF'} />
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} onPress={params.menuFunctions} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                        <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                     </TouchableOpacity>
                 </View>
             )

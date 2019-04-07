@@ -6,20 +6,20 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { history } from '../modules/history'
 import { MainListImage } from './list-image-view'
 import { MainListItemHeader } from './list-header'
+import { UISetting } from '../modules/config'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     mainListItem: {
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
         marginTop: 10,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: '#696969'
+        shadowColor: UISetting.colors.defaultBackgroundColor
     },
     touchActiveView: {
         position: 'absolute',
-        backgroundColor: globalColor,
+        backgroundColor: UISetting.colors.globalColor,
         opacity: 0.3,
         width: '200%',
         height: '100%',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 500,
     },
     mainListItemContent: {
-        color: '#000',
+        color: UISetting.colors.threadFontColor,
         fontSize: 20,
         paddingLeft: 8,
         paddingRight: 8
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     },
     mainListReplayCountText: {
         marginLeft: 3,
-        color: '#696969',
+        color: UISetting.colors.globalColor,
         fontSize: 18
     },
 });
@@ -160,7 +160,7 @@ class MainListItem extends React.Component {
                     localUri={this.state.imgLocalUri}
                     imgUri={itemDetail.img + itemDetail.ext}/>
                 <View style={styles.mainListItemBottom}>
-                    <Icon name={'bubble'} size={24} color={globalColor} />
+                    <Icon name={'bubble'} size={24} color={UISetting.colors.globalColor} />
                     <Text style={styles.mainListReplayCountText}>{this.state.displayData['replayCountText']}</Text>
                 </View>
             </TouchableOpacity>

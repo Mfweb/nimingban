@@ -2,24 +2,24 @@ import React from 'react'
 import { Text, View, StyleSheet, Animated, Dimensions, Keyboard, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
+import { UISetting } from '../modules/config'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     toast: {
         position: 'absolute',
         zIndex: 600,
-        backgroundColor: globalColor,
+        backgroundColor: UISetting.colors.globalColor,
         borderWidth: 1,
-        borderColor: '#FFB6C1',
+        borderColor: UISetting.colors.lightColor,
         borderRadius: 30,
         shadowOffset: { width: 3, height: 3 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: '#696969',
+        shadowColor: UISetting.colors.defaultBackgroundColor,
     },
     toastText: {
         fontSize: 20,
-        color: '#F5F5F5',
+        color: UISetting.colors.fontColor,
         margin: 10,
     }
 });

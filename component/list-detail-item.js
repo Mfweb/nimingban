@@ -5,18 +5,16 @@ import { getHTMLDom } from '../modules/html-decoder'
 import { MainListImage } from './list-image-view'
 import { MainListItemHeader } from './list-header'
 import { ItemQuote } from './item-quote'
+import { UISetting } from '../modules/config'
 
 const styles = StyleSheet.create({
     mainListItem: {
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
         shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowColor: '#696969',
         paddingBottom: 8
     },
     mainListItemContent: {
-        color: '#000',
+        color: UISetting.colors.threadFontColor,
         fontSize: 20,
         lineHeight: 21,
         paddingLeft: 8,
@@ -143,7 +141,7 @@ class DetailListItem extends React.Component {
     render() {
         let { itemDetail } = this.props;
         return (
-            <TouchableOpacity style={[styles.mainListItem, this.state.selected?{backgroundColor: '#FFE4E1'}:{}]} onLongPress={this._longPressItem} activeOpacity={1}>
+            <TouchableOpacity style={[styles.mainListItem, this.state.selected?{backgroundColor: UISetting.colors.lightColor}:{}]} onLongPress={this._longPressItem} activeOpacity={1}>
                 <MainListItemHeader itemDetail={itemDetail} po={this.props.po}/>
                 {this.state.displayData['threadContent']}
                 <MainListImage 

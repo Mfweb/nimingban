@@ -7,11 +7,11 @@ import { getImage } from '../modules/apis'
 import { MainListItem } from '../component/list-main-item'
 import { Toast } from '../component/toast'
 import { ListProcessView } from '../component/list-process-view'
+import { UISetting } from '../modules/config'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     headerView: {
-        borderColor: '#F5F5F5',
+        borderColor: UISetting.colors.fontColor,
         borderWidth: 1,
         borderRadius: 4,
         flexDirection: 'row',
@@ -21,34 +21,34 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 18,
-        color: '#F5F5F5'
+        color: UISetting.colors.fontColor
     },
     headerButton: {
         padding: 2,
     },
     headerCenterButton: {
-        borderLeftColor: '#F5F5F5',
-        borderRightColor: '#F5F5F5',
+        borderLeftColor: UISetting.colors.fontColor,
+        borderRightColor: UISetting.colors.fontColor,
         borderLeftWidth: 1,
         borderRightWidth: 1
     },
     headerSelected: {
-        backgroundColor: '#F5F5F5',
-        color: globalColor
+        backgroundColor: UISetting.colors.fontColor,
+        color: UISetting.colors.globalColor
     },
     headerMark: {
         width: '33.33%',
         position: 'absolute',
         left: 0,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: UISetting.colors.fontColor,
         height: '100%'
     },
     historyList: {
         flex: 1,
-        backgroundColor: '#DCDCDC'
+        backgroundColor: UISetting.colors.defaultBackgroundColor
     },
     footerMessage: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 18,
         textAlign: 'center',
         padding: 8
@@ -93,17 +93,17 @@ class HistoryHeader extends React.Component {
 
             </Animated.View>
             <TouchableOpacity style={styles.headerButton} onPress={()=>this.props.changeMode(0)}>
-                <Text style={[styles.headerText, this.state.mode===0?{color: globalColor}:{}]}>
+                <Text style={[styles.headerText, this.state.mode===0?{color: UISetting.colors.globalColor}:{}]}>
                     浏览记录
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.headerButton, styles.headerCenterButton]} onPress={()=>this.props.changeMode(1)}>
-                <Text style={[styles.headerText, this.state.mode===1?{color: globalColor}:{}]}>
+                <Text style={[styles.headerText, this.state.mode===1?{color: UISetting.colors.globalColor}:{}]}>
                     回复记录
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.headerButton} onPress={()=>this.props.changeMode(2)}>
-                <Text style={[styles.headerText, this.state.mode===2?{color: globalColor}:{}]}>
+                <Text style={[styles.headerText, this.state.mode===2?{color: UISetting.colors.globalColor}:{}]}>
                     图片记录
                 </Text>
             </TouchableOpacity>
@@ -133,14 +133,14 @@ class HistoryManager extends React.Component {
                 <HistoryHeader changeMode={params.changeMode} mode={navigation.getParam('mode', 0)}/>
             ),
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>navigation.openDrawer()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>navigation.openDrawer()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                    onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'options'} size={24} color={'#FFF'} />
+                    onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             )
         }

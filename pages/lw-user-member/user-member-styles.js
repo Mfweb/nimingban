@@ -1,10 +1,10 @@
 //修改密码
 import { StyleSheet, Dimensions } from 'react-native'
+import { UISetting } from '../../modules/config'
 
 const ScreenWidth = Dimensions.get('window').width;
 const ScreehHeight = Dimensions.get('window').height;
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     displayNone: {
         display: 'none'
@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     },
     memberView: {
         height: ScreehHeight,
-        backgroundColor: '#F5F5F5'
+        backgroundColor: UISetting.colors.defaultBackgroundColor
     },
     memberTitleImg: {
         width: ScreenWidth,
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         height: 50,
         width: ScreenWidth,
         marginTop: 2,
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
         paddingLeft: 10
     },
     splitLine: {
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         marginRight: 5,
         width: 1,
         height: 30,
-        backgroundColor: globalColor
+        backgroundColor: UISetting.colors.globalColor
     },
     userInputText: {
         width: ScreenWidth - 50,
@@ -64,22 +64,22 @@ const styles = StyleSheet.create({
         paddingRight: ScreenWidth * 0.05,
     },
     pinkButton: {
-        backgroundColor: globalColor,
+        backgroundColor: UISetting.colors.globalColor,
     },
     pinkButtonText: {
-        color: '#FFF',
+        color: UISetting.colors.threadBackgroundColor,
         fontSize: 24
     },
     whiteButton: {
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
     },
     whiteButtonText: {
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         fontSize: 24
     },
     //饼干管理
     cookieList: {
-        backgroundColor: '#DCDCDC',
+        backgroundColor: UISetting.colors.defaultBackgroundColor,
     },
     cookieColumn: {
         flex: 1,
@@ -92,18 +92,18 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         flexDirection: 'row',
         height: 40,
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
         marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center'
     },
     cookieIDText: {
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         fontSize: 22,
         textAlign:'center',
     },
     cookieText: {
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         fontSize: 22,
         textAlign:'center',     
     },
@@ -114,20 +114,20 @@ const styles = StyleSheet.create({
     },
     cookieMessageText: {
         fontSize: 22,
-        color: '#696969'
+        color: UISetting.colors.lightFontColor
     },
     cookieUsage: {
         paddingLeft: 8,
         marginTop: 5
     },
     cookieUsageText: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 16
     },
     //登录
     loginView: {
         height: ScreehHeight,
-        backgroundColor: '#F5F5F5'
+        backgroundColor: UISetting.colors.defaultBackgroundColor
     },
     loginTitleImg: {
         width: ScreenWidth,
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     },
     backtoUsermemberText: {
         fontSize: 20,
-        color: '#1E90FF',
+        color: UISetting.colors.linkColor,
         textDecorationLine: 'underline'
     },
     //实名认证
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     countryCodeText: {
         fontSize: 20,
         height: 20,
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         textAlign: 'center'
     },
     realNameUserInputText: {
@@ -171,28 +171,28 @@ const styles = StyleSheet.create({
     },
     authMessageText: {
         fontSize: 22,
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         marginBottom: 4
     },
     authMessageRowTitle: {
         fontSize: 24,
-        color: '#696969'
+        color: UISetting.colors.lightFontColor
     },
     authMessageMobile: {
         fontSize: 24,
-        color: globalColor
+        color: UISetting.colors.globalColor
     },
     authMessageCode: {
         fontSize: 24,
-        color: globalColor
+        color: UISetting.colors.globalColor
     },
     authMessageYourMobile: {
         fontSize: 24,
-        color: globalColor
+        color: UISetting.colors.globalColor
     },
     authMessageExpireDate: {
         fontSize: 24,
-        color: globalColor
+        color: UISetting.colors.globalColor
     },
 
     authToolsView: {
@@ -202,10 +202,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around'
     },
     authToolsActBtn: {
-        backgroundColor: globalColor,
+        backgroundColor: UISetting.colors.globalColor,
     },
     authToolsActBtnText: {
-        color: '#FFF',
+        color: UISetting.colors.fontColor,
         fontSize: 23
     },
     regPolicyView: {
@@ -223,9 +223,9 @@ const styles = StyleSheet.create({
     },
     regPolicyTextHightL: {
         fontSize: 22,
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         textDecorationLine: 'underline'
     }
 });
 
-export {globalColor, styles}
+export {styles}

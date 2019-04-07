@@ -3,11 +3,11 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { getDetail } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import { converDateTime } from '../modules/date-time'
+import { UISetting } from '../modules/config'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     quoteView: {
-        borderColor: globalColor,
+        borderColor: UISetting.colors.globalColor,
         borderWidth: 1,
         borderLeftWidth: 6,
         borderRadius: 4,
@@ -15,10 +15,10 @@ const styles = StyleSheet.create({
         marginRight: 8,
         marginBottom: 3,
         width: 'auto',
-        backgroundColor: '#FFE4E1',
+        backgroundColor: UISetting.colors.lightColor,
     },
     quoteOriginalText: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 18
     },
     quoteHeader: {
@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
         paddingRight: 15
     },
     sendTime: {
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         fontSize: 18,
     },
     sendCookieName: {
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         fontSize: 18
     },
     sendCookieNameBigVIP: {
@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     sendCookieNamePO: {
         borderWidth: 1,
         borderRadius: 2,
-        borderColor: globalColor,
-        backgroundColor: '#FFE4E1'
+        borderColor: UISetting.colors.globalColor,
+        backgroundColor: UISetting.colors.lightColor
     },
     quoteText: {
         color: '#789922',

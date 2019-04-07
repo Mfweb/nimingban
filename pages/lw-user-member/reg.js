@@ -6,7 +6,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, register } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-import { globalColor, styles } from './user-member-styles'
+import { styles } from './user-member-styles'
+import { UISetting } from '../../modules/config'
 
 /**
  * 登录相关
@@ -28,7 +29,7 @@ class UIReg extends React.Component {
         return (
             <View style={this.props.style}>
                 <View style={styles.userInputView}>
-                    <Icon name={'user'} size={24} color={globalColor} />
+                    <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TextInput 
                     style={styles.userInputText}
@@ -49,7 +50,7 @@ class UIReg extends React.Component {
                             style={styles.regPolicyIcon}
                             name={this.props.agreeTerms?'check-box':'check-box-outline-blank'}
                             size={32}
-                            color={globalColor}/>
+                            color={UISetting.colors.globalColor}/>
                     </TouchableOpacity>
                     <Text style={styles.regPolicyText}>我已阅读并同意</Text>
                     <TouchableOpacity onPress={this.props.onTermsPress}>

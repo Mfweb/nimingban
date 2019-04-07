@@ -5,7 +5,9 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
 import { checkSession, changePassword, logout } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-import { globalColor, styles } from './user-member-styles'
+import { styles } from './user-member-styles'
+import { UISetting } from '../../modules/config'
+
 /**
  * 修改密码
  */
@@ -24,7 +26,7 @@ class UIChangePassword extends React.Component {
         return (
             <View style={this.props.style}>
                 <View style={styles.userInputView}>
-                    <Icon name={'lock'} size={24} color={globalColor} />
+                    <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TextInput 
                     style={styles.userInputText}
@@ -42,7 +44,7 @@ class UIChangePassword extends React.Component {
                     onChangeText={this.props.onOldPasswordInput} />
                 </View>
                 <View style={styles.userInputView}>
-                    <Icon name={'lock'} size={24} color={globalColor} />
+                    <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TextInput 
                     ref={(input) => { this.newPasswordInput1 = input; }}
@@ -61,7 +63,7 @@ class UIChangePassword extends React.Component {
                     onChangeText={this.props.onNewPasswordInput1} />
                 </View>
                 <View style={styles.userInputView}>
-                    <Icon name={'lock'} size={24} color={globalColor} />
+                    <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TextInput 
                     ref={(input) => { this.newPasswordInput2 = input; }}

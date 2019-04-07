@@ -2,23 +2,23 @@ import React from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput } from 'react-native'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configBase, configDynamic } from '../modules/config'
+import { configBase, configDynamic, UISetting } from '../modules/config'
 import { Toast } from '../component/toast'
 import { ActionSheet } from '../component/action-sheet'
 
 const styles = StyleSheet.create({
     settingGroup: {
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
         marginTop: 5,
         marginBottom: 5,
         borderTopWidth: 1,
-        borderTopColor: '#C0C0C0',
+        borderTopColor: UISetting.colors.defaultBackgroundColor,
         borderBottomWidth: 1,
-        borderBottomColor: '#C0C0C0'
+        borderBottomColor: UISetting.colors.defaultBackgroundColor,
     },
     settingTitle: {
         fontSize: 18,
-        color: "#696969",
+        color: UISetting.colors.lightFontColor,
         marginLeft: 5,
     },
     settingItem: {
@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
     },
     settingItemLine: {
         borderBottomWidth: 1,
-        borderBottomColor: '#C0C0C0'
+        borderBottomColor: UISetting.colors.lightFontColor
     },
     settingItemText: {
         fontSize: 20,
-        color: '#000',
+        color: UISetting.colors.threadFontColor,
         lineHeight: 20
     }
 });
@@ -54,8 +54,8 @@ class SettingScreen extends React.Component {
         return {
             title:  `${configBase.islandList[configDynamic.islandMode].displayName}(${navigation.getParam('name', '时间线')})`,
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             )
         }
@@ -69,7 +69,7 @@ class SettingScreen extends React.Component {
 
     render() {
         return (
-            <SafeAreaView style={{flex:1, backgroundColor: '#DCDCDC'}}>
+            <SafeAreaView style={{flex:1, backgroundColor: UISetting.colors.defaultBackgroundColor}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>

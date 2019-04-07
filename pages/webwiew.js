@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { TouchableOpacity, Linking, Text, StyleSheet, ActivityIndicator, View } from 'react-native'
 import { WebView } from "react-native-webview"
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-
+import { UISetting } from '../modules/config'
 const styles = StyleSheet.create({
     titleView: {
         flexDirection: 'row',
@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 18,
-        color: '#FFF'
+        color: UISetting.colors.fontColor
     }
 });
 
@@ -23,14 +23,14 @@ class PinkWebView extends React.Component {
                         size='small'
                         hidesWhenStopped={true}
                         animating={navigation.getParam('loading', true)}
-                        color={'#FFF'}/>
+                        color={UISetting.colors.fontColor}/>
                     <Text style={styles.titleText}>{navigation.getParam('title', 'Web')}</Text>
                 </View>),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={() => {
                     Linking.openURL(navigation.getParam('URL', 'https://mfweb.top/'));
-                }} underlayColor={'#ffafc9'} activeOpacity={0.5}>
-                    <Icon name={'compass'} size={24} color={'#FFF'}/>
+                }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5}>
+                    <Icon name={'compass'} size={24} color={UISetting.colors.fontColor}/>
                 </TouchableOpacity>
             )
         };

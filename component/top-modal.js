@@ -2,8 +2,8 @@ import React from 'react'
 import { Text, View, StyleSheet, Animated, Dimensions, Keyboard, TouchableOpacity, ScrollView } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
+import { UISetting } from '../modules/config'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     displayNone: {
         display: 'none'
@@ -21,12 +21,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     modalRoot: {
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.defaultBackgroundColor,
         borderRadius: 8,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: '#696969',
+        shadowColor: UISetting.colors.defaultBackgroundColor,
     },
     modalTitle: {
         flexDirection: 'row',
@@ -37,11 +37,12 @@ const styles = StyleSheet.create({
     modalTitleText: {
         fontSize: 22,
         marginLeft: 4,
-        color: '#696969'
+        color: UISetting.colors.lightFontColor
     },
     modalTitleSplitLine: {
         height: 1,
-        backgroundColor: '#D3D3D3'
+        backgroundColor: UISetting.colors.lightFontColor,
+        opacity: 0.3
     },
     modalCloseBtn: {
         marginRight: 4
@@ -245,7 +246,7 @@ class TopModal extends React.Component {
                             {this.state.title}
                         </Text>
                         <TouchableOpacity style={styles.modalCloseBtn} onPress={this.state.onClosePress}>
-                            <Icon name={'close'} size={24} color={globalColor} />
+                            <Icon name={'close'} size={24} color={UISetting.colors.globalColor} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.modalTitleSplitLine}></View>
@@ -266,20 +267,20 @@ class TopModal extends React.Component {
                                 }]:styles.displayNone
                             } 
                             onPress={this.state.onLeftButtonPress}>
-                            <Text style={{fontSize: 20, color: globalColor}}>{this.state.leftButtonText}</Text>
+                            <Text style={{fontSize: 20, color: UISetting.colors.globalColor}}>{this.state.leftButtonText}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={[
                                 styles.modalButton, 
                                 {
                                     width: this.state.leftButtonText ? this.state.width/2 : this.state.width, 
-                                    backgroundColor: globalColor,
+                                    backgroundColor: UISetting.colors.globalColor,
                                     borderBottomRightRadius: 8,
                                     borderBottomLeftRadius: this.state.leftButtonText?0:8
                                 }
                             ]}
                             onPress={this.state.onRightButtonPress}>
-                            <Text style={{fontSize: 20, color: '#FFF'}}>{this.state.rightButtonText}</Text>
+                            <Text style={{fontSize: 20, color: UISetting.colors.fontColor}}>{this.state.rightButtonText}</Text>
                         </TouchableOpacity>
                     </View>
                 </Animated.View>

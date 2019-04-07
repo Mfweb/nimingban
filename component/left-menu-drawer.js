@@ -5,9 +5,8 @@ import { getForumList, getForumNameByID } from '../modules/apis'
 import { getHTMLDom } from '../modules/html-decoder'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
-import { configBase, configDynamic } from '../modules/config'
+import { configBase, configDynamic, UISetting } from '../modules/config'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     displayNone: {
         display: 'none'
@@ -18,17 +17,17 @@ const styles = StyleSheet.create({
     },
     groupView: {
         paddingLeft: 5,
-        backgroundColor: '#D3D3D3',
+        backgroundColor: UISetting.colors.defaultBackgroundColor,
         marginBottom: 5,
         paddingTop: 8,
         paddingBottom: 8,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: '#696969',
+        shadowColor: UISetting.colors.lightFontColor,
     },
     groupText: {
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         fontSize: 20,
     },
     itemView: {
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 5,
         paddingBottom: 5,
-        backgroundColor: globalColor
+        backgroundColor: UISetting.colors.globalColor
     },
     bottomToolsItem: {
 
@@ -68,16 +67,16 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 24,
-        color: '#FFF'
+        color: UISetting.colors.fontColor
     },
     islandSelectModal: {
         position: 'absolute',
         zIndex: 9999,
-        backgroundColor: globalColor,
+        backgroundColor: UISetting.colors.globalColor,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: '#696969',
+        shadowColor: UISetting.colors.lightFontColor,
 
         paddingTop: 2,
         paddingBottom: 2,
@@ -411,8 +410,8 @@ class LeftDrawerNavigator extends React.Component {
     }
     render() {
         return (
-            <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: globalColor}}>
-                <View style={{backgroundColor: globalColor, top: 0, minHeight: Header.HEIGHT}}>
+            <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: UISetting.colors.backgroundColor}}>
+                <View style={{backgroundColor: UISetting.colors.globalColor, top: 0, minHeight: Header.HEIGHT}}>
                     <SafeAreaView style={[styles.titleView, {minHeight: Header.HEIGHT}]}>
                         <TouchableOpacity
                                 onLayout={this._headerDisplayLayout}
@@ -422,7 +421,7 @@ class LeftDrawerNavigator extends React.Component {
                             <Text style={styles.titleText}>
                                 {configBase.islandList[configDynamic.islandMode].displayName}匿名版
                             </Text>
-                            <Icon name={'arrow-down'} size={12} color={'#FFF'}/>
+                            <Icon name={'arrow-down'} size={12} color={UISetting.colors.fontColor}/>
                         </TouchableOpacity>
                     </SafeAreaView>
                 </View>       
@@ -433,7 +432,7 @@ class LeftDrawerNavigator extends React.Component {
                     onSelected={this._onChangeIsland}
                     onClosed={()=>{this.setState({showAllIsland: false})}}/>
                 <SectionList
-                    style={{backgroundColor: '#FFF'}}
+                    style={{backgroundColor: UISetting.colors.backgroundColor}}
                     onRefresh={()=>this._pullDownRefresh(true)}
                     refreshing={this.state.headerLoading}
                     ListHeaderComponent={<Image style={styles.wlp} resizeMode='contain' resizeMethod='scale' source={require('../imgs/menu-top.jpg')}/>}
@@ -446,25 +445,25 @@ class LeftDrawerNavigator extends React.Component {
                     <View style={styles.bottomTools}>
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity onPress={this._goSetting}>
-                                <Icon name={'settings'} size={32} color={'#FFF'} />
+                                <Icon name={'settings'} size={32} color={UISetting.colors.fontColor} />
                             </TouchableOpacity>
                         </View>
 
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity>
-                                <Icon name={'star'} size={32} color={'#FFF'} />
+                                <Icon name={'star'} size={32} color={UISetting.colors.fontColor} />
                             </TouchableOpacity>
                         </View>
 
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity onPress={this._gotoHistory}>
-                                <Icon name={'book-open'} size={32} color={'#FFF'} />
+                                <Icon name={'book-open'} size={32} color={UISetting.colors.fontColor} />
                             </TouchableOpacity>
                         </View>
                         
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity onPress={this._gotoMember}>
-                                <Icon name={'user'} size={32} color={'#FFF'} />
+                                <Icon name={'user'} size={32} color={UISetting.colors.fontColor} />
                             </TouchableOpacity>
                         </View>
                     </View>

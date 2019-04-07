@@ -9,9 +9,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { history } from '../modules/history'
 import { Header } from 'react-navigation'
 import { getUserCookieList, setUserCookie } from '../modules/cookie-manager'
-import { configDynamic } from '../modules/config';
+import { configDynamic, UISetting } from '../modules/config';
 
-const globalColor = '#fa7296';
 const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "(=ﾟωﾟ)=",
 "| ω・´)", "|-` )", "|д` )", "|ー` )", "|∀` )",
 "(つд⊂)", "(ﾟДﾟ≡ﾟДﾟ)", "(＾o＾)ﾉ", "(|||ﾟДﾟ)", "( ﾟ∀ﾟ)",
@@ -46,17 +45,17 @@ const styles = StyleSheet.create({
     inputView: {
         flex: 1,
         padding: 2,
-        backgroundColor: '#F5F5F5'
+        backgroundColor: UISetting.colors.defaultBackgroundColor
     },
     inputText: {
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
         flex: 1,
         textAlignVertical: 'top',
         fontSize: 20
     },
     toolsView: {
         height: 50,
-        backgroundColor: globalColor,
+        backgroundColor: UISetting.colors.globalColor,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -76,11 +75,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderLeftWidth: 1,
-        borderColor: globalColor
+        borderColor: UISetting.colors.globalColor
     },
     emoticonText: {
         fontSize: 20,
-        color: '#696969'
+        color: UISetting.colors.lightFontColor
     },
     toolsButton: {
         justifyContent: 'center',
@@ -118,7 +117,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     headerCookieText: {
-        color: '#FFF',
+        color: UISetting.colors.fontColor,
         lineHeight: Header.HEIGHT,
         textAlign: 'center'
     }
@@ -147,8 +146,8 @@ class NewPostScreen extends React.Component {
             title: `${modeTitleText[nMode]}-` + ( nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?') ),
             headerRight: (
                 <View style={styles.headerRightView}>
-                    <TouchableOpacity style={styles.headerCookieView} onPress={params.openCookieSelect} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                        <MDIcon name={'cookie'} size={24} color={'#FFF'} />
+                    <TouchableOpacity style={styles.headerCookieView} onPress={params.openCookieSelect} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                        <MDIcon name={'cookie'} size={24} color={UISetting.colors.fontColor} />
                         <Text style={styles.headerCookieText}>{userCookieText}</Text>
                     </TouchableOpacity>
                 </View>
@@ -456,14 +455,14 @@ class NewPostScreen extends React.Component {
                         onChangeText={(text)=>{this.setState({inputText: text});}}
                         />
                 </View>
-                <SafeAreaView style={{backgroundColor: globalColor}}>
+                <SafeAreaView style={{backgroundColor: UISetting.colors.globalColor}}>
                     <View style={styles.toolsView}>
                         <TouchableOpacity style={styles.toolsButton} onPress={this._openEmoticon}>
-                            <Icon name={'emotsmile'} size={24} color={'#FFF'} />
+                            <Icon name={'emotsmile'} size={24} color={UISetting.colors.fontColor} />
                         </TouchableOpacity>
 
                         <TouchableOpacity style={this.state.selectdeImage?styles.displayNone:styles.toolsButton} onPress={this._selectImage}>
-                        <Icon name={'picture'} size={24} color={'#FFF'} />
+                        <Icon name={'picture'} size={24} color={UISetting.colors.fontColor} />
                             <Image resizeMode='cover' source={this.state.selectdeImage} style={this.state.selectdeImage?styles.selectedImg:styles.displayNone}/>
                         </TouchableOpacity>
 
@@ -475,12 +474,12 @@ class NewPostScreen extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.toolsButton} onPress={this._clearInput}>
-                            <Icon name={'trash'} size={24} color={'#FFF'} />
+                            <Icon name={'trash'} size={24} color={UISetting.colors.fontColor} />
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.toolsButton} onPress={this._startSend}>
-                            <Icon style={this.state.sending?styles.displayNone:{}} name={'paper-plane'} size={24} color={'#FFF'} />
-                            <ActivityIndicator style={this.state.sending?{}:styles.displayNone} color={'#FFF'} size='small'/>
+                            <Icon style={this.state.sending?styles.displayNone:{}} name={'paper-plane'} size={24} color={UISetting.colors.fontColor} />
+                            <ActivityIndicator style={this.state.sending?{}:styles.displayNone} color={UISetting.colors.fontColor} size='small'/>
                         </TouchableOpacity>
                     </View>
                 </SafeAreaView>

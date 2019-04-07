@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { ActionSheet } from '../component/action-sheet'
 import { Header } from 'react-navigation';
-import { configDynamic } from '../modules/config';
+import { configDynamic, UISetting } from '../modules/config';
 import { RNCamera } from 'react-native-camera'
 import SoundPlayer from 'react-native-sound'
 import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCookie } from '../modules/cookie-manager'
@@ -15,7 +15,6 @@ import ImagePicker from 'react-native-image-crop-picker';
 import JPEG from 'jpeg-js';
 import JSQR from 'jsqr';
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     displayNone: {
         display: 'none'
@@ -28,18 +27,18 @@ const styles = StyleSheet.create({
     },
     cookieMessageText: {
         fontSize: 20,
-        color: '#696969'
+        color: UISetting.colors.lightFontColor
     },
     cookieUsage: {
         paddingLeft: 8,
         marginTop: 5
     },
     cookieUsageText: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 16
     },
     cookieList: {
-        backgroundColor: '#DCDCDC',
+        backgroundColor: UISetting.colors.defaultBackgroundColor,
     },
     cookieColumn: {
         flex: 1,
@@ -52,18 +51,18 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         flexDirection: 'row',
         height: 70,
-        backgroundColor: '#FFF',
+        backgroundColor: UISetting.colors.threadBackgroundColor,
         marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center'
     },
     cookieIDText: {
-        color: globalColor,
+        color: UISetting.colors.globalColor,
         fontSize: 22,
         textAlign:'center',
     },
     cookieText: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 12,
         textAlign:'center', 
         lineHeight: 12
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
     },
     backtoUsermemberText: {
         fontSize: 20,
-        color: '#1E90FF',
+        color: UISetting.colors.linkColor,
         textDecorationLine: 'underline'
     }
 });
@@ -112,14 +111,14 @@ class UserCookieManager extends React.Component {
         return {
             title: '饼干管理',
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>navigation.openDrawer()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>navigation.openDrawer()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                    onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'options'} size={24} color={'#FFF'} />
+                    onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             )
         }
@@ -400,7 +399,7 @@ class UserCookieManager extends React.Component {
     _renderItem = ({ item, index }) => {
         let using = configDynamic.userCookie[configDynamic.islandMode] == `userhash=${item.value}`;
         return (
-            <View style={[styles.cookieItem, using?{backgroundColor: '#FFC0CB'}:{}]}>
+            <View style={[styles.cookieItem, using?{backgroundColor: UISetting.colors.lightColor}:{}]}>
                 <View style={styles.cookieColumn}>
                     <Text style={styles.cookieIDText}>
                         {item.mark}
@@ -416,22 +415,22 @@ class UserCookieManager extends React.Component {
                 <View style={styles.cookieColumn}>
                     <UIButton
                     text={'删除'}
-                    style={{backgroundColor: '#DCDCDC', width: 45, height: 30}}
-                    textStyle={{color:globalColor, fontSize: 19}}
+                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor, width: 45, height: 30}}
+                    textStyle={{color: UISetting.colors.globalColor, fontSize: 19}}
                     showLoading={false}
                     onPress={()=>this._deleteCookie(item.value)}
                     />
                     <UIButton
                     text={'应用'}
-                    style={using?styles.displayNone:{backgroundColor: globalColor, width: 45, height: 30}}
-                    textStyle={{color:'#FFF', fontSize: 19}}
+                    style={using?styles.displayNone:{backgroundColor: UISetting.colors.globalColor, width: 45, height: 30}}
+                    textStyle={{color:UISetting.colors.fontColor, fontSize: 19}}
                     showLoading={false}
                     onPress={()=>this._enableCookie(item.value)}
                     />
                     <UIButton
                     text={'取消'}
-                    style={(!using)?styles.displayNone:{backgroundColor: globalColor, width: 45, height: 30}}
-                    textStyle={{color:'#FFF', fontSize: 19}}
+                    style={(!using)?styles.displayNone:{backgroundColor: UISetting.colors.globalColor, width: 45, height: 30}}
+                    textStyle={{color:UISetting.colors.fontColor, fontSize: 19}}
                     showLoading={false}
                     onPress={this._disableCookie}
                     />

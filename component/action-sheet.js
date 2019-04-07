@@ -2,8 +2,7 @@ import React from 'react'
 import { Text, View, Image, StyleSheet, Animated, UIManager, Dimensions, findNodeHandle, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
-
-const globalColor = '#fa7296';
+import { UISetting } from '../modules/config';
 
 const styles = StyleSheet.create({
     modalMask: {
@@ -25,11 +24,11 @@ const styles = StyleSheet.create({
     },
     line: {
         height: 1,
-        backgroundColor: '#696969'
+        backgroundColor: UISetting.colors.lightFontColor
     },
     body: {
         width: '95%',
-        backgroundColor: '#F5F5F5',
+        backgroundColor: UISetting.colors.defaultBackgroundColor,
         borderRadius: 8,
         padding: 4
     },
@@ -39,7 +38,7 @@ const styles = StyleSheet.create({
         marginBottom: 14
     },
     titleText: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 18,
         textAlign: 'center'
     },
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
         paddingBottom: 10
     },
     itemText: {
-        color: '#1E90FF',
+        color: UISetting.colors.linkColor,
         fontSize: 22,
         textAlign: 'center'
     },
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
         borderLeftColor: 'transparent',
 
         borderBottomWidth: 10,
-        borderBottomColor: '#F5F5F5',
+        borderBottomColor: UISetting.colors.defaultBackgroundColor,
     },
     bottomArrorView: {
         position: 'absolute',
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
         height: 0,
         left: Dimensions.get('window').width * 0.025 + 4,
         borderTopWidth: 10,
-        borderTopColor: '#F5F5F5',
+        borderTopColor: UISetting.colors.defaultBackgroundColor,
 
         borderRightWidth: 10,
         borderRightColor: 'transparent',

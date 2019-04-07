@@ -7,8 +7,9 @@ import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo, getEnableUserCookie } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
 import { ActionSheet } from '../../component/action-sheet'
-import { globalColor, styles } from './user-member-styles'
+import { styles } from './user-member-styles'
 import { Header } from 'react-navigation';
+import { UISetting } from '../../modules/config'
 
 class UserMemberCookies extends React.Component {
     constructor(props) {
@@ -38,14 +39,14 @@ class UserMemberCookies extends React.Component {
         return {
             title: 'A岛-饼干槽',
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'options'} size={24} color={'#FFF'} />
+                onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             )
         }
@@ -134,10 +135,10 @@ class UserMemberCookies extends React.Component {
             else {
                 this.TopModal.setContent((
                     <View style={{height: 100, justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{fontSize: 22, color:'#696969'}}>
+                        <Text style={{fontSize: 22, color:UISetting.colors.lightFontColor}}>
                             {info.info.statusString}
                         </Text>
-                        <Text style={{fontSize: 22, color:'#696969'}}>
+                        <Text style={{fontSize: 22, color:UISetting.colors.lightFontColor}}>
                             {info.info.phoneNumber}
                         </Text>
                     </View>
@@ -298,14 +299,14 @@ class UserMemberCookies extends React.Component {
                 <View style={styles.cookieColumn}>
                     <UIButton
                     text={'删除'}
-                    style={{backgroundColor: '#DCDCDC', width: 45, height: 30}}
-                    textStyle={{color:globalColor, fontSize: 19}}
+                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor, width: 45, height: 30}}
+                    textStyle={{color: UISetting.colors.globalColor, fontSize: 19}}
                     showLoading={false}
                     onPress={()=>this._deleteCookie(item.id)}
                     />
                     <UIButton
                     text={'应用'}
-                    style={{backgroundColor: globalColor, width: 45, height: 30}}
+                    style={{backgroundColor: UISetting.colors.globalColor, width: 45, height: 30}}
                     textStyle={{color:'#FFF', fontSize: 19}}
                     showLoading={false}
                     onPress={()=>this._enableCookie(item)}

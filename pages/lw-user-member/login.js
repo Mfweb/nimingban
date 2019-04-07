@@ -6,7 +6,8 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, login } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-import { globalColor, styles } from './user-member-styles'
+import { styles } from './user-member-styles'
+import { UISetting } from '../../modules/config'
 
 /**
  * 登录相关
@@ -26,7 +27,7 @@ class UILogin extends React.Component {
         return (
             <View style={this.props.style}>
                 <View style={styles.userInputView}>
-                    <Icon name={'user'} size={24} color={globalColor} />
+                    <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TextInput 
                     style={styles.userInputText}
@@ -44,7 +45,7 @@ class UILogin extends React.Component {
                 </View>
                 
                 <View style={styles.userInputView}>
-                    <Icon name={'lock'} size={24} color={globalColor} />
+                    <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TextInput 
                     ref={(input) => { this.secondTextInput = input; }}
@@ -103,14 +104,14 @@ class UserMemberLogin extends React.Component {
         return {
             title: 'A岛-登录',
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                onPress={()=>{ navigation.push('UserMemberForgotPw') }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Text style={{fontSize: 18, color:'#FFF'}}>忘记密码</Text>
+                onPress={()=>{ navigation.push('UserMemberForgotPw') }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Text style={{fontSize: 18, color:UISetting.colors.fontColor}}>忘记密码</Text>
                 </TouchableOpacity>
             )
         }

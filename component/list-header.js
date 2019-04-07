@@ -2,8 +2,8 @@ import React from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { getHTMLDom } from '../modules/html-decoder'
 import { converDateTime } from '../modules/date-time'
+import { UISetting } from '../modules/config'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     mainListItemUserCookieNameBigVIP: {
         fontSize: 18,
@@ -11,13 +11,13 @@ const styles = StyleSheet.create({
     },
     mainListItemUserCookieName: {
         fontSize: 18,
-        color: globalColor
+        color: UISetting.colors.globalColor
     },
     mainListItemUserCookieNamePO: {
         backgroundColor: '#FFE4E1',
         borderWidth: 1,
         borderRadius: 2,
-        borderColor: globalColor,
+        borderColor: UISetting.colors.globalColor,
     },
     mainListItemHeader: {
 
@@ -31,11 +31,11 @@ const styles = StyleSheet.create({
     },
     mainListItemTid: {
         fontSize: 18,
-        color: globalColor
+        color: UISetting.colors.globalColor
     },
     mainListItemTime: {
         fontSize: 18,
-        color: globalColor
+        color: UISetting.colors.globalColor
     },
     mainListItemHeaderL2: {
         flex: 1,
@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
     },
     mainListItemTitle: {
         fontSize: 16,
-        color: '#696969'
+        color: UISetting.colors.lightFontColor
     },
     mainListItemName: {
         fontSize: 16,
-        color: '#696969'
+        color: UISetting.colors.lightFontColor
     },
     mainListItemSAGE: {
         color: 'red',

@@ -8,18 +8,17 @@ import  { Toast } from '../component/toast'
 import { DetailListItem } from '../component/list-detail-item'
 import { history } from '../modules/history'
 import { ActionSheet } from '../component/action-sheet'
-import { configNetwork, configDynamic } from '../modules/config'
+import { configNetwork, configDynamic, UISetting } from '../modules/config'
 import { Header } from 'react-navigation'
 
-const globalColor = '#fa7296';
 const styles = StyleSheet.create({
     mainList: {
         flex: 1,
-        backgroundColor: '#DCDCDC'
+        backgroundColor: UISetting.colors.defaultBackgroundColor
     },
     ItemSeparator: {
         height: 1,
-        backgroundColor: '#FFB6C1'
+        backgroundColor: UISetting.colors.lightColor
     },
     headerRightView: {
         flex: 1,
@@ -27,14 +26,14 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     footerMessage: {
-        color: '#696969',
+        color: UISetting.colors.lightFontColor,
         fontSize: 18,
         textAlign: 'center',
         padding: 8
     },
     headerRightPage: {
-        backgroundColor: globalColor,
-        borderColor: '#FFF',
+        backgroundColor: UISetting.colors.globalColor,
+        borderColor: UISetting.colors.fontColor,
         borderWidth: 2,
         minWidth: 24,
         height: 24,
@@ -45,7 +44,7 @@ const styles = StyleSheet.create({
         marginTop: 2
     },
     headerRightPageText: {
-        color: '#FFF',
+        color: UISetting.colors.fontColor,
         fontSize: 20,
         lineHeight: 20,
         marginTop: 2
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     headerTitleText: {
-        color: '#FFF',
+        color: UISetting.colors.fontColor,
         fontSize: 18
     }
 });
@@ -97,11 +96,11 @@ class DetailsScreen extends React.Component {
                     <View style={styles.headerRightPage}>
                         <Text style={styles.headerRightPageText}>{navigation.getParam('page', '1')}</Text>
                     </View>
-                    <TouchableOpacity onPress={params.replyThread} style={{ marginRight: 8, marginTop: 2 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                        <Icon name={'note'} size={24} color={'#FFF'} />
+                    <TouchableOpacity onPress={params.replyThread} style={{ marginRight: 8, marginTop: 2 }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                        <Icon name={'note'} size={24} color={UISetting.colors.fontColor} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={params.menuFunctions} style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                        <Icon name={'options'} size={24} color={'#FFF'} />
+                    <TouchableOpacity onPress={params.menuFunctions} style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                        <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                     </TouchableOpacity>
                 </View>
             )
@@ -453,7 +452,7 @@ class DetailsScreen extends React.Component {
     
     render() {
         return (
-            <SafeAreaView style={{flex:1, backgroundColor: '#DCDCDC'}}>
+            <SafeAreaView style={{flex:1, backgroundColor: UISetting.colors.defaultBackgroundColor}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>

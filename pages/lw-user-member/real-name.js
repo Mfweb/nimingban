@@ -6,7 +6,8 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, startVerified, logout, checkVerifiedSMS } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-import { globalColor, styles } from './user-member-styles'
+import { styles } from './user-member-styles'
+import { UISetting } from '../../modules/config'
 
 const countryCodeList = [
     '中国 - +86', '美国 - +1', '加拿大 - +1', '香港 - +852', '澳门 - +853', '台湾 - +886', '马来西亚 - +60', '印度尼西亚 - +62',
@@ -103,7 +104,7 @@ class UIRealName extends React.Component {
         return (
             <View style={[this.props.style].concat(this.props.style)}>
                 <View style={styles.userInputView}>
-                    <Icon name={'phone'} size={24} color={globalColor} />
+                    <Icon name={'phone'} size={24} color={UISetting.colors.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TouchableOpacity style={styles.countryCode} onPress={this.props.onCountryCodePress}>
                         <Text style={styles.countryCodeText}>
@@ -153,14 +154,14 @@ class RealNameAuth extends React.Component {
         return {
             title: 'A岛-实名认证',
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Icon name={'menu'} size={24} color={'#FFF'} />
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                    onPress={async ()=>navigation.state.params.logout()} underlayColor={'#ffafc9'} activeOpacity={0.5} >
-                    <Text style={{fontSize: 18, color:'#FFF'}}>退出登录</Text>
+                    onPress={async ()=>navigation.state.params.logout()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <Text style={{fontSize: 18, color:UISetting.colors.fontColor}}>退出登录</Text>
                 </TouchableOpacity>
             )
         }
@@ -306,14 +307,14 @@ class RealNameAuth extends React.Component {
         this.TopModal.showMessage('选择国家', 
         (
             <FlatList
-                style={{height: 300, backgroundColor: '#F5F5F5'}}
+                style={{height: 300, backgroundColor: UISetting.colors.defaultBackgroundColor}}
                 data={countryCodeList}
                 extraData={this.state}
                 keyExtractor={(item, index) => {return index.toString()}}
                 renderItem={({item,index})=>{
                     return (
                         <TouchableOpacity 
-                            style={{margin: 5,borderRadius:2, backgroundColor: this.state.countryCode==index?'#A9A9A9':'#F5F5F5'}}
+                            style={{margin: 5,borderRadius:2, backgroundColor: this.state.countryCode==index?UISetting.colors.lightFontColor:UISetting.colors.defaultBackgroundColor}}
                             onPress={()=>{this.setState({countryCode: index}, this.TopModal.closeModal());}}>
                             <Text style={{fontSize: 24, textAlign:'center'}}>
                                 {item}

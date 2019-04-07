@@ -5,7 +5,8 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
 import { checkSession, getVerifyCode, forgotPassword } from '../../modules/user-member-api'
 import { UIButton } from '../../component/uibutton'
-import { globalColor, styles } from './user-member-styles'
+import { styles } from './user-member-styles'
+import { UISetting } from '../../modules/config'
 
 /**
  * 忘记密码
@@ -23,7 +24,7 @@ class UIForgetPw extends React.Component {
         return (
             <View style={this.props.style}>
                 <View style={styles.userInputView}>
-                    <Icon name={'user'} size={24} color={globalColor} />
+                    <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
                     <View style={styles.splitLine}></View>
                     <TextInput 
                     style={styles.userInputText}

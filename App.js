@@ -16,7 +16,7 @@ import { UserCookieManager } from './pages/user-cookie-manager'
 import { NewPostScreen } from './pages/new-post'
 import { HistoryManager } from './pages/history-manager'
 import { SettingScreen } from './pages/setting'
-const globalColor = '#fa7296';
+import { UISetting } from './modules/config'
 
 // 串浏览页面
 const MainStackNavigator = createStackNavigator({
@@ -37,9 +37,9 @@ const MainStackNavigator = createStackNavigator({
     //顶栏配置
     defaultNavigationOptions: {
         headerStyle: {
-            backgroundColor: globalColor
+            backgroundColor: UISetting.colors.globalColor
         },
-        headerTintColor: '#ffffff'
+        headerTintColor: UISetting.colors.fontColor
     }
 });
 
@@ -68,9 +68,9 @@ const UserMemberStackNavigator = createStackNavigator({
     //顶栏配置
     defaultNavigationOptions: {
         headerStyle: {
-            backgroundColor: globalColor
+            backgroundColor: UISetting.colors.globalColor
         },
-        headerTintColor: '#ffffff'
+        headerTintColor: UISetting.colors.fontColor
     }
 });
 
