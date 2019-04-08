@@ -10,12 +10,6 @@ const styles = StyleSheet.create({
     },
     modalMask: {
         backgroundColor: '#00000072',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        zIndex: 998,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
@@ -66,7 +60,6 @@ class TopModal extends React.Component {
         super(props);
         this.state = {
             top: 0,
-            nowOpacity: new Animated.Value(0),
             nowScale: new Animated.Value(0.1),
             showx: false,
 
@@ -122,25 +115,14 @@ class TopModal extends React.Component {
         if(this.isUnMount) {
             return;
         }
-        this.state.nowOpacity.setValue(mode==='in'?0:1);
-        this.state.nowScale.setValue(mode==='in'?0.1:1.0);
+        this.state.nowScale.setValue(mode==='in'?0.0:1.0);
         Animated.parallel([
-            Animated.timing(
-                this.state.nowOpacity,
-                {
-                    toValue: mode==='in'?1:0,
-                    duration: 200,
-                    useNativeDriver: true,
-                    stiffness: 50
-                }
-            ),
             Animated.timing(
                 this.state.nowScale,
                 {
-                    toValue: mode==='in'?1.0:0.1,
+                    toValue: mode==='in'?1.0:0.0,
                     duration: 200,
-                    useNativeDriver: true,
-                    friction: 2
+                    useNativeDriver: true
                 }
             )
         ]).start(finish);
@@ -154,10 +136,12 @@ class TopModal extends React.Component {
         });
     }
     hideModal = (success=()=>{}) => {
+        Keyboard.dismiss();
+        this.setState({
+            showx: false,
+        });
         this.startAnime('out', ()=>{
-            Keyboard.dismiss();
             this.setState({
-                showx: false,
                 item: null
             }, success);
         });
@@ -224,10 +208,11 @@ class TopModal extends React.Component {
     render() {
         return (
             <Modal
+            animationType={'fade'}
             visible={this.state.showx}
             transparent={true}>
-            <Animated.View 
-            style = {[ styles.modalMask, { opacity: this.state.nowOpacity } ]}>
+            <View 
+            style = {[ styles.modalMask ]}>
                 <Animated.View style={ [styles.modalRoot, {
                     width: this.state.width, 
                     marginTop: this.state.top,
@@ -253,6 +238,7 @@ class TopModal extends React.Component {
                     <View style={styles.modalTitleSplitLine}></View>
                     <View style={[styles.modalButtonView, this.state.width]}>
                         <TouchableOpacity 
+                            activeOpacity={0.7}
                             style={this.state.leftButtonText ?[
                                 styles.modalButton, 
                                 {
@@ -264,6 +250,7 @@ class TopModal extends React.Component {
                             <Text style={{fontSize: 20, color: UISetting.colors.globalColor}}>{this.state.leftButtonText}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity 
+                            activeOpacity={0.7}
                             style={[
                                 styles.modalButton, 
                                 {
@@ -278,7 +265,7 @@ class TopModal extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </Animated.View>
-            </Animated.View>
+            </View>
             </Modal>
         );
     }
