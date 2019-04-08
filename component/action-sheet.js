@@ -1,6 +1,5 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, Animated, UIManager, Dimensions, findNodeHandle, TouchableOpacity } from 'react-native'
-import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import { Text, View, StyleSheet, Animated, Dimensions, TouchableOpacity } from 'react-native'
 import { Header } from 'react-navigation';
 import { UISetting } from '../modules/config';
 

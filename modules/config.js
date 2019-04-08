@@ -1,5 +1,7 @@
+import React from 'react';
+import { Text } from 'react-native';
 import RNFS from 'react-native-fs';
-import { PixelRatio } from 'react-native'
+import { AsyncStorage } from 'react-native'
 
 const configBase = {
     appMark: 'PinkAdao',
@@ -12,10 +14,10 @@ const configBase = {
             displayName: '备胎',
             logo: require('../imgs/bt.png')
         },
-        'ld': {
+        /*'ld': {
             displayName: '里岛',
             logo: require('../imgs/ld.png')
-        },
+        },*/
     }
 }
 
@@ -152,4 +154,36 @@ var UISetting = {
     }
 }
 
-export { configBase, configNetwork, configLocal, configDynamic, UISetting }
+let __upLoaded = false;
+let __oldRender = Text.render;
+Text.render = (...args) => {
+    if(!__upLoaded) {
+        __upLoaded = true;
+        AsyncStorage.getItem('UIfontScale').then((uifc) => {
+            if(uifc != null) {
+                UISetting.fontScale = parseFloat(uifc);
+            }
+        });
+    }
+    let origin = __oldRender.call(this, ...args);
+    if(origin && origin.props && 
+        origin.props.allowFontScaling === true &&
+        origin.props.style &&
+        origin.props.style.hasOwnProperty('fontSize')) {
+        let newStyle = {
+            fontSize: origin.props.style['fontSize'] * UISetting.fontScale
+        };
+        if(origin.props.style.hasOwnProperty('lineHeight')) {
+            newStyle.lineHeight = origin.props.style['lineHeight'] * UISetting.fontScale
+        }
+        return React.cloneElement(origin, {
+            style: [origin.props.style, newStyle]
+        });
+    }
+    return origin;
+};
+function setUISetting(key, value) {
+    UISetting[key] = value;
+    AsyncStorage.setItem(`UI${key}`, value.toString());
+}
+export { configBase, configNetwork, configLocal, configDynamic, UISetting, setUISetting }
