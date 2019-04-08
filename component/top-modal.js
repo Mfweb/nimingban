@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, Animated, Dimensions, Keyboard, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, View, StyleSheet, Animated, Dimensions, Keyboard, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { Header } from 'react-navigation';
 import { UISetting } from '../modules/config'
@@ -223,22 +223,16 @@ class TopModal extends React.Component {
 
     render() {
         return (
+            <Modal
+            visible={this.state.showx}
+            transparent={true}>
             <Animated.View 
-            style = {[
-                this.state.showx ? styles.modalMask : styles.displayNone, 
-                {
-                    opacity: this.state.nowOpacity
-                }
-            ]}>
+            style = {[ styles.modalMask, { opacity: this.state.nowOpacity } ]}>
                 <Animated.View style={ [styles.modalRoot, {
                     width: this.state.width, 
                     marginTop: this.state.top,
-                    transform: [
-                        { 
-                            scale: this.state.nowScale 
-                        }
-                    ]
-                    }]}
+                    transform: [{ scale: this.state.nowScale }] 
+                }]}
                     onLayout={this._onLayout}
                     ref={(ref)=>this.modalView=ref} >
                     <View style={styles.modalTitle}>
@@ -285,6 +279,7 @@ class TopModal extends React.Component {
                     </View>
                 </Animated.View>
             </Animated.View>
+            </Modal>
         );
     }
 }
