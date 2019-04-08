@@ -47,6 +47,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: UISetting.colors.threadFontColor,
         lineHeight: 20
+    },
+    settingItemValueText: {
+        fontSize: 18,
+        color: UISetting.colors.lightFontColor,
+        lineHeight: 20
     }
 });
 
@@ -61,6 +66,7 @@ class SettingScreen extends React.Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
+            headerBackTitle: null,
             title:  `${configBase.islandList[configDynamic.islandMode].displayName}(${navigation.getParam('name', '时间线')})`,
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
@@ -109,7 +115,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View>
-                                <Text style={styles.settingItemText}>{this.state.fontSizeString}</Text>
+                                <Text style={styles.settingItemValueText}>{this.state.fontSizeString}</Text>
                             </View>
                         </TouchableOpacity>
                         <View style={this.state.showFontSize?styles.fontSizeView:styles.displayNone}>
@@ -131,11 +137,40 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View>
-                                <Text style={styles.settingItemText}>无</Text>
+                                <Text style={styles.settingItemValueText}>不可用</Text>
                             </View>
                         </View>
                     </View>
-                    
+
+
+                    <Text style={styles.settingTitle}>
+                        其他
+                    </Text>
+                    <View style={styles.settingGroup}>
+                        <TouchableOpacity style={styles.settingItem} onPress={()=>this.props.navigation.push('WebView', {URL: 'https://github.com/Mfweb/nimingban'})}>
+                            <View>
+                                <Text style={styles.settingItemText}>
+                                    项目地址
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={[styles.settingItemValueText, {color: UISetting.colors.linkColor}]}>https://github.com/Mfweb/nimingban</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <View style={styles.itemSplitLine}></View>
+
+                        <View style={styles.settingItem}>
+                            <View>
+                                <Text style={styles.settingItemText}>
+                                    版本号
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={styles.settingItemValueText}>1.00 beta(build 6)</Text>
+                            </View>
+                        </View>
+                    </View>
                 </ScrollView>
             </SafeAreaView>
         );
