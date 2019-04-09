@@ -11,6 +11,7 @@ import { MainListItem } from '../component/list-main-item'
 import { ActionSheet } from '../component/action-sheet'
 import { Header } from 'react-navigation'
 import { getHTMLDom } from '../modules/html-decoder'
+import { FixedButton } from '../component/fixed-button'
 
 const styles = StyleSheet.create({
     mainList: {
@@ -87,10 +88,7 @@ class HomeScreen extends React.Component {
                     <View style={styles.headerRightPage}>
                         <Text style={styles.headerRightPageText}>{navigation.getParam('page', '1')}</Text>
                     </View>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.newThread} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
-                        <Icon name={'note'} size={24} color={UISetting.colors.fontColor} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} onPress={params.menuFunctions} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={params.menuFunctions} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                         <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                     </TouchableOpacity>
                 </View>
@@ -108,7 +106,6 @@ class HomeScreen extends React.Component {
         this._pullDownRefresh(1, true);
         this.props.navigation.setParams({
             openLDrawer: this.props.navigation.openDrawer,
-            newThread: this._newThread,
             menuFunctions: this._menuFunctions
         });
     }
@@ -414,6 +411,7 @@ class HomeScreen extends React.Component {
                     removeClippedSubviews={true}
                     /*viewabilityConfig={this.viewabilityConfig}*/
                 />
+                <FixedButton visible={this.props.navigation.getParam('forumID', -1) != -1} icon={'note'} onPress={this._newThread}/>
             </SafeAreaView>
         );
     }

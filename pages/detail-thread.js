@@ -10,6 +10,7 @@ import { history } from '../modules/history'
 import { ActionSheet } from '../component/action-sheet'
 import { configNetwork, configDynamic, UISetting } from '../modules/config'
 import { Header } from 'react-navigation'
+import { FixedButton } from '../component/fixed-button'
 
 const styles = StyleSheet.create({
     mainList: {
@@ -96,10 +97,7 @@ class DetailsScreen extends React.Component {
                     <View style={styles.headerRightPage}>
                         <Text style={styles.headerRightPageText}>{navigation.getParam('page', '1')}</Text>
                     </View>
-                    <TouchableOpacity onPress={params.replyThread} style={{ marginRight: 8, marginTop: 2 }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
-                        <Icon name={'note'} size={24} color={UISetting.colors.fontColor} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={params.menuFunctions} style={{ marginRight: 8, marginTop: 2, marginLeft: 5 }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    <TouchableOpacity onPress={params.menuFunctions} style={{ marginRight: 8, marginTop: 2 }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                         <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                     </TouchableOpacity>
                 </View>
@@ -115,7 +113,6 @@ class DetailsScreen extends React.Component {
         this.poID = this.threadDetail.userid;
         this.props.navigation.setParams({ 
             openLDrawer: this.props.navigation.openDrawer,
-            replyThread: this._replyThread,
             menuFunctions: this._menuFunctions
         });
         this.isUnMount = false;
@@ -472,6 +469,7 @@ class DetailsScreen extends React.Component {
                     pageSize={20}
                     removeClippedSubviews={true}
                 />
+                <FixedButton visible={true} icon={'note'} onPress={this._replyThread}/>
             </SafeAreaView>
         );
     }
