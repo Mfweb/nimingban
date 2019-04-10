@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     btnView: {
         position: 'absolute',
         zIndex: 998,
-        backgroundColor: UISetting.colors.globalColor,
         height: 60,
         width: 60,
         borderRadius: 30,
@@ -17,7 +16,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: UISetting.colors.lightFontColor,
         bottom: 25,
         right: 25
     }
@@ -49,7 +47,10 @@ class FixedButton extends React.Component {
             return null;
         }
         return (
-            <View style={styles.btnView}>
+            <View style={[styles.btnView, {
+                backgroundColor: UISetting.colors.globalColor,
+                shadowColor: UISetting.colors.lightFontColor
+                }]}>
                 <TouchableOpacity onPress={this.props.onPress}>
                     <Icon name={this.props.icon} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>

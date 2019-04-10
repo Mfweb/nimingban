@@ -15,12 +15,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     modalRoot: {
-        backgroundColor: UISetting.colors.defaultBackgroundColor,
         borderRadius: 8,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowColor: UISetting.colors.defaultBackgroundColor,
+        shadowRadius: 5
     },
     modalTitle: {
         flexDirection: 'row',
@@ -30,12 +28,10 @@ const styles = StyleSheet.create({
     },
     modalTitleText: {
         fontSize: 22,
-        marginLeft: 4,
-        color: UISetting.colors.lightFontColor
+        marginLeft: 4
     },
     modalTitleSplitLine: {
         height: 1,
-        backgroundColor: UISetting.colors.lightFontColor,
         opacity: 0.3
     },
     modalCloseBtn: {
@@ -214,6 +210,8 @@ class TopModal extends React.Component {
             <View 
             style = {[ styles.modalMask ]}>
                 <Animated.View style={ [styles.modalRoot, {
+                    backgroundColor: UISetting.colors.defaultBackgroundColor,
+                    shadowColor: UISetting.colors.defaultBackgroundColor,
                     width: this.state.width, 
                     marginTop: this.state.top,
                     transform: [{ scale: this.state.nowScale }] 
@@ -221,21 +219,21 @@ class TopModal extends React.Component {
                     onLayout={this._onLayout}
                     ref={(ref)=>this.modalView=ref} >
                     <View style={styles.modalTitle}>
-                        <Text style={styles.modalTitleText}>
+                        <Text style={[styles.modalTitleText, {color: UISetting.colors.lightFontColor}]}>
                             {this.state.title}
                         </Text>
                         <TouchableOpacity style={styles.modalCloseBtn} onPress={this.state.onClosePress}>
                             <Icon name={'close'} size={24} color={UISetting.colors.globalColor} />
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.modalTitleSplitLine}></View>
+                    <View style={[styles.modalTitleSplitLine, {backgroundColor: UISetting.colors.lightFontColor}]}></View>
                     <View style={{
                         width: this.state.width, 
                         maxHeight: (this.props.maxHeight ? this.props.maxHeight:(Dimensions.get('window').height - Header.HEIGHT)) - 50 - 40 - 20 // -button - title - 保留
                         }}>
                         {this.state.item}
                     </View>
-                    <View style={styles.modalTitleSplitLine}></View>
+                    <View style={[styles.modalTitleSplitLine, {backgroundColor: UISetting.colors.lightFontColor}]}></View>
                     <View style={[styles.modalButtonView, this.state.width]}>
                         <TouchableOpacity 
                             activeOpacity={0.7}

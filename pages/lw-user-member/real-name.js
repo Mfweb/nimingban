@@ -43,37 +43,37 @@ class UIWaitSuccess extends React.Component {
         return(
             <View style={[styles.authView].concat(this.props.style)}>
                 <View style={styles.authMessageView}>
-                    <Text style={styles.authMessageText}>
+                    <Text style={[styles.authMessageText,{color: UISetting.colors.lightFontColor}]}>
                         {this.state.message}
                     </Text>
                     <TouchableOpacity onPress={() => {Clipboard.setString(authMessage.authMobile); alert('复制完成');}}>
-                        <Text style={styles.authMessageRowTitle}>
-                            验证手机号：<Text style={styles.authMessageMobile}>{authMessage.authMobile}</Text>
+                        <Text style={[styles.authMessageRowTitle, {color: UISetting.colors.lightFontColor}]}>
+                            验证手机号：<Text style={[styles.authMessageMobile,{color: UISetting.colors.globalColor}]}>{authMessage.authMobile}</Text>
                         </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => {Clipboard.setString(authMessage.authCode); alert('复制完成');}}>
-                        <Text style={styles.authMessageRowTitle}>
-                            验证码：<Text style={styles.authMessageCode}>{authMessage.authCode}</Text>
+                        <Text style={[styles.authMessageRowTitle, {color: UISetting.colors.lightFontColor}]}>
+                            验证码：<Text style={[styles.authMessageCode,{color: UISetting.colors.globalColor}]}>{authMessage.authCode}</Text>
                         </Text>
                     </TouchableOpacity>
 
-                    <Text style={styles.authMessageRowTitle}>
-                        你的手机号：<Text style={styles.authMessageYourMobile}>{authMessage.yourMobile}</Text>
+                    <Text style={[styles.authMessageRowTitle, {color: UISetting.colors.lightFontColor}]}>
+                        你的手机号：<Text style={[styles.authMessageYourMobile,{color: UISetting.colors.globalColor}]}>{authMessage.yourMobile}</Text>
                     </Text>
-                    <Text style={styles.authMessageRowTitle}>
-                        过期时间：<Text style={styles.authMessageExpireDate}>{authMessage.expireDate}</Text>
+                    <Text style={[styles.authMessageRowTitle, {color: UISetting.colors.lightFontColor}]}>
+                        过期时间：<Text style={[styles.authMessageExpireDate,{color: UISetting.colors.globalColor}]}>{authMessage.expireDate}</Text>
                     </Text>
                 </View>
                 <View style={styles.authToolsView}>
                     <UIButton text={'我已发送'}
-                        style={styles.authToolsActBtn}
-                        textStyle={styles.authToolsActBtnText}
+                        style={{backgroundColor: UISetting.colors.globalColor}}
+                        textStyle={[styles.authToolsActBtnText,{color: UISetting.colors.fontColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onPressSend}/>
                     <UIButton text={'打开短信'}
-                        style={styles.authToolsActBtn}
-                        textStyle={styles.authToolsActBtnText}
+                        style={{backgroundColor: UISetting.colors.globalColor}}
+                        textStyle={[styles.authToolsActBtnText,{color: UISetting.colors.fontColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={()=>{Linking.openURL(`sms:${authMessage.authMobile}&body=${authMessage.authCode}`);}}/>
                 </View>
@@ -103,11 +103,11 @@ class UIRealName extends React.Component {
     render() {
         return (
             <View style={[this.props.style].concat(this.props.style)}>
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'phone'} size={24} color={UISetting.colors.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TouchableOpacity style={styles.countryCode} onPress={this.props.onCountryCodePress}>
-                        <Text style={styles.countryCodeText}>
+                        <Text style={[styles.countryCodeText, {color: UISetting.colors.lightFontColor}]}>
                             {this.props.countryCode}
                         </Text>
                     </TouchableOpacity>
@@ -128,8 +128,8 @@ class UIRealName extends React.Component {
                 
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'开始认证'}
-                        style={styles.pinkButton}
-                        textStyle={styles.pinkButtonText}
+                        style={{backgroundColor: UISetting.colors.globalColor}}
+                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onStartPress}/>
                 </View>
@@ -152,6 +152,10 @@ class RealNameAuth extends React.Component {
     inputVcode = ''
     static navigationOptions = ({ navigation }) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: 'A岛-实名认证',
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
@@ -328,7 +332,7 @@ class RealNameAuth extends React.Component {
 
     render() {
         return (
-            <View style={styles.loginView}>
+            <View style={[styles.loginView,{backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.loginTitleImg} 

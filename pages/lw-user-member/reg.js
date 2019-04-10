@@ -28,9 +28,9 @@ class UIReg extends React.Component {
     render() {
         return (
             <View style={this.props.style}>
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     style={styles.userInputText}
                     autoCapitalize={'none'}
@@ -54,18 +54,18 @@ class UIReg extends React.Component {
                     </TouchableOpacity>
                     <Text style={styles.regPolicyText}>我已阅读并同意</Text>
                     <TouchableOpacity onPress={this.props.onTermsPress}>
-                        <Text style={styles.regPolicyTextHightL}>服务条款</Text>
+                        <Text style={[styles.regPolicyTextHightL,{color: UISetting.colors.globalColor}]}>服务条款</Text>
                     </TouchableOpacity>
                     <Text style={styles.regPolicyText}>和</Text>
                     <TouchableOpacity onPress={this.props.onPrivacyPolicyPress}>
-                        <Text style={styles.regPolicyTextHightL}>隐私政策</Text>
+                        <Text style={[styles.regPolicyTextHightL,{color: UISetting.colors.globalColor}]}>隐私政策</Text>
                     </TouchableOpacity>
                 </View>
                 
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'立即注册'}
-                        style={styles.pinkButton}
-                        textStyle={styles.pinkButtonText}
+                        style={{backgroundColor: UISetting.colors.globalColor}}
+                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onRegisterButtonPress}/>
                 </View>
@@ -87,6 +87,10 @@ class UserMemberRegister extends React.Component {
     inputVcode = ''
     static navigationOptions = ({ navigation }) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: 'A岛-注册'
         }
     }
@@ -213,7 +217,7 @@ class UserMemberRegister extends React.Component {
     }
     render() {
         return (
-            <View style={styles.memberView}>
+            <View style={[styles.memberView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.memberTitleImg} 

@@ -17,17 +17,14 @@ const styles = StyleSheet.create({
     },
     groupView: {
         paddingLeft: 5,
-        backgroundColor: UISetting.colors.defaultBackgroundColor,
         marginBottom: 5,
         paddingTop: 8,
         paddingBottom: 8,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowColor: UISetting.colors.lightFontColor,
+        shadowRadius: 5
     },
     groupText: {
-        color: UISetting.colors.globalColor,
         fontSize: 20,
     },
     itemView: {
@@ -43,8 +40,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingTop: 5,
-        paddingBottom: 5,
-        backgroundColor: UISetting.colors.globalColor
+        paddingBottom: 5
     },
     bottomToolsItem: {
 
@@ -66,17 +62,14 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     titleText: {
-        fontSize: 24,
-        color: UISetting.colors.fontColor
+        fontSize: 24
     },
     islandSelectModal: {
         position: 'absolute',
         zIndex: 9999,
-        backgroundColor: UISetting.colors.globalColor,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: UISetting.colors.lightFontColor,
 
         paddingTop: 2,
         paddingBottom: 2,
@@ -121,7 +114,7 @@ class IsLandSelect extends React.Component {
                     onPress={()=>this.props.onSelected(key)}
                     key={key}>
                     <Image source={configBase.islandList[key].logo} style={styles.titleImage} resizeMode={'contain'}></Image>
-                    <Text style={styles.titleText}>
+                    <Text style={[styles.titleText, {color: UISetting.colors.fontColor}]}>
                         {configBase.islandList[key].displayName}匿名版
                     </Text>
                 </TouchableOpacity>
@@ -185,6 +178,8 @@ class IsLandSelect extends React.Component {
                     <Animated.View style={
                         [this.state.show?styles.islandSelectModal:styles.displayNone, 
                         {
+                            backgroundColor: UISetting.colors.globalColor,
+                            shadowColor: UISetting.colors.lightFontColor,
                             top: this.props.top, 
                             left: this.props.left,
                             transform: [
@@ -304,8 +299,13 @@ class LeftDrawerNavigator extends React.Component {
      */
     _renderSectionHeader = ({section}) => {
         return (
-            <View style={styles.groupView}>
-                <Text style={styles.groupText}>
+            <View style={[styles.groupView, {
+                    backgroundColor: UISetting.colors.defaultBackgroundColor,
+                    shadowColor: UISetting.colors.lightFontColor
+                }]}>
+                <Text style={[styles.groupText, {
+                     color: UISetting.colors.globalColor
+                }]}>
                     {section.groupName}
                 </Text>
             </View>
@@ -418,7 +418,7 @@ class LeftDrawerNavigator extends React.Component {
                                 style={styles.titleIsland}
                                 onPress={this._onSelectIsland}>
                             <Image source={configBase.islandList[configDynamic.islandMode].logo} style={styles.titleImage} resizeMode={'contain'}></Image>
-                            <Text style={styles.titleText}>
+                            <Text style={[styles.titleText, {color: UISetting.colors.fontColor}]}>
                                 {configBase.islandList[configDynamic.islandMode].displayName}匿名版
                             </Text>
                             <Icon name={'arrow-down'} size={12} color={UISetting.colors.fontColor}/>
@@ -442,7 +442,7 @@ class LeftDrawerNavigator extends React.Component {
                     keyExtractor={(item, index) => {return index.toString()}}
                 />      
                 <SafeAreaView>
-                    <View style={styles.bottomTools}>
+                    <View style={[styles.bottomTools, {backgroundColor: UISetting.colors.globalColor}]}>
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity onPress={this._goSetting}>
                                 <Icon name={'settings'} size={32} color={UISetting.colors.fontColor} />

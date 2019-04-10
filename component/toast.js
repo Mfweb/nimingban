@@ -8,18 +8,14 @@ const styles = StyleSheet.create({
     toast: {
         position: 'absolute',
         zIndex: 600,
-        backgroundColor: UISetting.colors.globalColor,
         borderWidth: 1,
-        borderColor: UISetting.colors.lightColor,
         borderRadius: 30,
         shadowOffset: { width: 3, height: 3 },
         shadowOpacity: 0.5,
-        shadowRadius: 5,
-        shadowColor: UISetting.colors.defaultBackgroundColor,
+        shadowRadius: 5
     },
     toastText: {
         fontSize: 20,
-        color: UISetting.colors.fontColor,
         margin: 10,
     }
 });
@@ -119,6 +115,9 @@ class Toast extends React.Component {
         }
         return (
             <Animated.View style={[styles.toast, {
+                borderColor: UISetting.colors.lightColor,
+                backgroundColor: UISetting.colors.globalColor,
+                shadowColor: UISetting.colors.defaultBackgroundColor,
                 bottom: this.state.bottom,
                 left: this.state.left,
                 opacity: this.state.nowOpacity,
@@ -129,7 +128,7 @@ class Toast extends React.Component {
                 ]
             }]}
             onLayout={this._onLayout}>
-            <Text style={styles.toastText}>
+            <Text style={[styles.toastText, {color: UISetting.colors.fontColor}]}>
                 {this.state.message}
             </Text>
             </Animated.View>

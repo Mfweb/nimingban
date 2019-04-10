@@ -23,9 +23,9 @@ class UIForgetPw extends React.Component {
     render() {
         return (
             <View style={this.props.style}>
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     style={styles.userInputText}
                     autoCapitalize={'none'}
@@ -42,8 +42,8 @@ class UIForgetPw extends React.Component {
 
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'找回密码'}
-                        style={styles.pinkButton}
-                        textStyle={styles.pinkButtonText}
+                        style={{backgroundColor: UISetting.colors.globalColor}}
+                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onFindButtonPress}/>
                 </View>
@@ -64,6 +64,10 @@ class UserMemberForgotPassword extends React.Component {
     inputVcode = ''
     static navigationOptions = ({ navigation }) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: 'A岛-找回密码'
         }
     }
@@ -168,7 +172,7 @@ class UserMemberForgotPassword extends React.Component {
   
     render() {
         return (
-            <View style={styles.memberView}>
+            <View style={[styles.memberView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.memberTitleImg} 

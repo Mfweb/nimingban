@@ -44,18 +44,15 @@ const styles = StyleSheet.create({
     },
     inputView: {
         flex: 1,
-        padding: 2,
-        backgroundColor: UISetting.colors.defaultBackgroundColor
+        padding: 2
     },
     inputText: {
-        backgroundColor: UISetting.colors.threadBackgroundColor,
         flex: 1,
         textAlignVertical: 'top',
         fontSize: 20
     },
     toolsView: {
         height: 50,
-        backgroundColor: UISetting.colors.globalColor,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -74,12 +71,10 @@ const styles = StyleSheet.create({
         padding: 2,
         justifyContent: 'center',
         alignItems: 'center',
-        borderLeftWidth: 1,
-        borderColor: UISetting.colors.globalColor
+        borderLeftWidth: 1
     },
     emoticonText: {
-        fontSize: 20,
-        color: UISetting.colors.lightFontColor
+        fontSize: 20
     },
     toolsButton: {
         justifyContent: 'center',
@@ -117,7 +112,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     headerCookieText: {
-        color: UISetting.colors.fontColor,
         lineHeight: Header.HEIGHT,
         textAlign: 'center'
     }
@@ -143,12 +137,16 @@ class NewPostScreen extends React.Component {
         const nMode = navigation.getParam('mode', 1);
         const userCookieText = navigation.getParam('userCookieText', '无');
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: `${modeTitleText[nMode]}-` + ( nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?') ),
             headerRight: (
                 <View style={styles.headerRightView}>
                     <TouchableOpacity style={styles.headerCookieView} onPress={params.openCookieSelect} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                         <MDIcon name={'cookie'} size={24} color={UISetting.colors.fontColor} />
-                        <Text style={styles.headerCookieText}>{userCookieText}</Text>
+                        <Text style={[styles.headerCookieText, {color: UISetting.colors.fontColor}]}>{userCookieText}</Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -422,8 +420,8 @@ class NewPostScreen extends React.Component {
         let tempList = [];
         for(let i = 0; i < emoticonList.length; i++) {
             tempList.push(
-            <TouchableOpacity key={i+1} style={styles.emoticonItemView} onPress={()=>{this.setState({inputText: this.state.inputText + emoticonList[i]});}}>
-                <Text style={styles.emoticonText}>{emoticonList[i]}</Text>
+            <TouchableOpacity key={i+1} style={[styles.emoticonItemView, {borderColor: UISetting.colors.globalColor}]} onPress={()=>{this.setState({inputText: this.state.inputText + emoticonList[i]});}}>
+                <Text style={[styles.emoticonText, {color: UISetting.colors.lightFontColor}]}>{emoticonList[i]}</Text>
             </TouchableOpacity>);
         }
         this.TopModal.showMessage('颜文字', 
@@ -443,11 +441,11 @@ class NewPostScreen extends React.Component {
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} maxHeight={this.state.displayHeight} />
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Animated.View style={[styles.progressView, { transform: [{ translateX: this.state.translateNow }]}]}/>
-                <View style={styles.inputView}
+                <View style={[styles.inputView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}
                         onLayout={(e)=>{this.setState({displayHeight:e.nativeEvent.layout.height});}}>
                     <TextInput
                         value={this.state.inputText}
-                        style={styles.inputText}
+                        style={[styles.inputText, {backgroundColor: UISetting.colors.threadBackgroundColor}]}
                         autoCapitalize='none'
                         autoComplete='off'
                         multiline={true}
@@ -456,7 +454,7 @@ class NewPostScreen extends React.Component {
                         />
                 </View>
                 <SafeAreaView style={{backgroundColor: UISetting.colors.globalColor}}>
-                    <View style={styles.toolsView}>
+                    <View style={[styles.toolsView, {backgroundColor: UISetting.colors.globalColor}]}>
                         <TouchableOpacity style={styles.toolsButton} onPress={this._openEmoticon}>
                             <Icon name={'emotsmile'} size={24} color={UISetting.colors.fontColor} />
                         </TouchableOpacity>

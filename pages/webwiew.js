@@ -9,14 +9,17 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     titleText: {
-        fontSize: 18,
-        color: UISetting.colors.fontColor
+        fontSize: 18
     }
 });
 
 class PinkWebView extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             headerTitle: (
                 <View style={styles.titleView}>
                     <ActivityIndicator
@@ -24,7 +27,7 @@ class PinkWebView extends React.Component {
                         hidesWhenStopped={true}
                         animating={navigation.getParam('loading', true)}
                         color={UISetting.colors.fontColor}/>
-                    <Text style={styles.titleText}>{navigation.getParam('title', 'Web')}</Text>
+                    <Text style={[styles.titleText, {color: UISetting.colors.fontColor}]}>{navigation.getParam('title', 'Web')}</Text>
                 </View>),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} onPress={() => {

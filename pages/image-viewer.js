@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
 class ImageViewer extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: '粉岛 - 图片预览',
             left: 0,
             top: 0

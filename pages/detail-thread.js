@@ -14,12 +14,10 @@ import { FixedButton } from '../component/fixed-button'
 
 const styles = StyleSheet.create({
     mainList: {
-        flex: 1,
-        backgroundColor: UISetting.colors.defaultBackgroundColor
+        flex: 1
     },
     ItemSeparator: {
-        height: 1,
-        backgroundColor: UISetting.colors.lightColor
+        height: 1
     },
     headerRightView: {
         flex: 1,
@@ -27,14 +25,11 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     footerMessage: {
-        color: UISetting.colors.lightFontColor,
         fontSize: 18,
         textAlign: 'center',
         padding: 8
     },
     headerRightPage: {
-        backgroundColor: UISetting.colors.globalColor,
-        borderColor: UISetting.colors.fontColor,
         borderWidth: 2,
         minWidth: 24,
         height: 24,
@@ -45,7 +40,6 @@ const styles = StyleSheet.create({
         marginTop: 2
     },
     headerRightPageText: {
-        color: UISetting.colors.fontColor,
         fontSize: 20,
         lineHeight: 20,
         marginTop: 2
@@ -57,7 +51,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     headerTitleText: {
-        color: UISetting.colors.fontColor,
         fontSize: 18
     }
 });
@@ -83,19 +76,27 @@ class DetailsScreen extends React.Component {
     static navigationOptions = ({navigation}) => {
         const { params = {} } = navigation.state;
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             headerTitle: (
                 <View style={styles.headerTitle}>
-                    <Text style={styles.headerTitleText}>
+                    <Text style={[styles.headerTitleText, {color: UISetting.colors.fontColor}]}>
                         {configNetwork.baseUrl[configDynamic.islandMode].base}
                     </Text>
-                    <Text style={styles.headerTitleText}>
+                    <Text style={[styles.headerTitleText, {color: UISetting.colors.fontColor}]}>
                         No.{navigation.getParam('threadDetail', null).id}
                     </Text>
                 </View>),
             headerRight: (
                 <View style={styles.headerRightView}>
-                    <View style={styles.headerRightPage}>
-                        <Text style={styles.headerRightPageText}>{navigation.getParam('page', '1')}</Text>
+                    <View style={[
+                        styles.headerRightPage, {
+                            backgroundColor: UISetting.colors.globalColor,
+                            borderColor: UISetting.colors.fontColor
+                            }]}>
+                        <Text style={[styles.headerRightPageText, {color: UISetting.colors.fontColor}]}>{navigation.getParam('page', '1')}</Text>
                     </View>
                     <TouchableOpacity onPress={params.menuFunctions} style={{ marginRight: 8, marginTop: 2 }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                         <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
@@ -271,14 +272,14 @@ class DetailsScreen extends React.Component {
         });
     }
     _itemSeparator = () =>(
-        <View style={styles.ItemSeparator}></View>
+        <View style={[styles.ItemSeparator, {backgroundColor: UISetting.colors.lightColor}]}></View>
     )
 
     _footerComponent = () => {
         if(this.state.footerLoading == 0) {
             return (
                 <TouchableOpacity onPress={()=>{ this.setState({loadEnd: false}, this._pullUpLoading); }}>
-                    <Text style={styles.footerMessage}>{this.state.footerMessage}</Text>
+                    <Text style={[styles.footerMessage, {color: UISetting.colors.lightFontColor}]}>{this.state.footerMessage}</Text>
                 </TouchableOpacity>
             );
         }
@@ -456,7 +457,7 @@ class DetailsScreen extends React.Component {
                 <FlatList
                     data={this.state.replyList}
                     extraData={this.state}
-                    style={styles.mainList}
+                    style={[styles.mainList, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}
                     onRefresh={this._pullDownRefresh}
                     refreshing={this.state.headerLoading}
                     keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}

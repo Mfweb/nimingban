@@ -26,9 +26,9 @@ class UILogin extends React.Component {
     render() {
         return (
             <View style={this.props.style}>
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     style={styles.userInputText}
                     autoCapitalize={'none'}
@@ -44,9 +44,9 @@ class UILogin extends React.Component {
                     onChangeText={this.props.onUserNameInput} />
                 </View>
                 
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     ref={(input) => { this.secondTextInput = input; }}
                     style={styles.userInputText}
@@ -63,13 +63,13 @@ class UILogin extends React.Component {
 
                 <View style={styles.toolView2Btn}>
                     <UIButton text={'注册'}
-                        style={styles.whiteButton}
-                        textStyle={styles.whiteButtonText}
+                        style={{backgroundColor: UISetting.colors.fontColor}}
+                        textStyle={[styles.whiteButtonText,{color: UISetting.colors.globalColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onRegisterButtonPress}/>
                     <UIButton text={'登录'}
-                        style={styles.pinkButton}
-                        textStyle={styles.pinkButtonText}
+                        style={{backgroundColor: UISetting.colors.globalColor}}
+                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.fontColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onLoginButtonPress}/>
                 </View>
@@ -82,7 +82,7 @@ class UILogin extends React.Component {
                             })
                         ], 0);
                     }}>
-                    <Text style={styles.backtoUsermemberText}>本地饼干管理器</Text>
+                    <Text style={[styles.backtoUsermemberText, {color: UISetting.colors.linkColor}]}>本地饼干管理器</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -102,6 +102,10 @@ class UserMemberLogin extends React.Component {
     inputVcode = ''
     static navigationOptions = ({ navigation }) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: 'A岛-登录',
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
@@ -239,7 +243,7 @@ class UserMemberLogin extends React.Component {
 
     render() {
         return (
-            <View style={styles.loginView}>
+            <View style={[styles.loginView,{backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.loginTitleImg} 

@@ -14,6 +14,7 @@
     "jsqr": "^1.2.0",
     "moment": "^2.24.0",
     "react": "16.6.3",
+    "react-colorizer": "^1.1.1",
     "react-moment": "^0.8.4",
     "react-native": "0.58.4",
     "react-native-camera": "^1.12.0",
@@ -24,9 +25,12 @@
     "react-native-image-zoom-viewer": "^2.2.25",
     "react-native-sound": "^0.10.12",
     "react-native-sqlite-storage": "^3.3.9",
+    "react-native-svg": "^9.3.7",
     "react-native-vector-icons": "^6.2.0",
     "react-native-webview": "^5.2.1",
-    "react-navigation": "^3.2.1"
+    "react-navigation": "^3.2.1",
+    "styled-components": "^4.2.0",
+    "svgs": "^4.1.0"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",

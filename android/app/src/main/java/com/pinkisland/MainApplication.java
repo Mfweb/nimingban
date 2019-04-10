@@ -3,6 +3,7 @@ package com.pinkisland;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.zmxv.RNSound.RNSoundPackage;
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SvgPackage(),
             new PickerPackage(),
             new RNCWebViewPackage(),
             new RNSoundPackage(),

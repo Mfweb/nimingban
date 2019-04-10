@@ -25,9 +25,9 @@ class UIChangePassword extends React.Component {
     render() {
         return (
             <View style={this.props.style}>
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     style={styles.userInputText}
                     autoCapitalize={'none'}
@@ -43,9 +43,9 @@ class UIChangePassword extends React.Component {
                     onSubmitEditing={() => {this.newPasswordInput1.focus(); }}
                     onChangeText={this.props.onOldPasswordInput} />
                 </View>
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     ref={(input) => { this.newPasswordInput1 = input; }}
                     style={styles.userInputText}
@@ -62,9 +62,9 @@ class UIChangePassword extends React.Component {
                     onSubmitEditing={() => {this.newPasswordInput2.focus(); }}
                     onChangeText={this.props.onNewPasswordInput1} />
                 </View>
-                <View style={styles.userInputView}>
+                <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
-                    <View style={styles.splitLine}></View>
+                    <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     ref={(input) => { this.newPasswordInput2 = input; }}
                     style={styles.userInputText}
@@ -83,8 +83,8 @@ class UIChangePassword extends React.Component {
                 </View>
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'修改密码'}
-                        style={styles.pinkButton}
-                        textStyle={styles.pinkButtonText}
+                        style={{backgroundColor: UISetting.colors.globalColor}}
+                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onChangeButtonPress}/>
                 </View>
@@ -108,6 +108,10 @@ class UserMemberChangePassword extends React.Component {
     inputNewPassword2 = ''
     static navigationOptions = ({ navigation }) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: 'A岛-修改密码'
         }
     }
@@ -167,7 +171,7 @@ class UserMemberChangePassword extends React.Component {
    
     render() {
         return (
-            <View style={styles.memberView}>
+            <View style={[styles.memberView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Image 
                 style={styles.memberTitleImg} 

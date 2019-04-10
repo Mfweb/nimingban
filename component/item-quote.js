@@ -7,18 +7,15 @@ import { UISetting } from '../modules/config'
 
 const styles = StyleSheet.create({
     quoteView: {
-        borderColor: UISetting.colors.globalColor,
         borderWidth: 1,
         borderLeftWidth: 6,
         borderRadius: 4,
         marginLeft: 8,
         marginRight: 8,
         marginBottom: 3,
-        width: 'auto',
-        backgroundColor: UISetting.colors.lightColor,
+        width: 'auto'
     },
     quoteOriginalText: {
-        color: UISetting.colors.lightFontColor,
         fontSize: 18
     },
     quoteHeader: {
@@ -31,11 +28,9 @@ const styles = StyleSheet.create({
         paddingRight: 15
     },
     sendTime: {
-        color: UISetting.colors.globalColor,
         fontSize: 18,
     },
     sendCookieName: {
-        color: UISetting.colors.globalColor,
         fontSize: 18
     },
     sendCookieNameBigVIP: {
@@ -44,9 +39,7 @@ const styles = StyleSheet.create({
     },
     sendCookieNamePO: {
         borderWidth: 1,
-        borderRadius: 2,
-        borderColor: UISetting.colors.globalColor,
-        backgroundColor: UISetting.colors.lightColor
+        borderRadius: 2
     },
     quoteText: {
         color: '#789922',
@@ -83,9 +76,14 @@ class ItemQuote extends React.Component {
             }
             else {
                 userIDStyles.push(styles.sendCookieName);
+                userIDStyles.push({color: UISetting.colors.globalColor});
             }
             if(detail.res.userid == this.props.po){
                 userIDStyles.push(styles.sendCookieNamePO);
+                userIDStyles.push({
+                    borderColor: UISetting.colors.globalColor,
+                    backgroundColor: UISetting.colors.lightColor
+                });
             }
 
             let contentBlocks = detail.res.content.split(/((?:&gt;|\>){2}No\.\d{1,11}(?:<br \/>)*(?:\n)*)/);
@@ -107,7 +105,7 @@ class ItemQuote extends React.Component {
                 else {
                     let contentDom = getHTMLDom(content, this._onPressUrl);
                     tempContent.push(
-                        <Text key={'text-' + i} style={styles.quoteOriginalText}>{contentDom}</Text>
+                        <Text key={'text-' + i} style={[styles.quoteOriginalText, {color: UISetting.colors.lightFontColor}]}>{contentDom}</Text>
                     );
                 }
             }
@@ -169,12 +167,16 @@ class ItemQuote extends React.Component {
     }
     render() {
         return (
-            <TouchableOpacity style={styles.quoteView} onPress={this._goToDetailPage} activeOpacity={0.7}>
+            <TouchableOpacity 
+                style={[styles.quoteView, {
+                    borderColor: UISetting.colors.globalColor,
+                    backgroundColor: UISetting.colors.lightColor
+                }]} onPress={this._goToDetailPage} activeOpacity={0.7}>
                 <View style={styles.quoteHeader}>
                     <Text style={this.state.userIDStyles}>
                         {this.state.userID}
                     </Text>
-                    <Text style={styles.sendTime}>
+                    <Text style={[styles.sendTime, {color: UISetting.colors.globalColor}]}>
                         {this.state.sendTime}
                     </Text>
                 </View>

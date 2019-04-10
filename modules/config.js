@@ -142,6 +142,16 @@ var configDynamic = {
 
 var UISetting = {
     fontScale: 1.0,
+    defaultColors: {
+        globalColor: '#FA7296', /* 全局主要颜色 */
+        lightColor: '#FFE4E1', /* 淡化颜色，也是主要颜色 */
+        fontColor: '#FFF', /* 在主要颜色上显示文字的文字颜色 */
+        lightFontColor: '#696969', /* 浅色文字颜色 */
+        threadFontColor: '#000', /* 串内容颜色 */
+        threadBackgroundColor: '#FFF',/* 串背景色 */
+        defaultBackgroundColor: '#F5F5F5', /* 绝大多数地方的背景色 */
+        linkColor: '#1E90FF' /* 超链接等强调色 */
+    },
     colors: {
         globalColor: '#FA7296', /* 全局主要颜色 */
         lightColor: '#FFE4E1', /* 淡化颜色，也是主要颜色 */

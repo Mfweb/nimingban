@@ -11,13 +11,11 @@ const styles = StyleSheet.create({
     },
     mainListItemUserCookieName: {
         fontSize: 18,
-        color: UISetting.colors.globalColor
     },
     mainListItemUserCookieNamePO: {
         backgroundColor: '#FFE4E1',
         borderWidth: 1,
         borderRadius: 2,
-        borderColor: UISetting.colors.globalColor,
     },
     mainListItemHeader: {
 
@@ -30,12 +28,10 @@ const styles = StyleSheet.create({
         marginBottom: 8
     },
     mainListItemTid: {
-        fontSize: 18,
-        color: UISetting.colors.globalColor
+        fontSize: 18
     },
     mainListItemTime: {
-        fontSize: 18,
-        color: UISetting.colors.globalColor
+        fontSize: 18
     },
     mainListItemHeaderL2: {
         flex: 1,
@@ -53,12 +49,10 @@ const styles = StyleSheet.create({
         display: 'none'
     },
     mainListItemTitle: {
-        fontSize: 16,
-        color: UISetting.colors.lightFontColor
+        fontSize: 16
     },
     mainListItemName: {
-        fontSize: 16,
-        color: UISetting.colors.lightFontColor
+        fontSize: 16
     },
     mainListItemSAGE: {
         color: 'red',
@@ -97,9 +91,11 @@ class MainListItemHeader extends React.Component {
         }
         else {
             displayData['userIDStyle'].push(styles.mainListItemUserCookieName);
+            displayData['userIDStyle'].push({color: UISetting.colors.globalColor});
         }
         if(itemDetail.userid == this.props.po){
             displayData['userIDStyle'].push(styles.mainListItemUserCookieNamePO);
+            displayData['userIDStyle'].push({borderColor: UISetting.colors.globalColor});
         }
         displayData['fName'] = itemDetail.fname;
         displayData['userID'] = getHTMLDom(itemDetail.userid);
@@ -119,19 +115,19 @@ class MainListItemHeader extends React.Component {
                             {displayData['userID']}
                         </Text>
 
-                        <Text style={styles.mainListItemTid}>
+                        <Text style={[styles.mainListItemTid, {color: UISetting.colors.globalColor}]}>
                             No.{itemDetail.id}
                         </Text>
 
-                        <Text style={styles.mainListItemTime}>
+                        <Text style={[styles.mainListItemTime, {color: UISetting.colors.globalColor}]}>
                             {displayData['displayTime']}
                         </Text>
                     </View>
                 </View>
                 <View style={styles.mainListItemHeaderL2}>
                     <View style={styles.mainListItemHeaderL2L}>
-                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : styles.mainListItemTitle}>{itemDetail.title}</Text>
-                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : styles.mainListItemName}>{itemDetail.name}</Text>
+                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : [styles.mainListItemTitle, {color: UISetting.colors.lightFontColor}]}>{itemDetail.title}</Text>
+                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : [styles.mainListItemName, {color: UISetting.colors.lightFontColor}]}>{itemDetail.name}</Text>
                     </View>
 
                     <View style={styles.mainListItemHeaderL2R}>

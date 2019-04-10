@@ -10,16 +10,13 @@ import { UISetting } from '../modules/config'
 
 const styles = StyleSheet.create({
     mainListItem: {
-        backgroundColor: UISetting.colors.threadBackgroundColor,
         marginTop: 10,
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
-        shadowColor: UISetting.colors.defaultBackgroundColor
     },
     touchActiveView: {
         position: 'absolute',
-        backgroundColor: UISetting.colors.globalColor,
         opacity: 0.3,
         width: '200%',
         height: '100%',
@@ -30,7 +27,6 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 500,
     },
     mainListItemContent: {
-        color: UISetting.colors.threadFontColor,
         fontSize: 20,
         paddingLeft: 8,
         paddingRight: 8
@@ -46,7 +42,6 @@ const styles = StyleSheet.create({
     },
     mainListReplayCountText: {
         marginLeft: 3,
-        color: UISetting.colors.globalColor,
         fontSize: 18
     },
 });
@@ -146,11 +141,16 @@ class MainListItem extends React.Component {
     render() {
         let { itemDetail } = this.props;
         return (
-            <TouchableOpacity style={styles.mainListItem} onPress={this._onPress} activeOpacity={1}>
-                <Animated.View style={[styles.touchActiveView, {transform: [{ translateX: this.state.translateNow}]}]}/>
+            <TouchableOpacity 
+                style={[styles.mainListItem, {
+                    backgroundColor: UISetting.colors.threadBackgroundColor,
+                    shadowColor: UISetting.colors.defaultBackgroundColor
+                }]} 
+                onPress={this._onPress} activeOpacity={1}>
+                <Animated.View style={[styles.touchActiveView, {backgroundColor: UISetting.colors.globalColor, transform: [{ translateX: this.state.translateNow}]}]}/>
                 <MainListItemHeader itemDetail={itemDetail} po={null}/>
 
-                <Text style={styles.mainListItemContent}>
+                <Text style={[styles.mainListItemContent, {color: UISetting.colors.threadFontColor}]}>
                     {this.state.displayData['threadContent']}
                 </Text>
                 <MainListImage 
@@ -161,7 +161,7 @@ class MainListItem extends React.Component {
                     imgUri={itemDetail.img + itemDetail.ext}/>
                 <View style={styles.mainListItemBottom}>
                     <Icon name={'bubble'} size={24} color={UISetting.colors.globalColor} />
-                    <Text style={styles.mainListReplayCountText}>{this.state.displayData['replayCountText']}</Text>
+                    <Text style={[styles.mainListReplayCountText, {color: UISetting.colors.globalColor}]}>{this.state.displayData['replayCountText']}</Text>
                 </View>
             </TouchableOpacity>
         );

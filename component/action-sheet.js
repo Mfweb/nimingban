@@ -22,12 +22,10 @@ const styles = StyleSheet.create({
         display: 'none'
     },
     line: {
-        height: 1,
-        backgroundColor: UISetting.colors.lightFontColor
+        height: 1
     },
     body: {
         width: '95%',
-        backgroundColor: UISetting.colors.defaultBackgroundColor,
         borderRadius: 8,
         padding: 4
     },
@@ -37,7 +35,6 @@ const styles = StyleSheet.create({
         marginBottom: 14
     },
     titleText: {
-        color: UISetting.colors.lightFontColor,
         fontSize: 18,
         textAlign: 'center'
     },
@@ -47,7 +44,6 @@ const styles = StyleSheet.create({
         paddingBottom: 10
     },
     itemText: {
-        color: UISetting.colors.linkColor,
         fontSize: 22,
         textAlign: 'center'
     },
@@ -67,7 +63,7 @@ const styles = StyleSheet.create({
         borderLeftColor: 'transparent',
 
         borderBottomWidth: 10,
-        borderBottomColor: UISetting.colors.defaultBackgroundColor,
+        borderBottomColor: 'transparent',
     },
     bottomArrorView: {
         position: 'absolute',
@@ -76,7 +72,7 @@ const styles = StyleSheet.create({
         height: 0,
         left: Dimensions.get('window').width * 0.025 + 4,
         borderTopWidth: 10,
-        borderTopColor: UISetting.colors.defaultBackgroundColor,
+        borderTopColor: 'transparent',
 
         borderRightWidth: 10,
         borderRightColor: 'transparent',
@@ -246,9 +242,9 @@ class ActionSheet extends React.Component {
         for(let i = 0; i < this.state.items.length; i++) {
             items.push(
                 <View key={i}>
-                    <View style={styles.line}/>
+                    <View style={[styles.line, {backgroundColor: UISetting.colors.lightFontColor}]}/>
                     <TouchableOpacity style={styles.item} onPress={()=>this._itemPress(i)}>
-                        <Text style={styles.itemText}>
+                        <Text style={[styles.itemText, {color: UISetting.colors.linkColor}]}>
                             {this.state.items[i]}
                         </Text>
                     </TouchableOpacity>
@@ -263,21 +259,26 @@ class ActionSheet extends React.Component {
             style = {[ styles.modalMask, { opacity: this.state.nowOpacity } ]}>
                 <Animated.View 
                 style={[
-                    this.state.invert?styles.bottomArrorView:styles.topArrowView, 
+                    this.state.invert
+                    ?
+                    styles.bottomArrorView
+                    :
+                    styles.topArrowView, 
                     {
                         top: this.state.arrorTop, 
-                        transform: [
-                            { 
-                                translateX: this.state.arrowTranslate 
-                            }
-                        ]
-                    }
+                        transform: [{ translateX: this.state.arrowTranslate }]
+                    },
+                    this.state.invert
+                    ?
+                    {borderTopColor: UISetting.colors.defaultBackgroundColor}
+                    :
+                    {borderBottomColor: UISetting.colors.defaultBackgroundColor}
                 ]}/>
 
                 <TouchableOpacity style={styles.modalMaskTouch} activeOpacity={1} onPress={this.state.onClosePress}>
-                    <View ref='window' onLayout={this._onLayout} style={[styles.body, {top: this.state.top}]}>
+                    <View ref='window' onLayout={this._onLayout} style={[styles.body, {top: this.state.top, backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                         <View style={styles.title}>
-                            <Text style={styles.titleText}>
+                            <Text style={[styles.titleText, {color: UISetting.colors.lightFontColor}]}>
                                 {this.state.title}
                             </Text>
                         </View>

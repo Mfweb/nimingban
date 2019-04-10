@@ -5,7 +5,6 @@ import { UISetting } from './config'
 
 const htmlConstStyles = StyleSheet.create({
     a: {
-        color: UISetting.colors.linkColor,
         textDecorationLine: 'underline'
     },
     strong: {
@@ -79,7 +78,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
                 htmlTag.data = escape2Html(htmlTag.data);
                 switch (tagName) {
                     case 'a':
-                        outPut.push(<Text key={domKey++} onPress={()=>aCallback(tagAttribs)} style={htmlConstStyles.a}>{htmlTag.data}</Text>);
+                        outPut.push(<Text key={domKey++} onPress={()=>aCallback(tagAttribs)} style={[htmlConstStyles.a, {color: UISetting.colors.linkColor}]}>{htmlTag.data}</Text>);
                         break;
                     case 'b':
                     case 'strong':

@@ -26,19 +26,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     cookieMessageText: {
-        fontSize: 20,
-        color: UISetting.colors.lightFontColor
+        fontSize: 20
     },
     cookieUsage: {
         paddingLeft: 8,
         marginTop: 5
-    },
-    cookieUsageText: {
-        color: UISetting.colors.lightFontColor,
-        fontSize: 16
-    },
-    cookieList: {
-        backgroundColor: UISetting.colors.defaultBackgroundColor,
     },
     cookieColumn: {
         flex: 1,
@@ -51,18 +43,15 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         flexDirection: 'row',
         height: 70,
-        backgroundColor: UISetting.colors.threadBackgroundColor,
         marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center'
     },
     cookieIDText: {
-        color: UISetting.colors.globalColor,
         fontSize: 22,
         textAlign:'center',
     },
     cookieText: {
-        color: UISetting.colors.lightFontColor,
         fontSize: 12,
         textAlign:'center', 
         lineHeight: 12
@@ -74,7 +63,6 @@ const styles = StyleSheet.create({
     },
     backtoUsermemberText: {
         fontSize: 20,
-        color: UISetting.colors.linkColor,
         textDecorationLine: 'underline'
     }
 });
@@ -109,6 +97,10 @@ class UserCookieManager extends React.Component {
     }
     static navigationOptions = ({ navigation }) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: '饼干管理',
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>navigation.openDrawer()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
@@ -361,7 +353,7 @@ class UserCookieManager extends React.Component {
     _headerComponent = () => {
         return (
             <View style={this.state.userCookies.length==0?styles.cookieMessage:styles.displayNone}>
-                <Text style={styles.cookieMessageText}>
+                <Text style={[styles.cookieMessageText, {color: UISetting.colors.lightFontColor}]}>
                 你还没有饼干，点击右上角添加饼干
                 </Text>
             </View>
@@ -379,7 +371,7 @@ class UserCookieManager extends React.Component {
                             })
                         ], 0);
                     }}>
-                    <Text style={styles.backtoUsermemberText}>返回用户系统</Text>
+                    <Text style={[styles.backtoUsermemberText, {color: UISetting.colors.linkColor}]}>返回用户系统</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -399,15 +391,15 @@ class UserCookieManager extends React.Component {
     _renderItem = ({ item, index }) => {
         let using = configDynamic.userCookie[configDynamic.islandMode] == `userhash=${item.value}`;
         return (
-            <View style={[styles.cookieItem, using?{backgroundColor: UISetting.colors.lightColor}:{}]}>
+            <View style={[styles.cookieItem, using?{backgroundColor: UISetting.colors.lightColor}:{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                 <View style={styles.cookieColumn}>
-                    <Text style={styles.cookieIDText}>
+                    <Text style={[styles.cookieIDText, {color: UISetting.colors.globalColor}]}>
                         {item.mark}
                     </Text>
                 </View>
 
                 <View style={styles.cookieColumn}>
-                    <Text style={styles.cookieText}>
+                    <Text style={[styles.cookieText, {color: UISetting.colors.lightFontColor}]}>
                         {item.value}
                     </Text>
                 </View>
@@ -470,7 +462,7 @@ class UserCookieManager extends React.Component {
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}
-                    style={styles.cookieList}
+                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor}}
                     onRefresh={this._pullDownRefreshing}
                     refreshing={this.state.cookieListLoading}
                     keyExtractor={(item, index) => {return index.toString()}}

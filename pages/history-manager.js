@@ -11,7 +11,6 @@ import { UISetting } from '../modules/config'
 
 const styles = StyleSheet.create({
     headerView: {
-        borderColor: UISetting.colors.fontColor,
         borderWidth: 1,
         borderRadius: 4,
         flexDirection: 'row',
@@ -20,35 +19,25 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     headerText: {
-        fontSize: 18,
-        color: UISetting.colors.fontColor
+        fontSize: 18
     },
     headerButton: {
         padding: 2,
     },
     headerCenterButton: {
-        borderLeftColor: UISetting.colors.fontColor,
-        borderRightColor: UISetting.colors.fontColor,
         borderLeftWidth: 1,
         borderRightWidth: 1
-    },
-    headerSelected: {
-        backgroundColor: UISetting.colors.fontColor,
-        color: UISetting.colors.globalColor
     },
     headerMark: {
         width: '33.33%',
         position: 'absolute',
         left: 0,
-        backgroundColor: UISetting.colors.fontColor,
         height: '100%'
     },
     historyList: {
-        flex: 1,
-        backgroundColor: UISetting.colors.defaultBackgroundColor
+        flex: 1
     },
     footerMessage: {
-        color: UISetting.colors.lightFontColor,
         fontSize: 18,
         textAlign: 'center',
         padding: 8
@@ -88,22 +77,29 @@ class HistoryHeader extends React.Component {
 
     render() {
         return (
-        <View style={styles.headerView} onLayout={this._onLayout}>
-            <Animated.View style={[styles.headerMark, {transform: [{ translateX: this.state.headerMove }]}]}>
+        <View style={[styles.headerView, {borderColor: UISetting.colors.fontColor}]} onLayout={this._onLayout}>
+            <Animated.View style={[styles.headerMark, {backgroundColor: UISetting.colors.fontColor, transform: [{ translateX: this.state.headerMove }]}]}>
 
             </Animated.View>
             <TouchableOpacity style={styles.headerButton} onPress={()=>this.props.changeMode(0)}>
-                <Text style={[styles.headerText, this.state.mode===0?{color: UISetting.colors.globalColor}:{}]}>
+                <Text style={[styles.headerText,{color: UISetting.colors.fontColor}, this.state.mode===0?{color: UISetting.colors.globalColor}:{}]}>
                     浏览记录
                 </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.headerButton, styles.headerCenterButton]} onPress={()=>this.props.changeMode(1)}>
-                <Text style={[styles.headerText, this.state.mode===1?{color: UISetting.colors.globalColor}:{}]}>
+            <TouchableOpacity style={[
+                styles.headerButton, 
+                styles.headerCenterButton, { 
+                    borderLeftColor: UISetting.colors.fontColor,
+                    borderRightColor: UISetting.colors.fontColor
+                    }
+                ]}
+                onPress={()=>this.props.changeMode(1)}>
+                <Text style={[styles.headerText,{color: UISetting.colors.fontColor}, this.state.mode===1?{color: UISetting.colors.globalColor}:{}]}>
                     回复记录
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.headerButton} onPress={()=>this.props.changeMode(2)}>
-                <Text style={[styles.headerText, this.state.mode===2?{color: UISetting.colors.globalColor}:{}]}>
+                <Text style={[styles.headerText,{color: UISetting.colors.fontColor}, this.state.mode===2?{color: UISetting.colors.globalColor}:{}]}>
                     图片记录
                 </Text>
             </TouchableOpacity>
@@ -128,6 +124,10 @@ class HistoryManager extends React.Component {
     static navigationOptions = ({ navigation }) => {
         const { params = {} } = navigation.state;
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: '历史',
             headerTitle: (
                 <HistoryHeader changeMode={params.changeMode} mode={navigation.getParam('mode', 0)}/>
@@ -245,7 +245,7 @@ class HistoryManager extends React.Component {
     }
     _footerComponent = () => {
         if(this.state.footerLoading == 0) {
-            return (<Text style={styles.footerMessage}>{this.state.footerMessage}</Text>);
+            return (<Text style={[styles.footerMessage, {color: UISetting.colors.lightFontColor}]}>{this.state.footerMessage}</Text>);
         }
         else {
             let windowWidth = Dimensions.get('window').width;
@@ -262,7 +262,7 @@ class HistoryManager extends React.Component {
                 <FlatList
                     data={this.state.historyList}
                     extraData={this.state}
-                    style={styles.historyList}
+                    style={[styles.historyList, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}
                     onRefresh={this._pullDownRefresh}
                     refreshing={this.state.headerLoading}
                     keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}

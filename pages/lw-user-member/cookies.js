@@ -37,6 +37,10 @@ class UserMemberCookies extends React.Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
+            headerStyle: {
+                backgroundColor: UISetting.colors.globalColor
+            },
+            headerTintColor: UISetting.colors.fontColor,
             title: 'A岛-饼干槽',
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>{Keyboard.dismiss();navigation.openDrawer();}} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
@@ -266,7 +270,7 @@ class UserMemberCookies extends React.Component {
     _headerComponent = () => {
         return (
             <View style={this.state.userInfo.userWarn?styles.cookieMessage:styles.displayNone}>
-                <Text style={styles.cookieMessageText}>
+                <Text style={[styles.cookieMessageText,{color: UISetting.colors.lightFontColor}]}>
                 {this.state.userInfo.userWarn}
                 </Text>
             </View>
@@ -275,7 +279,7 @@ class UserMemberCookies extends React.Component {
     _footerComponent = () => {
         return (
             <View style={styles.cookieUsage}>
-                <Text style={styles.cookieUsageText}>
+                <Text style={[styles.cookieUsageText,{color: UISetting.colors.lightFontColor}]}>
                     饼干槽: {this.state.userInfo.cookieMax}
                 </Text>
             </View>
@@ -283,9 +287,9 @@ class UserMemberCookies extends React.Component {
     }
     _renderItem = ({item}) =>{
         return (
-            <View style={styles.cookieItem}>
+            <View style={[styles.cookieItem,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                 <View style={styles.cookieColumn}>
-                    <Text style={styles.cookieIDText}>
+                    <Text style={[styles.cookieIDText,{color: UISetting.colors.globalColor}]}>
                         {item.id}
                     </Text>
                 </View>
@@ -323,7 +327,7 @@ class UserMemberCookies extends React.Component {
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}
-                    style={styles.cookieList}
+                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor}}
                     onRefresh={this._pullDownRefreshing}
                     refreshing={this.state.cookieListLoading}
                     keyExtractor={(item, index) => {return item.id.toString()}}
