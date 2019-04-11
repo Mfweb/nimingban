@@ -164,17 +164,8 @@ var UISetting = {
     }
 }
 
-let __upLoaded = false;
 let __oldRender = Text.render;
 Text.render = (...args) => {
-    if(!__upLoaded) {
-        __upLoaded = true;
-        AsyncStorage.getItem('UIfontScale').then((uifc) => {
-            if(uifc != null) {
-                UISetting.fontScale = parseFloat(uifc);
-            }
-        });
-    }
     let origin = __oldRender.call(this, ...args);
     if(origin && origin.props && 
         origin.props.allowFontScaling === true &&
@@ -192,8 +183,17 @@ Text.render = (...args) => {
     }
     return origin;
 };
-function setUISetting(key, value) {
-    UISetting[key] = value;
-    AsyncStorage.setItem(`UI${key}`, value.toString());
+
+function saveUISetting() {
+    AsyncStorage.setItem(`UISettings`, JSON.stringify(UISetting));
 }
-export { configBase, configNetwork, configLocal, configDynamic, UISetting, setUISetting }
+function loadUISetting() {
+    AsyncStorage.getItem('UISettings').then((settingString) => {
+        console.log(settingString);
+        if(settingString != null) {
+            UISetting = JSON.parse(settingString);
+            console.log(UISetting);
+        }
+    });
+}
+export { configBase, configNetwork, configLocal, configDynamic, UISetting, saveUISetting, loadUISetting }

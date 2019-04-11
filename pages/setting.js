@@ -2,7 +2,7 @@ import React from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Slider, Dimensions } from 'react-native'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configBase, configDynamic, UISetting, setUISetting } from '../modules/config'
+import { configBase, configDynamic, UISetting, saveUISetting } from '../modules/config'
 import { Toast } from '../component/toast'
 import { ActionSheet } from '../component/action-sheet'
 import ColorPicker from 'react-colorizer';
@@ -131,7 +131,8 @@ class SettingScreen extends React.Component {
     }
 
     _onFontSizeChange = (value) => {
-        setUISetting('fontScale', parseFloat(value.toFixed(1)));
+        UISetting.fontScale = parseFloat(value.toFixed(1));
+        saveUISetting();
         this.forceUpdate();
         this.props.navigation.setParams({a: Math.random()});
         this.setState({
@@ -271,6 +272,7 @@ class SettingScreen extends React.Component {
                                             this.setState({
                                                 showThemeColorPicker: false
                                             });
+                                            saveUISetting();
                                         }}/>
                                     <UIButton text={'取消(还原)'}
                                         style={{backgroundColor: UISetting.colors.defaultBackgroundColor}}
