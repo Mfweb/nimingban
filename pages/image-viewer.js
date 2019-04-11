@@ -28,6 +28,12 @@ const styles = StyleSheet.create({
 class ImageViewer extends React.Component {
     static navigationOptions = ({navigation}) => {
         const { params = {} } = navigation.state;
+        let headerStatus = navigation.getParam('headerStatus', true);
+        if(headerStatus !== true) {
+            return {
+                header: null
+            }
+        }
         return {
             headerStyle: {
                 backgroundColor: UISetting.colors.globalColor
@@ -90,6 +96,7 @@ class ImageViewer extends React.Component {
                     saveToLocalByLongPress={false}
                     imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}
                     backgroundColor={UISetting.colors.defaultBackgroundColor}
+                    onClick={()=>{this.props.navigation.setParams({headerStatus: !this.props.navigation.getParam('headerStatus', true)})}}
                     enableSwipeDown={true}
                     onSwipeDown={()=>{this.props.navigation.goBack()}}/>
             </View>
