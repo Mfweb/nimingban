@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: '100%',
         height: '100%',
-        top:0,
+        top: 0,
         left: 0,
         flex: 1,
         zIndex: 9998
@@ -107,14 +107,14 @@ class IsLandSelect extends React.Component {
     }
     componentDidMount() {
         let tempIsland = [];
-        for(let key in configBase.islandList) {
+        for (let key in configBase.islandList) {
             tempIsland.push(
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.titleIsland}
-                    onPress={()=>this.props.onSelected(key)}
+                    onPress={() => this.props.onSelected(key)}
                     key={key}>
                     <Image source={configBase.islandList[key].logo} style={styles.titleImage} resizeMode={'contain'}></Image>
-                    <Text style={[styles.titleText, {color: UISetting.colors.fontColor}]}>
+                    <Text style={[styles.titleText, { color: UISetting.colors.fontColor }]}>
                         {configBase.islandList[key].displayName}匿名版
                     </Text>
                 </TouchableOpacity>
@@ -125,16 +125,16 @@ class IsLandSelect extends React.Component {
         });
     }
     componentWillReceiveProps(newProps) {
-        if(newProps.show != this.state.show) {
-            if(newProps.show === true) {
+        if (newProps.show != this.state.show) {
+            if (newProps.show === true) {
                 this.setState({
                     show: true
-                }, ()=>{
+                }, () => {
                     this.startAnime('in');
                 });
             }
-            else if(newProps.show === false) {
-                this.startAnime('out', ()=>{
+            else if (newProps.show === false) {
+                this.startAnime('out', () => {
                     this.setState({
                         show: false,
                     });
@@ -142,17 +142,17 @@ class IsLandSelect extends React.Component {
             }
         }
     }
-    startAnime = function (mode, finish = ()=>{}) {
-        if(this.isUnMount) {
+    startAnime = function (mode, finish = () => { }) {
+        if (this.isUnMount) {
             return;
         }
-        this.state.nowOpacity.setValue(mode==='in'?0:1);
-        this.state.nowScale.setValue(mode==='in'?0.1:1.0);
+        this.state.nowOpacity.setValue(mode === 'in' ? 0 : 1);
+        this.state.nowScale.setValue(mode === 'in' ? 0.1 : 1.0);
         Animated.parallel([
             Animated.timing(
                 this.state.nowOpacity,
                 {
-                    toValue: mode==='in'?1:0,
+                    toValue: mode === 'in' ? 1 : 0,
                     duration: 200,
                     useNativeDriver: true,
                     stiffness: 50
@@ -161,7 +161,7 @@ class IsLandSelect extends React.Component {
             Animated.timing(
                 this.state.nowScale,
                 {
-                    toValue: mode==='in'?1.0:0.1,
+                    toValue: mode === 'in' ? 1.0 : 0.1,
                     duration: 200,
                     useNativeDriver: true,
                     friction: 2
@@ -170,21 +170,21 @@ class IsLandSelect extends React.Component {
         ]).start(finish);
     }
     render() {
-        return(
-            <Animated.View style={[this.state.show?styles.closeMask:styles.displayNone, {
+        return (
+            <Animated.View style={[this.state.show ? styles.closeMask : styles.displayNone, {
                 opacity: this.state.nowOpacity,
             }]}>
-                <TouchableOpacity activeOpacity={1} style={{flex: 1}} onPress={this.props.onClosed}>
+                <TouchableOpacity activeOpacity={1} style={{ flex: 1 }} onPress={this.props.onClosed}>
                     <Animated.View style={
-                        [this.state.show?styles.islandSelectModal:styles.displayNone, 
+                        [this.state.show ? styles.islandSelectModal : styles.displayNone,
                         {
                             backgroundColor: UISetting.colors.globalColor,
                             shadowColor: UISetting.colors.lightFontColor,
-                            top: this.props.top, 
+                            top: this.props.top,
                             left: this.props.left,
                             transform: [
-                                { 
-                                    scale: this.state.nowScale 
+                                {
+                                    scale: this.state.nowScale
                                 }
                             ]
                         }]}>
@@ -209,10 +209,10 @@ class LeftDrawerNavigator extends React.Component {
     }
 
     componentDidMount() {
-        this._pullDownRefresh(false);
+        this.getForumData(false);
         Linking.addEventListener('url', this.handleOpenURL);
-        if(!configDynamic.initUrlLoaded) {
-            Linking.getInitialURL().then((url)=>this.handleOpenURL({url: url}));
+        if (!configDynamic.initUrlLoaded) {
+            Linking.getInitialURL().then((url) => this.handleOpenURL({ url: url }));
             configDynamic.initUrlLoaded = true;
         }
     }
@@ -220,7 +220,7 @@ class LeftDrawerNavigator extends React.Component {
         Linking.removeEventListener('url', this.handleOpenURL);
     }
     handleOpenURL = (event) => {
-        if(!event.url || !/^((tnmb)|(adnmb))+:\/\/(f|t){1}\/\d+$/.test(event.url)) {
+        if (!event.url || !/^((tnmb)|(adnmb))+:\/\/(f|t){1}\/\d+$/.test(event.url)) {
             return;
         }
         const islandFullNameList = {
@@ -232,23 +232,23 @@ class LeftDrawerNavigator extends React.Component {
         let islandMode = urlParams[0];
         let viewMode = viewPrograms[0];
         let viewID = viewPrograms[1];
-        if(islandFullNameList[islandMode] !== configDynamic.islandMode) {
+        if (islandFullNameList[islandMode] !== configDynamic.islandMode) {
             configDynamic.islandMode = islandFullNameList[islandMode];
             this._pullDownRefresh(false);
         }
         //this.props.navigation.popToTop();
-        if(viewMode === 'f') {
-            getForumNameByID(viewID).then((res)=>{
+        if (viewMode === 'f') {
+            getForumNameByID(viewID).then((res) => {
                 this._gotoFroum(viewID, res);
                 this.props.navigation.closeDrawer();
             });
         }
-        else if(viewMode === 't') {
+        else if (viewMode === 't') {
             this._gotoFroum(-1, '时间线');
             this.props.navigation._childrenNavigation.Home.navigate('Details', {
                 threadDetail: {
                     id: viewID,
-                    userid: 'null', 
+                    userid: 'null',
                     content: 'null',
                     now: '2099-12-12 12:12:12'
                 }
@@ -259,9 +259,9 @@ class LeftDrawerNavigator extends React.Component {
     /**
      * 复位路由并跳转到板块
      */
-    _gotoFroum = (id, name)=> {
+    _gotoFroum = (id, name) => {
         this.props.navigation._childrenNavigation.Home.reset([
-            NavigationActions.navigate({ 
+            NavigationActions.navigate({
                 routeName: 'Home',
                 params: {
                     forumID: id,
@@ -275,21 +275,21 @@ class LeftDrawerNavigator extends React.Component {
      */
     _gotoMember = () => {
         this.props.navigation._childrenNavigation.UserMember.reset([
-            NavigationActions.navigate({ 
-                routeName: configDynamic.islandMode == 'lw'?'UserMemberLogin':'UserCookieManager'
+            NavigationActions.navigate({
+                routeName: configDynamic.islandMode == 'lw' ? 'UserMemberLogin' : 'UserCookieManager'
             })
         ], 0);
     }
     _goSetting = () => {
         this.props.navigation._childrenNavigation.UserMember.reset([
-            NavigationActions.navigate({ 
+            NavigationActions.navigate({
                 routeName: 'UserSetting'
             })
         ], 0);
     }
     _gotoHistory = () => {
         this.props.navigation._childrenNavigation.Home.reset([
-            NavigationActions.navigate({ 
+            NavigationActions.navigate({
                 routeName: 'HistoryManager'
             })
         ], 0);
@@ -297,14 +297,14 @@ class LeftDrawerNavigator extends React.Component {
     /**
      * 板块分组
      */
-    _renderSectionHeader = ({section}) => {
+    _renderSectionHeader = ({ section }) => {
         return (
             <View style={[styles.groupView, {
-                    backgroundColor: UISetting.colors.defaultBackgroundColor,
-                    shadowColor: UISetting.colors.lightFontColor
-                }]}>
+                backgroundColor: UISetting.colors.defaultBackgroundColor,
+                shadowColor: UISetting.colors.lightFontColor
+            }]}>
                 <Text style={[styles.groupText, {
-                     color: UISetting.colors.globalColor
+                    color: UISetting.colors.globalColor
                 }]}>
                     {section.groupName}
                 </Text>
@@ -314,7 +314,7 @@ class LeftDrawerNavigator extends React.Component {
     /**
      * 切换板块
      */
-    _onPressItem = (item)=> {
+    _onPressItem = (item) => {
         this._gotoFroum(item.id, item.name);
         this.props.navigation.closeDrawer();
     }
@@ -322,12 +322,12 @@ class LeftDrawerNavigator extends React.Component {
     /**
      * 板块item
      */
-    _renderItem = ({item}) => {
-        return(
-            <TouchableOpacity onPress={()=>this._onPressItem(item)}>
+    _renderItem = ({ item }) => {
+        return (
+            <TouchableOpacity onPress={() => this._onPressItem(item)}>
                 <View style={styles.itemView}>
                     <Text style={styles.itemText}>
-                    {item.displayName}
+                        {item.displayName}
                     </Text>
                 </View>
             </TouchableOpacity>
@@ -337,71 +337,73 @@ class LeftDrawerNavigator extends React.Component {
     /**
      * 下拉刷新板块列表
      */
-    _pullDownRefresh = (force, finish=()=>{}) => {
+    _pullDownRefresh = (force, finish = () => { }) => {
         this.setState({
             headerLoading: true
-        }, async ()=>{
-            let res = await getForumList(force);
-            if(res.status == 'ok') {
-                let tempList = Array();
-                for(let gIndex = 0; gIndex < res.res.length; gIndex++) {
-                    let tempItem = Array();
-                    for(let iIndex = 0; iIndex < res.res[gIndex].forums.length; iIndex ++) {
-                        let itm = res.res[gIndex].forums[iIndex];
-                        tempItem.push({
-                            displayName: itm.showName?getHTMLDom(itm.showName):getHTMLDom(itm.name),
-                            name: itm.name,
-                            id: itm.id
-                        });
-                    }
-                    tempList.push({
-                        groupName: res.res[gIndex].name,
-                        data: tempItem
-                    });
-                }
-
-                this.setState({
-                    forumList: tempList,
-                    headerLoading: false
-                }, finish);
-            }
-            else {
-                alert('获取板块列表失败,' + res.errmsg);
+        }, async () => {
+            await this.getForumData(force, () => {
                 this.setState({
                     headerLoading: false
                 }, finish);
-            }
+            });
         });
     }
-
+    getForumData = async (force, finish = () => { }) => {
+        let res = await getForumList(force);
+        if (res.status == 'ok') {
+            let tempList = Array();
+            for (let gIndex = 0; gIndex < res.res.length; gIndex++) {
+                let tempItem = Array();
+                for (let iIndex = 0; iIndex < res.res[gIndex].forums.length; iIndex++) {
+                    let itm = res.res[gIndex].forums[iIndex];
+                    tempItem.push({
+                        displayName: itm.showName ? getHTMLDom(itm.showName) : getHTMLDom(itm.name),
+                        name: itm.name,
+                        id: itm.id
+                    });
+                }
+                tempList.push({
+                    groupName: res.res[gIndex].name,
+                    data: tempItem
+                });
+            }
+            this.setState({
+                forumList: tempList,
+            }, finish);
+        }
+        else {
+            finish();
+            alert('获取板块列表失败,' + res.errmsg);
+        }
+    }
     headerSize = null;
     /**
      * 点击了某个岛，开始切换
      */
-    _onSelectIsland = ()=>{
+    _onSelectIsland = () => {
         this.setState({
             islandModalX: headerSize.x,
             islandModalY: headerSize.y + headerSize.height,
             showAllIsland: !this.state.showAllIsland
         });
     }
-    
-    _onChangeIsland = (name)=>{
+
+    _onChangeIsland = (name) => {
         // 里岛API不同，暂时先不支持
-        if(name == 'ld') {
+        if (name == 'ld') {
             this.setState({
                 showAllIsland: false
             });
             return;
         }
-        if(name != configDynamic.islandMode) {
+        if (name != configDynamic.islandMode) {
             configDynamic.islandMode = name;
         }
 
         this.setState({
             showAllIsland: false
-        }, ()=>{
-            this._pullDownRefresh(false, ()=>this._gotoFroum(-1, '时间线'));
+        }, () => {
+            this._pullDownRefresh(false, () => this._gotoFroum(-1, '时间线'));
         });
     }
 
@@ -410,39 +412,39 @@ class LeftDrawerNavigator extends React.Component {
     }
     render() {
         return (
-            <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: UISetting.colors.globalColor}}>
-                <View style={{backgroundColor: UISetting.colors.globalColor, top: 0, minHeight: Header.HEIGHT}}>
-                    <SafeAreaView style={[styles.titleView, {minHeight: Header.HEIGHT}]}>
+            <View style={{ top: 0, flex: 1, flexDirection: 'column', justifyContent: 'flex-start', backgroundColor: UISetting.colors.globalColor }}>
+                <View style={{ backgroundColor: UISetting.colors.globalColor, top: 0, minHeight: Header.HEIGHT }}>
+                    <SafeAreaView style={[styles.titleView, { minHeight: Header.HEIGHT }]}>
                         <TouchableOpacity
-                                onLayout={this._headerDisplayLayout}
-                                style={styles.titleIsland}
-                                onPress={this._onSelectIsland}>
+                            onLayout={this._headerDisplayLayout}
+                            style={styles.titleIsland}
+                            onPress={this._onSelectIsland}>
                             <Image source={configBase.islandList[configDynamic.islandMode].logo} style={styles.titleImage} resizeMode={'contain'}></Image>
-                            <Text style={[styles.titleText, {color: UISetting.colors.fontColor}]}>
+                            <Text style={[styles.titleText, { color: UISetting.colors.fontColor }]}>
                                 {configBase.islandList[configDynamic.islandMode].displayName}匿名版
                             </Text>
-                            <Icon name={'arrow-down'} size={12} color={UISetting.colors.fontColor}/>
+                            <Icon name={'arrow-down'} size={12} color={UISetting.colors.fontColor} />
                         </TouchableOpacity>
                     </SafeAreaView>
-                </View>       
+                </View>
                 <IsLandSelect
                     left={this.state.islandModalX}
                     top={this.state.islandModalY}
                     show={this.state.showAllIsland}
                     onSelected={this._onChangeIsland}
-                    onClosed={()=>{this.setState({showAllIsland: false})}}/>
+                    onClosed={() => { this.setState({ showAllIsland: false }) }} />
                 <SectionList
-                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor}}
-                    onRefresh={()=>this._pullDownRefresh(true)}
+                    style={{ backgroundColor: UISetting.colors.defaultBackgroundColor }}
+                    onRefresh={() => this._pullDownRefresh(true)}
                     refreshing={this.state.headerLoading}
-                    ListHeaderComponent={<Image style={styles.wlp} resizeMode='contain' resizeMethod='scale' source={require('../imgs/menu-top.jpg')}/>}
+                    ListHeaderComponent={<Image style={styles.wlp} resizeMode='contain' resizeMethod='scale' source={require('../imgs/menu-top.jpg')} />}
                     renderSectionHeader={this._renderSectionHeader}
                     renderItem={this._renderItem}
                     sections={this.state.forumList}
-                    keyExtractor={(item, index) => {return index.toString()}}
-                />      
+                    keyExtractor={(item, index) => { return index.toString() }}
+                />
                 <SafeAreaView>
-                    <View style={[styles.bottomTools, {backgroundColor: UISetting.colors.globalColor}]}>
+                    <View style={[styles.bottomTools, { backgroundColor: UISetting.colors.globalColor }]}>
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity onPress={this._goSetting}>
                                 <Icon name={'settings'} size={32} color={UISetting.colors.fontColor} />
@@ -460,7 +462,7 @@ class LeftDrawerNavigator extends React.Component {
                                 <Icon name={'book-open'} size={32} color={UISetting.colors.fontColor} />
                             </TouchableOpacity>
                         </View>
-                        
+
                         <View style={styles.bottomToolsItem}>
                             <TouchableOpacity onPress={this._gotoMember}>
                                 <Icon name={'user'} size={32} color={UISetting.colors.fontColor} />
@@ -474,4 +476,4 @@ class LeftDrawerNavigator extends React.Component {
 }
 
 
-export  { LeftDrawerNavigator }
+export { LeftDrawerNavigator }
