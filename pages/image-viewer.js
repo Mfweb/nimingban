@@ -9,8 +9,13 @@ import { Toast } from '../component/toast'
 
 const styles = StyleSheet.create({
     mainView: {
-        top:0,
-        flex: 1
+        width: '100%',
+        height: '100%',
+    },
+    imageViewer: {
+        width: '95%',
+        height: '100%',
+        marginLeft: '2.5%'
     },
     headerRightView: {
         flex: 1,
@@ -77,13 +82,14 @@ class ImageViewer extends React.Component {
     }
     render() {
         return (
-            <View style={styles.mainView}>
+            <View style={[styles.mainView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <ZoomImageViewer 
-                saveToLocalByLongPress={false}
-                imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}
-                backgroundColor={UISetting.colors.defaultBackgroundColor}/>
+                    style={styles.imageViewer}
+                    saveToLocalByLongPress={false}
+                    imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}
+                    backgroundColor={UISetting.colors.defaultBackgroundColor}/>
             </View>
         );
     }
