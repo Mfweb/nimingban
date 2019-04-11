@@ -11,6 +11,7 @@ import { ActionSheet } from '../component/action-sheet'
 import { configNetwork, configDynamic, UISetting } from '../modules/config'
 import { Header } from 'react-navigation'
 import { FixedButton } from '../component/fixed-button'
+import { FloatingScrollButton } from '../component/floating-scroll-button'
 
 const styles = StyleSheet.create({
     mainList: {
@@ -451,10 +452,15 @@ class DetailsScreen extends React.Component {
     render() {
         return (
             <SafeAreaView style={{flex:1, backgroundColor: UISetting.colors.defaultBackgroundColor}}>
+                <FloatingScrollButton
+                    ref={(ref)=>{this.ScrollButton = ref}}
+                    onUpPress={()=>{this.replyFList.scrollToOffset(0)}}
+                    onDownPress={()=>{this.replyFList.scrollToEnd()}}/>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
+                    ref = {(ref)=>{this.replyFList=ref}}
                     data={this.state.replyList}
                     extraData={this.state}
                     style={[styles.mainList, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}
@@ -462,7 +468,7 @@ class DetailsScreen extends React.Component {
                     refreshing={this.state.headerLoading}
                     keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
                     renderItem={this._renderItem}
-                    //onScroll={this._onScroll}
+                    onScroll={()=>{this.ScrollButton.show(1500)}}
                     ListFooterComponent={this._footerComponent}
                     ItemSeparatorComponent={this._itemSeparator}
                     onEndReachedThreshold={0.1}
