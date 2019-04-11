@@ -57,7 +57,8 @@ class ImageViewer extends React.Component {
         });
     }
     _menuFunctions = () => {
-        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, '图片操作',
+        let topY = this.props.navigation.getParam('headerStatus', false)?Header.HEIGHT:100;
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, topY, '图片操作',
         [
             '保存到相册',
             '百度搜图(未实现)',
@@ -110,6 +111,7 @@ class ImageViewer extends React.Component {
                     imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}
                     backgroundColor={UISetting.colors.defaultBackgroundColor}
                     onClick={this._fullScreenToucn}
+                    onLongPress={this._menuFunctions}
                     enableSwipeDown={true}
                     onSwipeDown={()=>{this.props.navigation.goBack()}}/>
             </View>
