@@ -139,9 +139,9 @@ var configDynamic = {
     }
 }
 
-
 var UISetting = {
     fontScale: 1.0,
+    timeFormat: 0,
     defaultColors: {
         globalColor: '#FA7296', /* 全局主要颜色 */
         lightColor: '#FFE4E1', /* 淡化颜色，也是主要颜色 */
@@ -189,9 +189,11 @@ function saveUISetting() {
 }
 function loadUISetting() {
     AsyncStorage.getItem('UISettings').then((settingString) => {
-        console.log(settingString);
         if(settingString != null) {
-            UISetting = JSON.parse(settingString);
+            let savedSetting = JSON.parse(settingString);
+            if(savedSetting) {
+                Object.assign(UISetting, savedSetting);
+            }
             console.log(UISetting);
         }
     });
