@@ -410,7 +410,7 @@ class LeftDrawerNavigator extends React.Component {
     }
     render() {
         return (
-            <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: UISetting.colors.backgroundColor}}>
+            <View style={{top: 0, flex:1,flexDirection: 'column', justifyContent:'flex-start', backgroundColor: UISetting.colors.globalColor}}>
                 <View style={{backgroundColor: UISetting.colors.globalColor, top: 0, minHeight: Header.HEIGHT}}>
                     <SafeAreaView style={[styles.titleView, {minHeight: Header.HEIGHT}]}>
                         <TouchableOpacity
@@ -432,7 +432,7 @@ class LeftDrawerNavigator extends React.Component {
                     onSelected={this._onChangeIsland}
                     onClosed={()=>{this.setState({showAllIsland: false})}}/>
                 <SectionList
-                    style={{backgroundColor: UISetting.colors.backgroundColor}}
+                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor}}
                     onRefresh={()=>this._pullDownRefresh(true)}
                     refreshing={this.state.headerLoading}
                     ListHeaderComponent={<Image style={styles.wlp} resizeMode='contain' resizeMethod='scale' source={require('../imgs/menu-top.jpg')}/>}
