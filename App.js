@@ -76,10 +76,16 @@ const UserMemberStackNavigator = createStackNavigator({
 
 const AppNavigator = createDrawerNavigator({
     Home: {
-        screen: MainStackNavigator
+        screen: MainStackNavigator,
+        navigationOptions: ({ navigation }) => ({
+            drawerLockMode: navigation.state.index > 0 ? 'locked-closed' : 'unlocked',
+        })
     },
     UserMember: {
-        screen: UserMemberStackNavigator
+        screen: UserMemberStackNavigator,
+        navigationOptions: ({ navigation }) => ({
+            drawerLockMode: navigation.state.index > 0 ? 'locked-closed' : 'unlocked',
+        })
     },
 }, {
     drawerPosition: 'left',

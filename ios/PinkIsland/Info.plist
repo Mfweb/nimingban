@@ -44,7 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>8</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -72,6 +72,8 @@
 	<string>拍照使用的定位服务</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>需要访问麦克风</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>需要访问相册</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>需要访问相册权限</string>
 	<key>UIAppFonts</key>
@@ -92,8 +94,6 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>需要访问相册</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
