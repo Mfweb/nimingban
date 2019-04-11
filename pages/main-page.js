@@ -12,6 +12,7 @@ import { ActionSheet } from '../component/action-sheet'
 import { Header } from 'react-navigation'
 import { getHTMLDom } from '../modules/html-decoder'
 import { FixedButton } from '../component/fixed-button'
+import { FloatingScrollButton } from '../component/floating-scroll-button'
 
 const styles = StyleSheet.create({
     mainList: {
@@ -397,10 +398,15 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <SafeAreaView style={{flex:1}}>
+                <FloatingScrollButton
+                    ref={(ref)=>{this.ScrollButton = ref}}
+                    onUpPress={()=>{this.postList.scrollToOffset(0)}}
+                    onDownPress={()=>{this.postList.scrollToEnd()}}/>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
+                    ref = {(ref)=>{this.postList=ref}}
                     data={this.state.threadList}
                     extraData={this.state}
                     style={[styles.mainList, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}
@@ -413,6 +419,7 @@ class HomeScreen extends React.Component {
                     onEndReached={this._pullUpLoading}
                     pageSize={20}
                     removeClippedSubviews={true}
+                    onScroll={()=>{this.ScrollButton.show(1500)}}
                     /*viewabilityConfig={this.viewabilityConfig}*/
                 />
                 <FixedButton visible={this.props.navigation.getParam('forumID', -1) != -1} icon={'note'} onPress={this._newThread}/>
