@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         lineHeight: 20
     },
     settingItemValueText: {
-        fontSize: 18,
+        fontSize: 16,
         lineHeight: 20
     }
 });
@@ -375,7 +375,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.linkColor }]}>https://github.com/Mfweb/nimingban</Text>
+                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.linkColor, fontSize: 16 }]}>https://github.com/Mfweb/nimingban</Text>
                             </View>
                         </TouchableOpacity>
 
