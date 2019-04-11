@@ -12,13 +12,15 @@ const styles = StyleSheet.create({
 
     },
     button: {
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.9,
-        shadowRadius: 5,
         width: 30,
         height: 30,
         flexDirection: 'row',
         justifyContent: 'center'
+    },
+    icon: {
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.9,
+        shadowRadius: 5,
     }
 });
 
@@ -77,17 +79,24 @@ class FloatingScrollButton extends React.Component {
         }
         return (
             <Animated.View style={[styles.mainView, {
-                shadowColor: UISetting.colors.globalColor,
                 bottom: this.state.bottom,
                 left: this.state.left
             }]}
                 onLayout={this._onLayout}
                 pointerEvent={'box-none'}>
                 <TouchableOpacity style={styles.button} onPress={this.props.onUpPress}>
-                    <Icon name={'arrow-up'} size={22} color={UISetting.colors.globalColor} />
+                    <Icon 
+                        style={[styles.icon, {shadowColor: UISetting.colors.globalColor}]}
+                        name={'arrow-up'} 
+                        size={22} 
+                        color={UISetting.colors.globalColor} />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, {marginTop: 30}]} onPress={this.props.onDownPress}>
-                    <Icon name={'arrow-down'} size={22} color={UISetting.colors.globalColor} />
+                <TouchableOpacity style={[styles.button, { marginTop: 30 }]} onPress={this.props.onDownPress}>
+                    <Icon 
+                        style={[styles.icon, {shadowColor: UISetting.colors.globalColor}]}
+                        name={'arrow-down'} 
+                        size={22} 
+                        color={UISetting.colors.globalColor} />
                 </TouchableOpacity>
             </Animated.View>
         );
