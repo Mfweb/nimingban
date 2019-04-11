@@ -290,6 +290,7 @@ class SettingScreen extends React.Component {
                                             this.setState({
                                                 showThemeColorPicker: false
                                             });
+                                            saveUISetting();
                                         }} />
                                 </View>
                             </View>
