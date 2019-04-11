@@ -10,11 +10,10 @@ import { Toast } from '../component/toast'
 const styles = StyleSheet.create({
     mainView: {
         width: '100%',
-        height: '100%',
+        height: Dimensions.get('window').height
     },
     imageViewer: {
         width: '95%',
-        height: '100%',
         marginLeft: '2.5%'
     },
     headerRightView: {
@@ -28,7 +27,7 @@ const styles = StyleSheet.create({
 class ImageViewer extends React.Component {
     static navigationOptions = ({navigation}) => {
         const { params = {} } = navigation.state;
-        let headerStatus = navigation.getParam('headerStatus', true);
+        let headerStatus = navigation.getParam('headerStatus', false);
         if(headerStatus !== true) {
             return {
                 header: null
@@ -58,7 +57,7 @@ class ImageViewer extends React.Component {
         });
     }
     _menuFunctions = () => {
-        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, this.fname,
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, '图片操作',
         [
             '保存到相册',
             '百度搜图(未实现)',
@@ -86,6 +85,20 @@ class ImageViewer extends React.Component {
             this.toast.show('保存失败');
         }
     }
+    _fullScreenToucn = ()=>{
+        let state = this.props.navigation.getParam('headerStatus', false);
+        if(state === true) {
+            this.props.navigation.setParams({
+                headerStatus:false
+            });
+        }
+        else {
+            this.props.navigation.setParams({
+                headerStatus:true
+            });
+        }
+        this.forceUpdate();
+    }
     render() {
         return (
             <View style={[styles.mainView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
@@ -96,7 +109,7 @@ class ImageViewer extends React.Component {
                     saveToLocalByLongPress={false}
                     imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}
                     backgroundColor={UISetting.colors.defaultBackgroundColor}
-                    onClick={()=>{this.props.navigation.setParams({headerStatus: !this.props.navigation.getParam('headerStatus', true)})}}
+                    onClick={this._fullScreenToucn}
                     enableSwipeDown={true}
                     onSwipeDown={()=>{this.props.navigation.goBack()}}/>
             </View>
