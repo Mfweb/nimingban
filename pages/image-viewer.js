@@ -89,7 +89,9 @@ class ImageViewer extends React.Component {
                     style={styles.imageViewer}
                     saveToLocalByLongPress={false}
                     imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}
-                    backgroundColor={UISetting.colors.defaultBackgroundColor}/>
+                    backgroundColor={UISetting.colors.defaultBackgroundColor}
+                    enableSwipeDown={true}
+                    onSwipeDown={()=>{this.props.navigation.goBack()}}/>
             </View>
         );
     }
