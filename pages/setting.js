@@ -387,7 +387,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 6)</Text>
+                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 7)</Text>
                             </View>
                         </View>
                     </View>
