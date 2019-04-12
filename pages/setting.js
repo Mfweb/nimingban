@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Slider, Dimensions } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Slider, Dimensions, Switch } from 'react-native'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configBase, configDynamic, UISetting, saveUISetting } from '../modules/config'
@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         marginLeft: 15,
         paddingRight: 15,
         paddingTop: 8,
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     },
     settingItemText: {
         fontSize: 20,
-        lineHeight: 20
+        lineHeight: 40
     },
     settingItemValueText: {
         fontSize: 16,
@@ -386,6 +387,23 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </TouchableOpacity>
                         </View>
+                        <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+                        <TouchableOpacity style={styles.settingItem} onPress={() => this.setState({ showTimeFormat: !this.state.showTimeFormat })}>
+                            <View>
+                                <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
+                                    快速滚动按钮
+                                </Text>
+                            </View>
+                            <View>
+                                <Switch 
+                                    value={UISetting.showFastScrollButton}
+                                    onValueChange={(newValue)=>{
+                                        UISetting.showFastScrollButton = newValue;
+                                        this.forceUpdate();
+                                        saveUISetting();
+                                    }}/>
+                            </View>
+                        </TouchableOpacity>
                     </View>
 
 

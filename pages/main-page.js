@@ -419,7 +419,11 @@ class HomeScreen extends React.Component {
                     onEndReached={this._pullUpLoading}
                     pageSize={20}
                     removeClippedSubviews={true}
-                    onScroll={()=>{this.ScrollButton.show(1500)}}
+                    onScroll={()=>{
+                        if(UISetting.showFastScrollButton) {
+                            this.ScrollButton.show(1500);
+                        }
+                    }}
                     /*viewabilityConfig={this.viewabilityConfig}*/
                 />
                 <FixedButton visible={this.props.navigation.getParam('forumID', -1) != -1} icon={'note'} onPress={this._newThread}/>

@@ -468,7 +468,11 @@ class DetailsScreen extends React.Component {
                     refreshing={this.state.headerLoading}
                     keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
                     renderItem={this._renderItem}
-                    onScroll={()=>{this.ScrollButton.show(1500)}}
+                    onScroll={()=>{
+                        if(UISetting.showFastScrollButton) {
+                            this.ScrollButton.show(1500);
+                        }
+                    }}
                     ListFooterComponent={this._footerComponent}
                     ItemSeparatorComponent={this._itemSeparator}
                     onEndReachedThreshold={0.1}
