@@ -7,6 +7,7 @@ import { Toast } from '../component/toast'
 import { ActionSheet } from '../component/action-sheet'
 import ColorPicker from 'react-colorizer';
 import { UIButton } from '../component/uibutton'
+import SoundPlayer from 'react-native-sound'
 const timeFormatDisplayName = ['1天内相对时间', '原始格式', '始终绝对时间', '简化绝对'];
 
 const styles = StyleSheet.create({
@@ -138,8 +139,16 @@ class SettingScreen extends React.Component {
         this.setState({
             fontSizeString: `${UISetting.fontScale}x`
         });
+        SoundPlayer.setCategory('Playback');
+        this.tnnaiiSound = new SoundPlayer('tnnaii-h-island-c.mp3', SoundPlayer.MAIN_BUNDLE, (err) => {
+            if (err) {
+                console.log('load sound error:', err);
+            }
+        });
     }
-
+    componentWillUnmount() {
+        this.tnnaiiSound.release();
+    }
     _onFontSizeChange = (value) => {
         UISetting.fontScale = parseFloat(value.toFixed(1));
         saveUISetting();
@@ -148,6 +157,22 @@ class SettingScreen extends React.Component {
         this.setState({
             fontSizeString: `${UISetting.fontScale}x`
         });
+    }
+    clickVersionCounter = 0;
+    onPressVersion = () => {
+        if (this.clickVersionCounter == 0) {
+            setTimeout(() => {
+                if (this.clickVersionCounter >= 4) {
+                    this.tnnaiiSound.setVolume(1.0);
+                    this.tnnaiiSound.play();
+                    this.clickVersionCounter = 0;
+                }
+                else {
+                    this.clickVersionCounter = 0;
+                }
+            }, 500);
+        }
+        this.clickVersionCounter++;
     }
     render() {
         return (
@@ -381,7 +406,10 @@ class SettingScreen extends React.Component {
 
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
 
-                        <View style={styles.settingItem}>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            style={styles.settingItem}
+                            onPress={this.onPressVersion}>
                             <View>
                                 <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                     版本号
@@ -390,7 +418,7 @@ class SettingScreen extends React.Component {
                             <View>
                                 <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 7)</Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 </ScrollView>
             </SafeAreaView>
