@@ -2,7 +2,7 @@ import React from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Slider, Dimensions, Switch } from 'react-native'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configBase, configDynamic, UISetting, saveUISetting } from '../modules/config'
+import { configNetwork, configDynamic, UISetting, saveUISetting } from '../modules/config'
 import { Toast } from '../component/toast'
 import { ActionSheet } from '../component/action-sheet'
 import ColorPicker from 'react-colorizer';
@@ -457,6 +457,39 @@ class SettingScreen extends React.Component {
                         </TouchableOpacity>
 
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+                        <View style={styles.settingItem}>
+                            <View>
+                                <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
+                                    当前Host
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>
+                                    {
+                                        configNetwork.baseUrl[configDynamic.islandMode].useRedirect
+                                        ?
+                                        configDynamic.apiRedirectURL[configDynamic.islandMode]
+                                        :
+                                        configNetwork.baseUrl[configDynamic.islandMode].base
+                                    }
+                                </Text>
+                            </View>
+                        </View>
+                        <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+
+
+                        <View style={styles.settingItem}>
+                            <View>
+                                <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
+                                    当前图片CDN
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{configDynamic.imageCDNURL[configDynamic.islandMode]}</Text>
+                            </View>
+                        </View>
+                        <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+
 
                         <TouchableOpacity
                             activeOpacity={0.9}
