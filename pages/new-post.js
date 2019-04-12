@@ -59,22 +59,17 @@ const styles = StyleSheet.create({
         paddingLeft: 12,
         paddingRight: 12
     },
-    emoticonView: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'center',
-        overflow: 'scroll'
-    },
     emoticonItemView: {
         padding: 2,
         justifyContent: 'center',
         alignItems: 'center',
-        borderLeftWidth: 1
+        borderWidth: 1,
+        width: '25%'
     },
     emoticonText: {
-        fontSize: 20
+        fontSize: 20,
+        lineHeight: 25,
+        textAlign: 'center'
     },
     toolsButton: {
         justifyContent: 'center',
@@ -114,6 +109,21 @@ const styles = StyleSheet.create({
     headerCookieText: {
         lineHeight: Header.HEIGHT,
         textAlign: 'center'
+    },
+    bottomBoxView: {
+        height: '30%',
+        width: '100%',
+        borderTopWidth: 1,
+    },
+    bottomView: {
+        width: '100%',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        overflow: 'scroll',
+        marginTop: 1
     }
 });
 
@@ -129,7 +139,9 @@ class NewPostScreen extends React.Component {
             selectdeImage: null,
             translateNow: new Animated.Value(0),
             sending: false,
-            displayHeight: null
+            displayHeight: null,
+            showBottomBox: false,
+            EmoticonViews: []
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -169,11 +181,30 @@ class NewPostScreen extends React.Component {
             openCookieSelect: this._openCookieSelect,
         });
         this._getUseCookieMark();
+        this._initEmoticonList();
     }
     componentWillUnmount() {
         this.keyboardWillShowListener.remove();
         this.keyboardWillHideListener.remove();
     }
+    /**
+     * 初始化颜文字ViewMap
+     */
+    _initEmoticonList = ()=>{
+        let emotiTemp = [];
+        for(let i = 0; i < emoticonList.length; i++) {
+            emotiTemp.push(
+            <TouchableOpacity key={i+1} style={[styles.emoticonItemView, {borderColor: UISetting.colors.fontColor}]} onPress={()=>{this.setState({inputText: this.state.inputText + emoticonList[i]});}}>
+                <Text style={[styles.emoticonText, {color: UISetting.colors.fontColor}]}>{emoticonList[i]}</Text>
+            </TouchableOpacity>);
+        }
+        this.setState({
+            EmoticonViews: emotiTemp
+        });
+    }
+    /**
+     * 发送进度条
+     */
     _setProgress = (targetValue) => {
         Animated.timing(
             this.state.translateNow,
@@ -185,6 +216,9 @@ class NewPostScreen extends React.Component {
             }
         ).start();
     }
+    /**
+     * 获取饼干列表
+     */
     _getUseCookieMark = async () => {
         let cookieList = await getUserCookieList();
         if(cookieList.length > 0) {
@@ -230,7 +264,8 @@ class NewPostScreen extends React.Component {
      */
     _keyboardWillShow = (e) => {
         this.setState({
-            bottomHeight: e.endCoordinates.height
+            bottomHeight: e.endCoordinates.height,
+            showBottomBox: false
         });
     }
     /**
@@ -266,6 +301,7 @@ class NewPostScreen extends React.Component {
         this._sending = true;
         this.setState({
             sending: true,
+            showBottomBox: false
         });
         let res = await replyNewThread(
             this.mode,
@@ -339,6 +375,9 @@ class NewPostScreen extends React.Component {
      */
     _selectImage = () => {
         Keyboard.dismiss();
+        this.setState({
+            showBottomBox: false
+        });
         this.ActionSheet.showActionSheet( Dimensions.get('window').width / 3 - 12 + 12, Dimensions.get('window').height - 50,
             '选择图片',
             ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘(未实现)'], 
@@ -417,22 +456,9 @@ class NewPostScreen extends React.Component {
      */
     _openEmoticon = () => {
         Keyboard.dismiss();
-        let tempList = [];
-        for(let i = 0; i < emoticonList.length; i++) {
-            tempList.push(
-            <TouchableOpacity key={i+1} style={[styles.emoticonItemView, {borderColor: UISetting.colors.globalColor}]} onPress={()=>{this.setState({inputText: this.state.inputText + emoticonList[i]});}}>
-                <Text style={[styles.emoticonText, {color: UISetting.colors.lightFontColor}]}>{emoticonList[i]}</Text>
-            </TouchableOpacity>);
-        }
-        this.TopModal.showMessage('颜文字', 
-        (
-            <ScrollView>
-                <View style={styles.emoticonView}>
-                    {tempList}
-                </View>
-            </ScrollView>
-        ),
-        '确认');
+        this.setState({
+            showBottomBox: !this.state.showBottomBox
+        });
     }
 
     render() {
@@ -480,6 +506,11 @@ class NewPostScreen extends React.Component {
                             <ActivityIndicator style={this.state.sending?{}:styles.displayNone} color={UISetting.colors.fontColor} size='small'/>
                         </TouchableOpacity>
                     </View>
+                    <ScrollView style={[this.state.showBottomBox?styles.bottomBoxView:styles.displayNone, {borderTopColor: UISetting.colors.defaultBackgroundColor}]}>
+                        <View style={styles.bottomView}>
+                        {this.state.EmoticonViews}
+                        </View>
+                    </ScrollView>
                 </SafeAreaView>
             </View>
         );
