@@ -3,7 +3,7 @@ import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import MDIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TopModal } from '../component/top-modal'
-import { replyNewThread } from '../modules/apis'
+import { replyNewThread, getImage } from '../modules/apis'
 import { ActionSheet } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-crop-picker';
 import { history } from '../modules/history'
@@ -65,6 +65,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         width: '25%'
+    },
+    lwEmoticonItemView: {
+        padding: 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        width: '33.3%',
+        height: 100
     },
     emoticonText: {
         fontSize: 20,
@@ -141,7 +149,9 @@ class NewPostScreen extends React.Component {
             sending: false,
             displayHeight: null,
             showBottomBox: false,
-            EmoticonViews: []
+            bottomBoxMode: 0,
+            EmoticonViews: [],
+            luweiEmoticonViews: []
         }
     }
     static navigationOptions = ({ navigation }) => {
@@ -188,7 +198,7 @@ class NewPostScreen extends React.Component {
         this.keyboardWillHideListener.remove();
     }
     /**
-     * 初始化颜文字ViewMap
+     * 初始化颜文字和芦苇娘表情包ViewMap
      */
     _initEmoticonList = ()=>{
         let emotiTemp = [];
@@ -198,8 +208,34 @@ class NewPostScreen extends React.Component {
                 <Text style={[styles.emoticonText, {color: UISetting.colors.fontColor}]}>{emoticonList[i]}</Text>
             </TouchableOpacity>);
         }
+        let lwEmotiTemp = [];
+        for(let i = 1; i < 107; i++) {
+            lwEmotiTemp.push(
+            <TouchableOpacity key={`lw${i}`} style={[styles.lwEmoticonItemView, {borderColor: UISetting.colors.fontColor}]} onPress={()=>{this._downloadLw(i.toString())}}>
+                <Image style={{width: '100%', height: '100%'}} resizeMode={'contain'} source={{url: `https://amember.mfweb.top/adao/luwei/lw${i}.png`}}></Image>
+            </TouchableOpacity>);
+        }
         this.setState({
-            EmoticonViews: emotiTemp
+            EmoticonViews: emotiTemp,
+            luweiEmoticonViews: lwEmotiTemp
+        });
+    }
+    _downloadLw = (index) => {
+        let url = `https://amember.mfweb.top/adao/luwei/lw${index}.png`
+        getImage('customize', url, `lw${index}.png`).then((res)=>{
+            if(res.status == 'ok') {
+                this.setState({
+                    imageWatermark: false,
+                    showBottomBox: false,
+                    selectdeImage: {uri: `file://${res.path}`}
+                });
+            }
+            else {
+                this.TopModal.showMessage('错误', res.errmsg,'确认');
+                this.setState({
+                    showBottomBox: false
+                });
+            }
         });
     }
     /**
@@ -380,7 +416,7 @@ class NewPostScreen extends React.Component {
         });
         this.ActionSheet.showActionSheet( Dimensions.get('window').width / 3 - 12 + 12, Dimensions.get('window').height - 50,
             '选择图片',
-            ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘(未实现)'], 
+            ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘'], 
             (index) => {
                 this.ActionSheet.closeActionSheet(()=>{
                     switch (index) {
@@ -394,7 +430,17 @@ class NewPostScreen extends React.Component {
                             this.TopModal.showMessage('错误', '未实现','确认');
                             break;
                         case 3:
-                            this.TopModal.showMessage('错误', '未实现','确认');
+                            Keyboard.dismiss();
+                            if(this.state.showBottomBox && this.state.bottomBoxMode != 1) {
+                                this.setState({
+                                    bottomBoxMode: 1
+                                });
+                                return;
+                            }
+                            this.setState({
+                                showBottomBox: !this.state.showBottomBox,
+                                bottomBoxMode: 1
+                            });
                             break;
                     }
                 });
@@ -456,8 +502,15 @@ class NewPostScreen extends React.Component {
      */
     _openEmoticon = () => {
         Keyboard.dismiss();
+        if(this.state.showBottomBox && this.state.bottomBoxMode != 0) {
+            this.setState({
+                bottomBoxMode: 0
+            });
+            return;
+        }
         this.setState({
-            showBottomBox: !this.state.showBottomBox
+            showBottomBox: !this.state.showBottomBox,
+            bottomBoxMode: 0
         });
     }
 
@@ -508,7 +561,11 @@ class NewPostScreen extends React.Component {
                     </View>
                     <ScrollView style={[this.state.showBottomBox?styles.bottomBoxView:styles.displayNone, {borderTopColor: UISetting.colors.defaultBackgroundColor}]}>
                         <View style={styles.bottomView}>
-                        {this.state.EmoticonViews}
+                        {this.state.bottomBoxMode==0
+                        ?
+                        this.state.EmoticonViews
+                        :
+                        this.state.luweiEmoticonViews}
                         </View>
                     </ScrollView>
                 </SafeAreaView>

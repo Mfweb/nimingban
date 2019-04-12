@@ -247,14 +247,22 @@ async function clearImageCache() {
 
 /**
  * 获取串图片
- * @param {String} imgMode 获取全图（image）还是缩略图（thumb）
+ * @param {String} imgMode 获取全图（image）还是缩略图（thumb） 还是自定义URL (customize)
  * @param {String} imageName 图片完整名
+ * @param {String} localName 本地图片名（自定义模式）
  */
-async function getImage(imgMode, imageName) {
+async function getImage(imgMode, imageName, localName = '') {
     try {
-        var imgUrl = await getImageCDN() + imgMode + '/' + imageName;
-        var localPath = (imgMode === 'thumb' ? configLocal.localDirectory.imageCacheThumb : configLocal.localDirectory.imageCacheFull) + '/' + imageName.replace('/','-');
-
+        var imgUrl = null;
+        var localPath = null;
+        if(imgMode == 'customize') {
+            imgUrl = imageName;
+            localPath = `${configLocal.localDirectory.imageCacheFull}/${localName}`;
+        }
+        else {
+            imgUrl = await getImageCDN() + imgMode + '/' + imageName;
+            localPath = (imgMode === 'thumb' ? configLocal.localDirectory.imageCacheThumb : configLocal.localDirectory.imageCacheFull) + '/' + imageName.replace('/','-');    
+        }
         if(await RNFS.exists(localPath)) {
             return {
                 status: 'ok',
