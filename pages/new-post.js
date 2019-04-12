@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
-        width: '25%'
+        width: '25%',
+        overflow: 'hidden'
     },
     lwEmoticonItemView: {
         padding: 2,
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
         height: 100
     },
     emoticonText: {
-        fontSize: 20,
+        fontSize: 18,
         lineHeight: 25,
         textAlign: 'center'
     },
@@ -205,7 +206,7 @@ class NewPostScreen extends React.Component {
         for(let i = 0; i < emoticonList.length; i++) {
             emotiTemp.push(
             <TouchableOpacity key={i+1} style={[styles.emoticonItemView, {borderColor: UISetting.colors.fontColor}]} onPress={()=>{this.setState({inputText: this.state.inputText + emoticonList[i]});}}>
-                <Text style={[styles.emoticonText, {color: UISetting.colors.fontColor}]}>{emoticonList[i]}</Text>
+                <Text style={[styles.emoticonText, {color: UISetting.colors.fontColor}]} numberOfLines={1}>{emoticonList[i]}</Text>
             </TouchableOpacity>);
         }
         let lwEmotiTemp = [];
