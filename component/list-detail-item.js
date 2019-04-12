@@ -106,12 +106,35 @@ class DetailListItem extends React.Component {
             }
             if(/((&gt;){2}|(>){2})(No\.){0,1}\d{1,11}/.test(content)) {
                 let contentDom = getHTMLDom(content.replace('\n','').replace('<br />', ''), this._onPressUrl);
-                displayData['threadContent'].push(
-                    <Text key={'text-' + i}  style={styles.quoteText}>{contentDom}</Text>
-                );
-                displayData['threadContent'].push(
-                    <ItemQuote key={'quote-' + i} id={content} navigation={this.props.navigation} po={this.props.po}></ItemQuote>
-                );
+                if(UISetting.nestedQuoteCount == 0) {
+                    displayData['threadContent'].push(
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        key={'touch-' + i}
+                        onPress={()=>{
+                            let dpId = content.match(/\d{1,11}/)[0];
+                            this.props.navigation.push('Details', {
+                                threadDetail: {
+                                    id: dpId, 
+                                    userid: 'null', 
+                                    content: 'null',
+                                    now: '2099-12-12 12:12:12'
+                                }
+                            })
+                        }}>
+                        <Text key={'text-' + i}  style={styles.quoteText}>{contentDom}</Text>
+                    </TouchableOpacity>);
+                }
+                else {
+                    displayData['threadContent'].push(
+                        <Text key={'text-' + i}  style={styles.quoteText}>{contentDom}</Text>
+                    );
+                }
+                if(UISetting.nestedQuoteCount !== 0) {
+                    displayData['threadContent'].push(
+                        <ItemQuote counter={0} key={'quote-' + i} id={content} navigation={this.props.navigation} po={this.props.po}></ItemQuote>
+                    );
+                }
             }
             else {
                 let contentDom = getHTMLDom(content, this._onPressUrl);

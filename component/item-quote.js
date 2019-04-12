@@ -61,7 +61,7 @@ class ItemQuote extends React.Component {
             content: [<Text key={-1} style={styles.quoteOriginalText}>正在获取...</Text>]
         }
     }
-    isUnmount = true
+    isUnmount = true;
     componentDidMount() {
         this.isUnmount = false;
         let dpId = this.props.id.match(/\d{1,11}/)[0];
@@ -99,7 +99,7 @@ class ItemQuote extends React.Component {
                         <Text key={'text-' + i}  style={styles.quoteText}>{contentDom}</Text>
                     );
                     tempContent.push(
-                        <ItemQuote key={'quote-' + i} id={content} navigation={this.props.navigation} po={this.props.po}></ItemQuote>
+                        <ItemQuote counter={this.props.counter + 1} key={'quote-' + i} id={content} navigation={this.props.navigation} po={this.props.po}></ItemQuote>
                     );
                 }
                 else {
@@ -166,6 +166,9 @@ class ItemQuote extends React.Component {
         })
     }
     render() {
+        if(this.props.counter >= UISetting.nestedQuoteCount) {
+            return null;
+        }
         return (
             <TouchableOpacity 
                 style={[styles.quoteView, {

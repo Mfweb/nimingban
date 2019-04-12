@@ -140,9 +140,10 @@ var configDynamic = {
 }
 
 var UISetting = {
-    fontScale: 1.0,
-    timeFormat: 0,
-    showFastScrollButton: true,
+    fontScale: 1.0, /* 字体缩放比例 */
+    timeFormat: 0, /* 时间格式 */
+    showFastScrollButton: true, /* 快速滚动按钮 */
+    nestedQuoteCount: 5, /* 嵌套引用层数 */
     defaultColors: {
         globalColor: '#FA7296', /* 全局主要颜色 */
         lightColor: '#FFE4E1', /* 淡化颜色，也是主要颜色 */

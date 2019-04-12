@@ -113,7 +113,10 @@ class SettingScreen extends React.Component {
             showThemeColorPicker: false,
             themeColorKeyNow: '',
 
-            showTimeFormat: false
+            showTimeFormat: false,
+
+            showNestedQuoteCount: false,
+            nestedQuoteCountString: UISetting.nestedQuoteCount
         };
     }
     static navigationOptions = ({ navigation }) => {
@@ -124,7 +127,7 @@ class SettingScreen extends React.Component {
             },
             headerTintColor: UISetting.colors.fontColor,
             headerBackTitle: null,
-            title: `${configBase.islandList[configDynamic.islandMode].displayName}(${navigation.getParam('name', '时间线')})`,
+            title: `粉岛-设置`,
             headerLeft: (
                 <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={params.openLDrawer} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
@@ -388,6 +391,8 @@ class SettingScreen extends React.Component {
                             </TouchableOpacity>
                         </View>
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+
+
                         <TouchableOpacity style={styles.settingItem} onPress={() => this.setState({ showTimeFormat: !this.state.showTimeFormat })}>
                             <View>
                                 <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
@@ -404,6 +409,35 @@ class SettingScreen extends React.Component {
                                     }}/>
                             </View>
                         </TouchableOpacity>
+                        <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+
+
+                        <TouchableOpacity style={styles.settingItem} onPress={() => this.setState({ showNestedQuoteCount: !this.state.showNestedQuoteCount })}>
+                            <View>
+                                <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
+                                    嵌套引用层数
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{this.state.nestedQuoteCountString}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={this.state.showNestedQuoteCount ? styles.fontSizeView : styles.displayNone}>
+                            <Slider
+                                style={{ marginLeft: 10, marginRight: 10 }}
+                                maximumValue={20}
+                                minimumValue={0}
+                                minimumTrackTintColor={UISetting.colors.linkColor}
+                                step={1}
+                                onValueChange={(value)=>{
+                                    UISetting.nestedQuoteCount = parseInt(value);
+                                    this.setState({
+                                        nestedQuoteCountString: UISetting.nestedQuoteCount
+                                    });
+                                    saveUISetting();
+                                }}
+                                value={UISetting.nestedQuoteCount}></Slider>
+                        </View>
                     </View>
 
 
