@@ -65,6 +65,9 @@ class FloatingScrollButton extends React.Component {
                     this.timeCounter = 0;
                     clearInterval(this.timer);
                     this.timer = null;
+                    if(this.isUnMount) {
+                        return;
+                    }
                     this.setState({
                         showx: false
                     });
