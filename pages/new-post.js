@@ -12,23 +12,23 @@ import { getUserCookieList, setUserCookie } from '../modules/cookie-manager'
 import { configDynamic, UISetting } from '../modules/config';
 
 const emoticonList = ["|∀ﾟ", "(´ﾟДﾟ`)", "(;´Д`)", "(｀･ω･)", "(=ﾟωﾟ)=",
-"| ω・´)", "|-` )", "|д` )", "|ー` )", "|∀` )",
-"(つд⊂)", "(ﾟДﾟ≡ﾟДﾟ)", "(＾o＾)ﾉ", "(|||ﾟДﾟ)", "( ﾟ∀ﾟ)",
-"( ´∀`)", "(*´∀`)", "(*ﾟ∇ﾟ)", "(*ﾟーﾟ)", "(　ﾟ 3ﾟ)",
-"( ´ー`)", "( ・_ゝ・)", "( ´_ゝ`)", "(*´д`)", "(・ー・)",
-"(・∀・)", "(ゝ∀･)", "(〃∀〃)", "(*ﾟ∀ﾟ*)", "( ﾟ∀。)",
-"( `д´)", "(`ε´ )", "(`ヮ´ )", "σ`∀´)", " ﾟ∀ﾟ)σ",
-"ﾟ ∀ﾟ)ノ", "(╬ﾟдﾟ)", "(|||ﾟдﾟ)", "( ﾟдﾟ)", "Σ( ﾟдﾟ)",
-"( ;ﾟдﾟ)", "( ;´д`)", "(　д ) ﾟ ﾟ", "( ☉д⊙)", "(((　ﾟдﾟ)))",
-"( ` ・´)", "( ´д`)", "( -д-)", "(>д<)", "･ﾟ( ﾉд`ﾟ)",
-"( TдT)", "(￣∇￣)", "(￣3￣)", "(￣ｰ￣)", "(￣ . ￣)",
-"(￣皿￣)", "(￣艸￣)", "(￣︿￣)", "(￣︶￣)", "ヾ(´ωﾟ｀)",
-"(*´ω`*)", "(・ω・)", "( ´・ω)", "(｀・ω)", "(´・ω・`)",
-"(`・ω・´)", "( `_っ´)", "( `ー´)", "( ´_っ`)", "( ´ρ`)",
-"( ﾟωﾟ)", "(oﾟωﾟo)", "(　^ω^)", "(｡◕∀◕｡)", "/( ◕‿‿◕ )\\",
-"ヾ(´ε`ヾ)", "(ノﾟ∀ﾟ)ノ", "(σﾟдﾟ)σ", "(σﾟ∀ﾟ)σ", "|дﾟ )",
-"┃電柱┃", "ﾟ(つд`ﾟ)", "ﾟÅﾟ )　", "⊂彡☆))д`)", "⊂彡☆))д´)",
-"⊂彡☆))∀`)", "(´∀((☆ミつ"];
+    "| ω・´)", "|-` )", "|д` )", "|ー` )", "|∀` )",
+    "(つд⊂)", "(ﾟДﾟ≡ﾟДﾟ)", "(＾o＾)ﾉ", "(|||ﾟДﾟ)", "( ﾟ∀ﾟ)",
+    "( ´∀`)", "(*´∀`)", "(*ﾟ∇ﾟ)", "(*ﾟーﾟ)", "(　ﾟ 3ﾟ)",
+    "( ´ー`)", "( ・_ゝ・)", "( ´_ゝ`)", "(*´д`)", "(・ー・)",
+    "(・∀・)", "(ゝ∀･)", "(〃∀〃)", "(*ﾟ∀ﾟ*)", "( ﾟ∀。)",
+    "( `д´)", "(`ε´ )", "(`ヮ´ )", "σ`∀´)", " ﾟ∀ﾟ)σ",
+    "ﾟ ∀ﾟ)ノ", "(╬ﾟдﾟ)", "(|||ﾟдﾟ)", "( ﾟдﾟ)", "Σ( ﾟдﾟ)",
+    "( ;ﾟдﾟ)", "( ;´д`)", "(　д ) ﾟ ﾟ", "( ☉д⊙)", "(((　ﾟдﾟ)))",
+    "( ` ・´)", "( ´д`)", "( -д-)", "(>д<)", "･ﾟ( ﾉд`ﾟ)",
+    "( TдT)", "(￣∇￣)", "(￣3￣)", "(￣ｰ￣)", "(￣ . ￣)",
+    "(￣皿￣)", "(￣艸￣)", "(￣︿￣)", "(￣︶￣)", "ヾ(´ωﾟ｀)",
+    "(*´ω`*)", "(・ω・)", "( ´・ω)", "(｀・ω)", "(´・ω・`)",
+    "(`・ω・´)", "( `_っ´)", "( `ー´)", "( ´_っ`)", "( ´ρ`)",
+    "( ﾟωﾟ)", "(oﾟωﾟo)", "(　^ω^)", "(｡◕∀◕｡)", "/( ◕‿‿◕ )\\",
+    "ヾ(´ε`ヾ)", "(ノﾟ∀ﾟ)ノ", "(σﾟдﾟ)σ", "(σﾟ∀ﾟ)σ", "|дﾟ )",
+    "┃電柱┃", "ﾟ(つд`ﾟ)", "ﾟÅﾟ )　", "⊂彡☆))д`)", "⊂彡☆))д´)",
+    "⊂彡☆))∀`)", "(´∀((☆ミつ"];
 
 const styles = StyleSheet.create({
     displayNone: {
@@ -164,12 +164,12 @@ class NewPostScreen extends React.Component {
                 backgroundColor: UISetting.colors.globalColor
             },
             headerTintColor: UISetting.colors.fontColor,
-            title: `${modeTitleText[nMode]}-` + ( nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?') ),
+            title: `${modeTitleText[nMode]}-` + (nMode == 1 ? `No.${navigation.getParam('replyId', '0')}` : nMode == 2 ? navigation.getParam('fname', '错误') : navigation.getParam('repId', '?')),
             headerRight: (
                 <View style={styles.headerRightView}>
                     <TouchableOpacity style={styles.headerCookieView} onPress={params.openCookieSelect} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                         <MDIcon name={'cookie'} size={24} color={UISetting.colors.fontColor} />
-                        <Text style={[styles.headerCookieText, {color: UISetting.colors.fontColor}]}>{userCookieText}</Text>
+                        <Text style={[styles.headerCookieText, { color: UISetting.colors.fontColor }]}>{userCookieText}</Text>
                     </TouchableOpacity>
                 </View>
             )
@@ -201,20 +201,20 @@ class NewPostScreen extends React.Component {
     /**
      * 初始化颜文字和芦苇娘表情包ViewMap
      */
-    _initEmoticonList = ()=>{
+    _initEmoticonList = () => {
         let emotiTemp = [];
-        for(let i = 0; i < emoticonList.length; i++) {
+        for (let i = 0; i < emoticonList.length; i++) {
             emotiTemp.push(
-            <TouchableOpacity key={i+1} style={[styles.emoticonItemView, {borderColor: UISetting.colors.fontColor}]} onPress={()=>{this.setState({inputText: this.state.inputText + emoticonList[i]});}}>
-                <Text style={[styles.emoticonText, {color: UISetting.colors.fontColor}]} numberOfLines={1}>{emoticonList[i]}</Text>
-            </TouchableOpacity>);
+                <TouchableOpacity key={i + 1} style={[styles.emoticonItemView, { borderColor: UISetting.colors.fontColor }]} onPress={() => { this.setState({ inputText: this.state.inputText + emoticonList[i] }); }}>
+                    <Text style={[styles.emoticonText, { color: UISetting.colors.fontColor }]} numberOfLines={1}>{emoticonList[i]}</Text>
+                </TouchableOpacity>);
         }
         let lwEmotiTemp = [];
-        for(let i = 1; i < 107; i++) {
+        for (let i = 1; i < 107; i++) {
             lwEmotiTemp.push(
-            <TouchableOpacity key={`lw${i}`} style={[styles.lwEmoticonItemView, {borderColor: UISetting.colors.fontColor}]} onPress={()=>{this._downloadLw(i.toString())}}>
-                <Image style={{width: '100%', height: '100%'}} resizeMode={'contain'} source={{url: `https://amember.mfweb.top/adao/luwei/lw${i}.png`}}></Image>
-            </TouchableOpacity>);
+                <TouchableOpacity key={`lw${i}`} style={[styles.lwEmoticonItemView, { borderColor: UISetting.colors.fontColor }]} onPress={() => { this._downloadLw(i.toString()) }}>
+                    <Image style={{ width: '100%', height: '100%' }} resizeMode={'contain'} source={{ url: `https://amember.mfweb.top/adao/luwei/lw${i}.png` }}></Image>
+                </TouchableOpacity>);
         }
         this.setState({
             EmoticonViews: emotiTemp,
@@ -223,16 +223,16 @@ class NewPostScreen extends React.Component {
     }
     _downloadLw = (index) => {
         let url = `https://amember.mfweb.top/adao/luwei/lw${index}.png`
-        getImage('customize', url, `lw${index}.png`).then((res)=>{
-            if(res.status == 'ok') {
+        getImage('customize', url, `lw${index}.png`).then((res) => {
+            if (res.status == 'ok') {
                 this.setState({
                     imageWatermark: false,
                     showBottomBox: false,
-                    selectdeImage: {uri: `file://${res.path}`}
+                    selectdeImage: { uri: `file://${res.path}` }
                 });
             }
             else {
-                this.TopModal.showMessage('错误', res.errmsg,'确认');
+                this.TopModal.showMessage('错误', res.errmsg, '确认');
                 this.setState({
                     showBottomBox: false
                 });
@@ -258,9 +258,9 @@ class NewPostScreen extends React.Component {
      */
     _getUseCookieMark = async () => {
         let cookieList = await getUserCookieList();
-        if(cookieList.length > 0) {
+        if (cookieList.length > 0) {
             cookieList.forEach(item => {
-                if(`userhash=${item.value}` == configDynamic.userCookie[configDynamic.islandMode]) {
+                if (`userhash=${item.value}` == configDynamic.userCookie[configDynamic.islandMode]) {
                     this.props.navigation.setParams({
                         userCookieText: item.mark
                     });
@@ -273,13 +273,13 @@ class NewPostScreen extends React.Component {
      */
     _openCookieSelect = async () => {
         let cookieList = await getUserCookieList();
-        if(cookieList.length === 0) {
-            this.TopModal.showMessage('错误', '你没有饼干，请先在饼干管理器导入饼干','确认');
+        if (cookieList.length === 0) {
+            this.TopModal.showMessage('错误', '你没有饼干，请先在饼干管理器导入饼干', '确认');
             return;
         }
         let cookieNameList = [];
         cookieList.forEach(item => {
-            if(`userhash=${item.value}` == configDynamic.userCookie[configDynamic.islandMode]) {
+            if (`userhash=${item.value}` == configDynamic.userCookie[configDynamic.islandMode]) {
                 cookieNameList.push(`${item.mark}✔`);
             }
             else {
@@ -287,14 +287,14 @@ class NewPostScreen extends React.Component {
             }
         });
         this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, '选择要使用的饼干',
-        cookieNameList,
-        (index) => {
-            this.ActionSheet.closeActionSheet();
-            setUserCookie(cookieList[index].value);
-            this.props.navigation.setParams({
-                userCookieText: cookieList[index].mark
+            cookieNameList,
+            (index) => {
+                this.ActionSheet.closeActionSheet();
+                setUserCookie(cookieList[index].value);
+                this.props.navigation.setParams({
+                    userCookieText: cookieList[index].mark
+                });
             });
-        });
     }
     /**
      * 键盘打开或改变
@@ -328,11 +328,11 @@ class NewPostScreen extends React.Component {
      */
     _startSend = async () => {
         Keyboard.dismiss();
-        if(this._sending){
+        if (this._sending) {
             return;
         }
-        if(!this.state.selectdeImage && this.state.inputText.length <= 0) {
-            this.TopModal.showMessage('错误', '请输入内容','确认');
+        if (!this.state.selectdeImage && this.state.inputText.length <= 0) {
+            this.TopModal.showMessage('错误', '请输入内容', '确认');
             return;
         }
         this._sending = true;
@@ -342,10 +342,10 @@ class NewPostScreen extends React.Component {
         });
         let res = await replyNewThread(
             this.mode,
-            this.mode == 1 ? this.replyId: this.fid,
+            this.mode == 1 ? this.replyId : this.fid,
             this.state.inputText,
-            '','','',
-            this.state.selectdeImage?this.state.selectdeImage.uri:null,
+            '', '', '',
+            this.state.selectdeImage ? this.state.selectdeImage.uri : null,
             this.state.imageWatermark,
             this._setProgress
         );
@@ -353,19 +353,19 @@ class NewPostScreen extends React.Component {
         this.setState({
             sending: false,
         });
-        if(res.status == 'ok') {
-            if(this.props.navigation.getParam('mode', 1) == 1) {
-                history.addNewHistory('reply', this.props.navigation.getParam('threadDetail', 'null'),  Date.parse(new Date()))
-                .then(()=>{
-                    this.props.navigation.goBack();
-                });
+        if (res.status == 'ok') {
+            if (this.props.navigation.getParam('mode', 1) == 1) {
+                history.addNewHistory('reply', this.props.navigation.getParam('threadDetail', 'null'), Date.parse(new Date()))
+                    .then(() => {
+                        this.props.navigation.goBack();
+                    });
             }
             else {
                 this.props.navigation.goBack();
             }
         }
         else {
-            this.TopModal.showMessage('错误', res.errmsg,'确认');
+            this.TopModal.showMessage('错误', res.errmsg, '确认');
             this._setProgress(0);
         }
     }
@@ -375,18 +375,18 @@ class NewPostScreen extends React.Component {
      * @param {object} imgData 选择或拍照的数据
      */
     _selectImageHandle(imgData) {
-        this.TopModal.showMessage('提示', '图片添加水印？', '是', ()=>{
-            this.TopModal.closeModal(()=>{
+        this.TopModal.showMessage('提示', '图片添加水印？', '是', () => {
+            this.TopModal.closeModal(() => {
                 this.setState({
                     imageWatermark: true,
-                    selectdeImage: {uri: `file://${imgData}`}
+                    selectdeImage: { uri: `file://${imgData}` }
                 });
             });
-        }, '否', ()=>{
-            this.TopModal.closeModal(()=>{
+        }, '否', () => {
+            this.TopModal.closeModal(() => {
                 this.setState({
                     imageWatermark: false,
-                    selectdeImage: {uri: `file://${imgData}`}
+                    selectdeImage: { uri: `file://${imgData}` }
                 });
             });
         });
@@ -415,11 +415,11 @@ class NewPostScreen extends React.Component {
         this.setState({
             showBottomBox: false
         });
-        this.ActionSheet.showActionSheet( Dimensions.get('window').width / 3 - 12 + 12, Dimensions.get('window').height - 50,
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width / 3 - 12 + 12, this.bodyViewBottom,
             '选择图片',
-            ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘'], 
+            ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘'],
             (index) => {
-                this.ActionSheet.closeActionSheet(()=>{
+                this.ActionSheet.closeActionSheet(() => {
                     switch (index) {
                         case 0:
                             this._selectImageFromCamera();
@@ -428,11 +428,11 @@ class NewPostScreen extends React.Component {
                             this._selectImageFromLibrary();
                             break;
                         case 2:
-                            this.TopModal.showMessage('错误', '未实现','确认');
+                            this.TopModal.showMessage('错误', '未实现', '确认');
                             break;
                         case 3:
                             Keyboard.dismiss();
-                            if(this.state.showBottomBox && this.state.bottomBoxMode != 1) {
+                            if (this.state.showBottomBox && this.state.bottomBoxMode != 1) {
                                 this.setState({
                                     bottomBoxMode: 1
                                 });
@@ -451,8 +451,8 @@ class NewPostScreen extends React.Component {
     /**
      * 拍照
      */
-    _selectImageFromCamera = async() => {
-        try{
+    _selectImageFromCamera = async () => {
+        try {
             let pickerImage = await ImagePicker.openCamera({
                 mediaType: 'photo',
                 cropping: false,
@@ -461,23 +461,23 @@ class NewPostScreen extends React.Component {
                 includeBase64: false,
                 compressImageQuality: 0.8
             });
-            if(!pickerImage) {
+            if (!pickerImage) {
                 return;
             }
-            if(pickerImage.size > (2 * 1024 * 1024)) {
-                this.TopModal.showMessage('错误', '图片大于2M，请重新选择','确认');
+            if (pickerImage.size > (2 * 1024 * 1024)) {
+                this.TopModal.showMessage('错误', '图片大于2M，请重新选择', '确认');
             }
             else {
                 this._selectImageHandle(pickerImage.path);
             }
-        }catch {
+        } catch {
         }
     }
     /**
      * 从图库中选择图片
      */
-    _selectImageFromLibrary = async() => {
-        try{
+    _selectImageFromLibrary = async () => {
+        try {
             let pickerImage = await ImagePicker.openPicker({
                 mediaType: 'photo',
                 cropping: false,
@@ -486,16 +486,16 @@ class NewPostScreen extends React.Component {
                 includeBase64: false,
                 compressImageQuality: 0.8
             });
-            if(!pickerImage) {
+            if (!pickerImage) {
                 return;
             }
-            if(pickerImage.size > (2 * 1024 * 1024)) {
-                this.TopModal.showMessage('错误', '图片大于2M，请重新选择','确认');
+            if (pickerImage.size > (2 * 1024 * 1024)) {
+                this.TopModal.showMessage('错误', '图片大于2M，请重新选择', '确认');
             }
             else {
                 this._selectImageHandle(pickerImage.path);
             }
-        }catch {
+        } catch {
         }
     }
     /**
@@ -503,7 +503,7 @@ class NewPostScreen extends React.Component {
      */
     _openEmoticon = () => {
         Keyboard.dismiss();
-        if(this.state.showBottomBox && this.state.bottomBoxMode != 0) {
+        if (this.state.showBottomBox && this.state.bottomBoxMode != 0) {
             this.setState({
                 bottomBoxMode: 0
             });
@@ -516,36 +516,47 @@ class NewPostScreen extends React.Component {
     }
 
     render() {
-        return(
-            <View style={[styles.pageView, {paddingBottom: this.state.bottomHeight}]}>
-                <TopModal ref={(ref)=>{this.TopModal=ref;}} maxHeight={this.state.displayHeight} />
-                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
-                <Animated.View style={[styles.progressView, { transform: [{ translateX: this.state.translateNow }]}]}/>
-                <View style={[styles.inputView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}
-                        onLayout={(e)=>{this.setState({displayHeight:e.nativeEvent.layout.height});}}>
+        return (
+            <View style={[styles.pageView, { paddingBottom: this.state.bottomHeight }]}>
+                <TopModal ref={(ref) => { this.TopModal = ref; }} maxHeight={this.state.displayHeight} />
+                <ActionSheet ref={(ref) => { this.ActionSheet = ref; }} />
+                <Animated.View style={[styles.progressView, { transform: [{ translateX: this.state.translateNow }] }]} />
+                <View
+                    style={[styles.inputView, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}
+                    onLayout={(e) => {
+                        this.setState({
+                            displayHeight: e.nativeEvent.layout.height
+                        });
+                        if (!this.bodyViewBottom) {
+                            this.bodyViewBottom = e.nativeEvent.layout.height + Header.HEIGHT
+                        }
+                    }}
+                >
                     <TextInput
                         value={this.state.inputText}
-                        style={[styles.inputText, {backgroundColor: UISetting.colors.threadBackgroundColor}]}
+                        style={[styles.inputText, { backgroundColor: UISetting.colors.threadBackgroundColor }]}
                         autoCapitalize='none'
                         autoComplete='off'
                         multiline={true}
                         placeholder='串内容'
-                        onChangeText={(text)=>{this.setState({inputText: text});}}
-                        />
+                        onChangeText={(text) => { this.setState({ inputText: text }); }}
+                    />
                 </View>
-                <SafeAreaView style={{backgroundColor: UISetting.colors.globalColor}}>
-                    <View style={[styles.toolsView, {backgroundColor: UISetting.colors.globalColor}]}>
+                <SafeAreaView style={{ backgroundColor: UISetting.colors.globalColor }}>
+                    <View style={[styles.toolsView, { backgroundColor: UISetting.colors.globalColor }]}>
                         <TouchableOpacity style={styles.toolsButton} onPress={this._openEmoticon}>
                             <Icon name={'emotsmile'} size={24} color={UISetting.colors.fontColor} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={this.state.selectdeImage?styles.displayNone:styles.toolsButton} onPress={this._selectImage}>
-                        <Icon name={'picture'} size={24} color={UISetting.colors.fontColor} />
-                            <Image resizeMode='cover' source={this.state.selectdeImage} style={this.state.selectdeImage?styles.selectedImg:styles.displayNone}/>
+                        <TouchableOpacity
+                            style={this.state.selectdeImage ? styles.displayNone : styles.toolsButton}
+                            onPress={this._selectImage}>
+                            <Icon name={'picture'} size={24} color={UISetting.colors.fontColor} />
+                            <Image resizeMode='cover' source={this.state.selectdeImage} style={this.state.selectdeImage ? styles.selectedImg : styles.displayNone} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={this.state.selectdeImage?styles.toolsButton:styles.displayNone} onPress={this._viewImage}>
-                            <Image resizeMode='cover' source={this.state.selectdeImage} style={styles.selectedImg}/>
+                        <TouchableOpacity style={this.state.selectdeImage ? styles.toolsButton : styles.displayNone} onPress={this._viewImage}>
+                            <Image resizeMode='cover' source={this.state.selectdeImage} style={styles.selectedImg} />
                             <TouchableOpacity onPress={this._removeImage} style={styles.deleteImage}>
                                 <Icon name={'close'} size={14} color={'red'} />
                             </TouchableOpacity>
@@ -556,17 +567,17 @@ class NewPostScreen extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={styles.toolsButton} onPress={this._startSend}>
-                            <Icon style={this.state.sending?styles.displayNone:{}} name={'paper-plane'} size={24} color={UISetting.colors.fontColor} />
-                            <ActivityIndicator style={this.state.sending?{}:styles.displayNone} color={UISetting.colors.fontColor} size='small'/>
+                            <Icon style={this.state.sending ? styles.displayNone : {}} name={'paper-plane'} size={24} color={UISetting.colors.fontColor} />
+                            <ActivityIndicator style={this.state.sending ? {} : styles.displayNone} color={UISetting.colors.fontColor} size='small' />
                         </TouchableOpacity>
                     </View>
-                    <ScrollView style={[this.state.showBottomBox?styles.bottomBoxView:styles.displayNone, {borderTopColor: UISetting.colors.defaultBackgroundColor}]}>
+                    <ScrollView style={[this.state.showBottomBox ? styles.bottomBoxView : styles.displayNone, { borderTopColor: UISetting.colors.defaultBackgroundColor }]}>
                         <View style={styles.bottomView}>
-                        {this.state.bottomBoxMode==0
-                        ?
-                        this.state.EmoticonViews
-                        :
-                        this.state.luweiEmoticonViews}
+                            {this.state.bottomBoxMode == 0
+                                ?
+                                this.state.EmoticonViews
+                                :
+                                this.state.luweiEmoticonViews}
                         </View>
                     </ScrollView>
                 </SafeAreaView>
@@ -576,4 +587,4 @@ class NewPostScreen extends React.Component {
 }
 
 
-export {NewPostScreen}
+export { NewPostScreen }
