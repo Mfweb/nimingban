@@ -137,7 +137,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
  */
 function getHTMLDom(htmlTextIn, aCallback = ()=>{}) {
     let outDom = _getHTMLDom(parseDOM(htmlTextIn), aCallback);
-    return <Text style={{fontSize: 20}}>{outDom}</Text>;
+    return <Text style={{fontSize: 20}} key={domKey++}>{outDom}</Text>;
 }
 /**
  * 将字符串中的链接转为超链接
