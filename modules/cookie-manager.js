@@ -1,5 +1,5 @@
-import { AsyncStorage } from 'react-native'
-import { configNetwork, configLocal, configDynamic } from './config'
+import AsyncStorage from '@react-native-community/async-storage';
+import { configLocal, configDynamic } from './config'
 
 /**
  * 将cookie字符串转为object

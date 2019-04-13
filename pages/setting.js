@@ -1,5 +1,6 @@
 import React from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Slider, Dimensions, Switch } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, Switch } from 'react-native'
+import Slider from '@react-native-community/slider';
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configNetwork, configDynamic, UISetting, saveUISetting } from '../modules/config'
@@ -46,6 +47,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
         paddingLeft: 15,
         paddingRight: 15
     },
@@ -501,7 +503,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 7)</Text>
+                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 10)</Text>
                             </View>
                         </TouchableOpacity>
                     </View>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import RNFS from 'react-native-fs';
-import { AsyncStorage } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 
 const configBase = {
     appMark: 'PinkAdao',

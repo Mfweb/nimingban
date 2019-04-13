@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage';
 import RNFS from 'react-native-fs';
 import { request, uploadFile } from './network'
 import { configNetwork, configLocal, configDynamic } from './config'

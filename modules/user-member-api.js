@@ -1,9 +1,8 @@
-import { AsyncStorage,Platform } from 'react-native'
 import RNFS from 'react-native-fs';
 import { getUrl } from './apis'
 import { request } from './network'
 import { setUserCookieFromString, getCookie, clearCookie } from './cookie-manager'
-import { configNetwork, configLocal, configDynamic } from './config'
+import { configNetwork, configLocal } from './config'
 
 /**
  * 检查Session是否有效
