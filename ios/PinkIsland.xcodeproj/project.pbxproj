@@ -59,7 +59,7 @@
 		8D19BDD42222B898005FB7DB /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D19BD562222B669005FB7DB /* QBImagePicker.framework */; };
 		8D19BDD52222B898005FB7DB /* QBImagePicker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D19BD562222B669005FB7DB /* QBImagePicker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D1CC54A221DE13B00C1AA32 /* scan-code.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8D1CC549221DE13B00C1AA32 /* scan-code.wav */; };
-		8D81D79522608B7D0059E69C /* tnnaii-h-island-c.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8D81D76122608B7D0059E69C /* tnnaii-h-island-c.mp3 */; };
+		8D245DFF226227910061DE9F /* tnnaii-h-island-c.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8D245DFE226227910061DE9F /* tnnaii-h-island-c.mp3 */; };
 		8DFEAFEE225FB0A200FCF41F /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DFEAFC1225FAE8B00FCF41F /* libRCTCameraRoll.a */; };
 		9F2D2129CAF742E38DF9E72A /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D633A2A1E734E57A5786DCE /* libRNCamera.a */; };
 		A4EC6C019FE04ED0AFA77216 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BB1A314BA9044FF918EEBE5 /* FontAwesome5_Regular.ttf */; };
@@ -514,8 +514,8 @@
 		8D19BD562222B669005FB7DB /* QBImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = QBImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D19BD9D2222B7BC005FB7DB /* RSKImageCropper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RSKImageCropper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1CC549221DE13B00C1AA32 /* scan-code.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "scan-code.wav"; path = "../sounds/scan-code.wav"; sourceTree = "<group>"; };
+		8D245DFE226227910061DE9F /* tnnaii-h-island-c.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "tnnaii-h-island-c.mp3"; path = "../sounds/tnnaii-h-island-c.mp3"; sourceTree = "<group>"; };
 		8D550F06FE8B44BFBF4197DE /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		8D81D76122608B7D0059E69C /* tnnaii-h-island-c.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "tnnaii-h-island-c.mp3"; path = "../../../../Downloads/tnnaii-h-island-c.mp3"; sourceTree = "<group>"; };
 		8DFEAFB6225FAE8A00FCF41F /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		9309C20C1BBA4E63BD69C28E /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		93E47BB2A60442DB9F17B2EC /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
@@ -750,9 +750,9 @@
 		6C17A3D7136C4E0099CCD123 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8D81D76122608B7D0059E69C /* tnnaii-h-island-c.mp3 */,
 				EDB60E07D39A4FBC8D8309F4 /* AntDesign.ttf */,
 				B1BF0E06EA854AB78DD83E79 /* Entypo.ttf */,
+				8D245DFE226227910061DE9F /* tnnaii-h-island-c.mp3 */,
 				9DD5DAB92C6046A5999E43F0 /* EvilIcons.ttf */,
 				93E47BB2A60442DB9F17B2EC /* Feather.ttf */,
 				33A2F7CBEBF3429BB62C4D6C /* FontAwesome.ttf */,
@@ -1577,7 +1577,7 @@
 				C654DE763AAD44D5AF744AFE /* MaterialIcons.ttf in Resources */,
 				665438196D4A4B4781D043B3 /* Octicons.ttf in Resources */,
 				6F682DE167D44B4E90AA524A /* SimpleLineIcons.ttf in Resources */,
-				8D81D79522608B7D0059E69C /* tnnaii-h-island-c.mp3 in Resources */,
+				8D245DFF226227910061DE9F /* tnnaii-h-island-c.mp3 in Resources */,
 				53EF4390F20E44DE892E357A /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
