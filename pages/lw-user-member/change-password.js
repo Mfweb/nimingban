@@ -26,7 +26,7 @@ class UIChangePassword extends React.Component {
         return (
             <View style={this.props.style}>
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
-                    <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
+                    <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     style={styles.userInputText}
@@ -44,7 +44,7 @@ class UIChangePassword extends React.Component {
                     onChangeText={this.props.onOldPasswordInput} />
                 </View>
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
-                    <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
+                    <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     ref={(input) => { this.newPasswordInput1 = input; }}
@@ -63,7 +63,7 @@ class UIChangePassword extends React.Component {
                     onChangeText={this.props.onNewPasswordInput1} />
                 </View>
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
-                    <Icon name={'lock'} size={24} color={UISetting.color.globalColor} />
+                    <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput 
                     ref={(input) => { this.newPasswordInput2 = input; }}
