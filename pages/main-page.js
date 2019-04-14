@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TextInput } from 'react-native'
+import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TextInput, Alert } from 'react-native'
 import { getThreadList, getImage, getForumList, getForumIDByName } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
@@ -13,6 +13,8 @@ import { Header } from 'react-navigation'
 import { getHTMLDom } from '../modules/html-decoder'
 import { FixedButton } from '../component/fixed-button'
 import { FloatingScrollButton } from '../component/floating-scroll-button'
+import { pinkCheckUpdate, pinkDoHotUpdate } from '../modules/hotupdate'
+
 
 const styles = StyleSheet.create({
     mainList: {
@@ -113,9 +115,28 @@ class HomeScreen extends React.Component {
             openLDrawer: this.props.navigation.openDrawer,
             menuFunctions: this._menuFunctions
         });
+        this._checkHotUpdate();
     }
     componentWillUnmount() {
         this.isUnmount = true;
+    }
+    _checkHotUpdate = async () => {
+        let checkRes = await pinkCheckUpdate();
+        if(checkRes.expired) { // 原生包需要更新
+            //Alert.alert('提示', 'debug: 原生包已过期或处于DEBUG模式');
+        }
+        else if(checkRes.upToDate) { // 原生包和JS包都已经最新
+            //Alert.alert('提示', 'debug: 原生包与JS包已经是最新');
+        }
+        else { // JS包需要更新
+            Alert.alert('提示', `检查到热更新版本:${checkRes.name},是否下载更新？\n${checkRes.description}`, [{
+                    text: '是', 
+                    onPress: ()=>{pinkDoHotUpdate(checkRes)}
+                }, {
+                    text: '否',
+                },
+            ]);
+        }
     }
     /**
      * 初始化历史数据库

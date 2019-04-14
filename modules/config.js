@@ -18,6 +18,12 @@ const configBase = {
             displayName: '里岛',
             logo: require('../imgs/ld.png')
         },*/
+    },
+    updateKey: {
+        "ios": {
+            "appId": 18392,
+            "appKey": "Mpnf7ChrW936WqzBIICeq7uxjZNrzToV"
+        }
     }
 }
 

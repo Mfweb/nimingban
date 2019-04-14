@@ -9,6 +9,7 @@ import { ActionSheet } from '../component/action-sheet'
 import ColorPicker from 'react-colorizer';
 import { UIButton } from '../component/uibutton'
 import SoundPlayer from 'react-native-sound'
+import packageJson from '../package.json';
 const timeFormatDisplayName = ['1天内相对时间', '原始格式', '始终绝对时间', '简化绝对'];
 
 const styles = StyleSheet.create({
@@ -503,7 +504,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 10)</Text>
+                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 14-({packageJson.version}))</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
