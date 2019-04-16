@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, FlatList, Animated, Dimensions, TouchableOpacity, StyleSheet } from 'react-native'
+import { Text, View, FlatList, Animated, Dimensions, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { history } from '../modules/history'
@@ -157,18 +157,38 @@ class HistoryManager extends React.Component {
     componentWillUnmount() {
         this.isUnmount = true;
     }
-    _changeMode = (mode) => {
+    _changeMode = (newMode) => {
         this.props.navigation.setParams({
-            mode: mode
+            mode: newMode
         });
-        if(mode !== this.state.mode) {
+        if(newMode !== this.state.mode) {
             this.setState({
-                mode: mode
+                mode: newMode,
+                page: 1,
+                historyList: []
             }, this._pullDownRefresh);
         }
     }
     loadingImages = Array();
-    _renderItem = ({ item, index }) => {
+    _renderItem = (data) => {
+        let { item, index } = data;
+        if(this.state.mode === 2) {
+            return (
+                <TouchableOpacity
+                    onPress={()=>{
+                        this.props.navigation.push('ImageViewer', {
+                            imageUrl: `file://${item.url}`
+                        });
+                    }}
+                    style={{width: '33%', height: 150, margin: '.1%'}}>
+                    <Image
+                        style={{width: '100%', height: 150}}
+                        resizeMode='cover'
+                        source={{uri: `file://${item.url}`}}
+                    />
+                </TouchableOpacity>
+            );
+        }
         if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
             this.loadingImages.push(index);
             let imgName = item.img + item.ext;
@@ -176,7 +196,7 @@ class HistoryManager extends React.Component {
                 if(this.isUnmount)return;
                 let imgUrl = require('../imgs/img-error.png');
                 if(res.status == 'ok') {
-                    imgUrl = {uri: 'file://' + res.path};
+                    imgUrl = {uri: `file://${res.path}`};
                 }
                 let tempList = this.state.historyList.slice();
                 tempList[index].localImage = imgUrl;
@@ -260,12 +280,14 @@ class HistoryManager extends React.Component {
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <FlatList
+                    numColumns={this.state.mode === 2 ? 3 : 1}
                     data={this.state.historyList}
                     extraData={this.state}
                     style={[styles.historyList, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}
                     onRefresh={this._pullDownRefresh}
                     refreshing={this.state.headerLoading}
-                    keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
+                    keyExtractor={(item, index) => { return `${item.id}-${index}` }}
+                    key={this.state.mode === 2 ? 3 : 1}
                     renderItem={this._renderItem}
                     ListFooterComponent={this._footerComponent}
                     onEndReachedThreshold={0.1}

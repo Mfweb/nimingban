@@ -43,6 +43,5 @@ async function pinkCheckUpdate() {
             },
         ]);
     }
-    return updateRes;
 }
 export { pinkCheckUpdate };

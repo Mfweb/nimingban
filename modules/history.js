@@ -64,7 +64,7 @@ function init() {
     return new Promise((resolve, reject)=>{
         __historySQLite = SQLite.openDatabase({name: 'history.db', location: 'default'}, async ()=>{
             //await __clearHistory('UserBrowseHistory');
-            //await __clearHistory('UserReplyHistory');
+            //await __clearHistory('UserImageHistory');
             await historyTableInit('UserBrowseHistory');
             await historyTableInit('UserReplyHistory');
             await historyTableInit('UserImageHistory');
@@ -94,13 +94,11 @@ function addNewHistory(mode, detail, time) {
                     }
                 }
                 tx.executeSql(sql, [], (tx, results) => {
-                    console.log(results);
                     resolve();
                 });
                 return;
             }
             tx.executeSql(`REPLACE INTO ${modeString[mode]}(island, tid, cache, addtime) VALUES('${configDynamic.islandMode}',${detail.id},'${JSON.stringify(detail)}',${time})`, [], (tx, results) => {
-                console.log(results);
                 resolve();
             });
         });
