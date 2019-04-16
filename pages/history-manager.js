@@ -8,6 +8,8 @@ import { MainListItem } from '../component/list-main-item'
 import { Toast } from '../component/toast'
 import { ListProcessView } from '../component/list-process-view'
 import { UISetting } from '../modules/config'
+import { ActionSheet } from '../component/action-sheet'
+import { Header } from 'react-navigation'
 
 const styles = StyleSheet.create({
     headerView: {
@@ -139,7 +141,7 @@ class HistoryManager extends React.Component {
             ),
             headerRight: (
                 <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                    onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                    onPress={async ()=>navigation.state.params.menuFunctions()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             )
@@ -151,6 +153,7 @@ class HistoryManager extends React.Component {
         this.isUnmount = false;
         this.props.navigation.setParams({
             changeMode: this._changeMode,
+            menuFunctions: this._menuFunctions
         });
         this._pullDownRefresh();
     }
@@ -168,6 +171,42 @@ class HistoryManager extends React.Component {
                 historyList: []
             }, this._pullDownRefresh);
         }
+    }
+    /**
+     * 右上角菜单
+     */
+    _menuFunctions = () =>{
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT,
+        '清空记录',
+        [
+            '清空浏览历史',
+            '清空回复历史',
+            '清空图片历史'
+        ],
+        (index) => {
+            this.ActionSheet.closeActionSheet(() => {
+                switch(index) {
+                    case 0:
+                        history.clearHistory('browse').then(()=>{
+                            this._pullDownRefresh();
+                            this.toast.show('清空完成');
+                        });
+                        break;
+                    case 1:
+                        history.clearHistory('reply').then(()=>{
+                            this._pullDownRefresh();
+                            this.toast.show('清空完成');
+                        });
+                        break;
+                    case 2:
+                        history.clearHistory('image').then(()=>{
+                            this._pullDownRefresh();
+                            this.toast.show('清空完成');
+                        });
+                        break;
+                }
+            });
+        });
     }
     loadingImages = Array();
     _renderItem = (data) => {
@@ -279,6 +318,7 @@ class HistoryManager extends React.Component {
             <View style={{flex: 1}}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
                 <Toast ref={(ref) => {this.toast = ref}}/>
+                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
                 <FlatList
                     numColumns={this.state.mode === 2 ? 3 : 1}
                     data={this.state.historyList}

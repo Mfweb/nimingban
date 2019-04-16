@@ -15,17 +15,29 @@ var __historySQLite = null;
  * 删掉某一个表
  * @param {string} tableName 表名
  */
-function __clearHistory(tableName) {
+function __deleteHistoryTable(tableName) {
     return new Promise((resolve, reject) => {
         __historySQLite.transaction((tx) => {
             tx.executeSql(`DROP TABLE ${tableName}`, [], (tx, results) => {
-                console.log(results);
                 resolve();
             });
         });
     });
 }
 
+/**
+ * 清空某一个表
+ * @param {string} mode 表名
+ */
+function clearHistory(mode) {
+    return new Promise((resolve, reject) => {
+        __historySQLite.transaction((tx) => {
+            tx.executeSql(`DELETE FROM ${modeString[mode]}`, [], (tx, results) => {
+                resolve(results);
+            });
+        });
+    });
+}
 /**
  * 创建某一个表
  * @param {string} tableName 表名
@@ -63,8 +75,6 @@ function cacheTableInit() {
 function init() {
     return new Promise((resolve, reject)=>{
         __historySQLite = SQLite.openDatabase({name: 'history.db', location: 'default'}, async ()=>{
-            //await __clearHistory('UserBrowseHistory');
-            //await __clearHistory('UserImageHistory');
             await historyTableInit('UserBrowseHistory');
             await historyTableInit('UserReplyHistory');
             await historyTableInit('UserImageHistory');
@@ -138,6 +148,7 @@ const history = {
     init: init,
     addNewHistory: addNewHistory,
     getHistory: getHistory,
-    getDetailFromCache: getDetailFromCache
+    getDetailFromCache: getDetailFromCache,
+    clearHistory: clearHistory
 }
 export { history }
