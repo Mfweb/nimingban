@@ -280,7 +280,7 @@ class SettingScreen extends React.Component {
                             <View style={styles.themeColorViewRow}>
                                 <TouchableOpacity style={styles.themeColorViewColumn} onPress={() => this.setState({ themeColorKeyNow: 'defaultBackgroundColor', showThemeColorPicker: true })}>
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
-                                        其他景色：
+                                        其他背景色：
                                     </Text>
                                     <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
                                 </TouchableOpacity>
