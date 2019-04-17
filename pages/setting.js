@@ -138,7 +138,7 @@ class SettingScreen extends React.Component {
             )
         }
     }
-
+    tnnaiiSound = null;
     componentDidMount() {
         this.props.navigation.setParams({
             openLDrawer: this.props.navigation.openDrawer,
@@ -146,15 +146,33 @@ class SettingScreen extends React.Component {
         this.setState({
             fontSizeString: `${UISetting.fontScale}x`
         });
-        SoundPlayer.setCategory('Playback');
-        this.tnnaiiSound = new SoundPlayer('tnnaii-h-island-c.mp3', SoundPlayer.MAIN_BUNDLE, (err) => {
-            if (err) {
-                console.log('load sound error:', err);
-            }
-        });
     }
     componentWillUnmount() {
-        this.tnnaiiSound.release();
+        this._soundRelease();
+    }
+    _soundInit() {
+        if(this.tnnaiiSound === null) {
+            SoundPlayer.setCategory('Playback');
+            this.tnnaiiSound = new SoundPlayer('tnnaii-h-island-c.mp3', SoundPlayer.MAIN_BUNDLE, (err) => {
+                if (err) {
+                    console.log('load sound error:', err);
+                }
+            });
+        }
+    }
+    _soundPlay() {
+        this._soundInit();
+        try {
+            this.tnnaiiSound.setVolume(1.0);
+            this.tnnaiiSound.play();
+        } catch {
+            
+        }
+    }
+    _soundRelease() {
+        if(this.tnnaiiSound !== null) {
+            this.tnnaiiSound.release();
+        }
     }
     _onFontSizeChange = (value) => {
         UISetting.fontScale = parseFloat(value.toFixed(1));
@@ -170,8 +188,7 @@ class SettingScreen extends React.Component {
         if (this.clickVersionCounter == 0) {
             setTimeout(() => {
                 if (this.clickVersionCounter >= 4) {
-                    this.tnnaiiSound.setVolume(1.0);
-                    this.tnnaiiSound.play();
+                    this._soundPlay();
                     this.clickVersionCounter = 0;
                 }
                 else {
