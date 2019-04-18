@@ -4,6 +4,7 @@ import { request, uploadFile } from './network'
 import { configNetwork, configLocal, configDynamic } from './config'
 import { getUserCookie, addUserCookieFromString } from './cookie-manager'
 import { history } from './history'
+import { func } from 'prop-types';
 /**
  * 检查并返回最新的host，
  * 免得之后30x出问题
@@ -104,6 +105,134 @@ async function getForumList(force = false) {
     }
 }
 
+/**
+ * 检查一个串是否已订阅
+ * @param {number} tid 串ID
+ */
+async function isSubscribed(tid) {
+    if(configDynamic.feedTidList[configDynamic.islandMode] === null) {
+        await getFeedList();
+    }
+    return configDynamic.feedTidList[configDynamic.islandMode].has(tid);
+}
+/**
+ * 获取当前使用的订阅ID
+ */
+async function getFeedID() {
+    if(configDynamic.feedID[configDynamic.islandMode] === null) {
+        configDynamic.feedID[configDynamic.islandMode] = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].feedID);
+        if(configDynamic.feedID[configDynamic.islandMode] === null) {
+            configDynamic.feedID[configDynamic.islandMode] = Math.random().toString(36).substr(2);
+            console.log(`new feedid:${configDynamic.feedID[configDynamic.islandMode]}`);
+            AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].feedID, configDynamic.feedID[configDynamic.islandMode]);
+        }
+    }
+    return configDynamic.feedID[configDynamic.islandMode];
+}
+/**
+ * 获取订阅列表
+ * @param {Number} feedid 订阅ID
+ * @param {Number} page 第几页(无效)
+ */
+async function getFeedList(feedid = null, page = 1) {
+    if(feedid === null) {
+        feedid = await getFeedID();
+    }
+    let url = await getUrl(configNetwork.apiUrl.getFeed + '&uuid=' + feedid);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    var response = await request(url, {
+        method: 'POST',
+        headers: {
+            'cookie': await getUserCookie() 
+        },
+        body: {
+            uuid: feedid,
+            page: page
+        },
+    });
+    if(response.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
+    }
+    try {
+        let resJSON = JSON.parse(response.body);
+        configDynamic.feedTidList[configDynamic.islandMode] = new Set();
+        resJSON.forEach(feedItem => {
+            configDynamic.feedTidList[configDynamic.islandMode].add(feedItem.id);
+        });
+        return { status: 'ok', res: resJSON };
+    } catch (error) {
+        return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
+    }
+}
+/**
+ * 添加订阅
+ * @param {number} tid 串ID
+ */
+async function addFeed(tid) {
+    let feedID = await getFeedID();
+    let url = await getUrl(configNetwork.apiUrl.addFeed);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    var response = await request(url, {
+        method: 'POST',
+        headers: {
+            'cookie': await getUserCookie() 
+        },
+        body: {
+            uuid: feedID,
+            tid: tid
+        },
+    });
+    if(response.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
+    }
+    try {
+        let resJSON = JSON.parse(response.body);
+        if(resJSON === '订阅大成功→_→') {
+            configDynamic.feedTidList[configDynamic.islandMode].add(tid);
+        }
+        return { status: 'ok', res: resJSON };
+    } catch (error) {
+        return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
+    }
+}
+/**
+ * 删除订阅
+ * @param {number} tid 串ID
+ */
+async function delFeed(tid) {
+    let feedID = await getFeedID();
+    let url = await getUrl(configNetwork.apiUrl.delFeed);
+    if(url === null) {
+        return { status: 'error', errmsg: '获取host失败' };
+    }
+    var response = await request(url, {
+        method: 'POST',
+        headers: {
+            'cookie': await getUserCookie() 
+        },
+        body: {
+            uuid: feedID,
+            tid: tid
+        },
+    });
+    if(response.stateCode != 200) {
+        return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
+    }
+    try {
+        let resJSON = JSON.parse(response.body);
+        if(resJSON === '取消订阅成功!') {
+            configDynamic.feedTidList[configDynamic.islandMode].delete(tid);
+        }
+        return { status: 'ok', res: resJSON };
+    } catch (error) {
+        console.warn(error);
+        return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
+    }
+}
 /**
  * 获取板块内串列表
  * @param {Number} fid 板块ID
@@ -476,5 +605,9 @@ export {
     realAnonymousGetCookie,
     getForumNameByID,
     getDetail,
-    getForumIDByName
+    getForumIDByName,
+    getFeedList,
+    addFeed,
+    delFeed,
+    isSubscribed
 };

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TextInput, Alert } from 'react-native'
-import { getThreadList, getImage, getForumList, getForumIDByName } from '../modules/apis'
+import { getThreadList, getImage, getForumList, getForumIDByName, getFeedList } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -116,6 +116,9 @@ class HomeScreen extends React.Component {
             menuFunctions: this._menuFunctions
         });
         pinkCheckUpdate();
+        getFeedList().then((res)=>{
+            console.log(res);
+        });
     }
     componentWillUnmount() {
         this.isUnmount = true;

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, Clipboard, TextInput } from 'react-native'
-import { getReplyList, getImage, getDetail } from '../modules/apis'
+import { getReplyList, getImage, getDetail, addFeed, isSubscribed, delFeed } from '../modules/apis'
 import { ListProcessView } from '../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
@@ -66,7 +66,8 @@ class DetailsScreen extends React.Component {
             replyList: Array(),
             page: 1,
             loadEnd: false,
-            footerMessage: ''
+            footerMessage: '',
+            isFeed: false
         };
     }
     poID = '';
@@ -106,9 +107,7 @@ class DetailsScreen extends React.Component {
             )
         };
     };
-    componentWillMount() {
-        
-    }
+
     componentDidMount() {
         this.quoteIds = '';
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
@@ -123,6 +122,11 @@ class DetailsScreen extends React.Component {
             replyList: [this.threadDetail]
         }, ()=>{
             this._pullDownRefresh(1, true);
+        });
+        isSubscribed(this.threadDetail.id).then((res)=>{
+            this.setState({
+                isFeed: res
+            });
         });
     }
     componentWillUnmount() {
@@ -184,7 +188,7 @@ class DetailsScreen extends React.Component {
         [
             '举报',
             '跳转',
-            '收藏',
+            this.state.isFeed?'取消收藏':'收藏',
         ],
         (index) => {
             this.ActionSheet.closeActionSheet(() => {
@@ -202,6 +206,32 @@ class DetailsScreen extends React.Component {
                         this._gotoPage();
                         break;
                     case 2:
+                        if(this.state.isFeed) {
+                            delFeed(this.threadDetail.id).then((res) => {
+                                if(res.status === 'ok') {
+                                    this.toast.show('取消成功(ノﾟ∀ﾟ)ノ');
+                                    this.setState({
+                                        isFeed: false
+                                    });
+                                }
+                                else {
+                                    this.toast.show('取消失败( ﾟ∀。)');
+                                }
+                            });
+                        }
+                        else {
+                            addFeed(this.threadDetail.id).then((res) => {
+                                if(res.status === 'ok') {
+                                    this.toast.show('订阅成功(ノﾟ∀ﾟ)ノ');
+                                    this.setState({
+                                        isFeed: true
+                                    });
+                                }
+                                else {
+                                    this.toast.show('订阅失败( ﾟ∀。)');
+                                }
+                            });
+                        }
                         break;
                 }
             });

@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
         marginLeft: 3,
         fontSize: 18
     },
+    displayNone: {
+        display: 'none'
+    }
 });
 
 class MainListItem extends React.Component {
@@ -159,7 +162,7 @@ class MainListItem extends React.Component {
                     Toast={this.props.Toast}
                     localUri={this.state.imgLocalUri}
                     imgUri={itemDetail.img + itemDetail.ext}/>
-                <View style={styles.mainListItemBottom}>
+                <View style={this.state.displayData['replayCountText']===undefined? styles.displayNone: styles.mainListItemBottom}>
                     <Icon name={'bubble'} size={24} color={UISetting.colors.globalColor} />
                     <Text style={[styles.mainListReplayCountText, {color: UISetting.colors.globalColor}]}>{this.state.displayData['replayCountText']}</Text>
                 </View>

@@ -56,6 +56,9 @@ const configNetwork = {
         getThreadReply: `/Api/thread?appid=${configBase.appMark}`,
         getDetail: `/Api/ref?appid=${configBase.appMark}`,
         getCookie: `/Api/getcookie?appid=${configBase.appMark}`,
+        getFeed: `/Api/feed?appid=${configBase.appMark}`,
+        addFeed: `/Api/addFeed?appid=${configBase.appMark}`,
+        delFeed: `/Api/delFeed?appid=${configBase.appMark}`,
         replyThread: `/Home/Forum/doReplyThread.html?appid=${configBase.appMark}`,
         newThread: `/Home/Forum/doPostThread.html?appid=${configBase.appMark}`
     },
@@ -96,14 +99,18 @@ const configLocal = {
             forumCache: 'ForumListLW',
             forumNameCache: 'ForumNameListLW',
             userCookie: 'UserCookieLW',
-            userCookieList: 'UserCookieListLW'
+            userCookieList: 'UserCookieListLW',
+            feedID: 'UserFeedIDLW',
+            feedIDList: 'UserFeedIDListLW'
         },
         'bt': {
             memberCookie: 'MemberCookiesBT',
             forumCache: 'ForumListBT',
             forumNameCache: 'ForumNameListBT',
             userCookie: 'UserCookieBT',
-            userCookieList: 'UserCookieListBT'
+            userCookieList: 'UserCookieListBT',
+            feedID: 'UserFeedIDBT',
+            feedIDList: 'UserFeedIDListBT'
         },
         'ld': {
             memberCookie: 'MemberCookiesLD',
@@ -142,6 +149,14 @@ var configDynamic = {
         'lw': null,
         'bt': null,
         'ld': null,
+    },
+    feedID: {
+        'lw': null,
+        'bt': null
+    },
+    feedTidList: {
+        'lw': null,
+        'bt': null
     }
 }
 
