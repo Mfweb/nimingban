@@ -4,7 +4,7 @@ import { request, uploadFile } from './network'
 import { configNetwork, configLocal, configDynamic } from './config'
 import { getUserCookie, addUserCookieFromString } from './cookie-manager'
 import { history } from './history'
-import { func } from 'prop-types';
+
 /**
  * 检查并返回最新的host，
  * 免得之后30x出问题
@@ -125,9 +125,57 @@ async function getFeedID() {
             configDynamic.feedID[configDynamic.islandMode] = Math.random().toString(36).substr(2);
             console.log(`new feedid:${configDynamic.feedID[configDynamic.islandMode]}`);
             AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].feedID, configDynamic.feedID[configDynamic.islandMode]);
+            addFeedID(configDynamic.feedID[configDynamic.islandMode]);
         }
     }
     return configDynamic.feedID[configDynamic.islandMode];
+}
+/**
+ * 添加订阅ID
+ * @param {string} feedid 订阅ID
+ */
+async function addFeedID(feedid) {
+    if(typeof feedid !== 'string' || feedid.length === 0) {
+        return { status: 'err', errmsg: '请输入正确的订阅ID' };
+    }
+    var feedIDList = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].feedIDList);
+    if(feedIDList === null) {
+        feedIDList = [];
+    }
+    else {
+        feedIDList = JSON.parse(feedIDList);
+    }
+    if(feedIDList.indexOf(feedid) >= 0) {
+        return { status: 'err', errmsg: '已存在' };
+    }
+    feedIDList.push(feedid);
+    await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].feedIDList, JSON.stringify(feedIDList));
+    return { status: 'ok' };
+}
+/**
+ * 移除订阅ID
+ * @param {string} feedid 订阅ID
+ */
+async function removeFeedID(feedid) {
+    if(typeof feedid !== 'string' || feedid.length === 0) {
+        return { status: 'err', errmsg: '请输入正确的订阅ID' };
+    }
+    var feedIDList = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].feedIDList);
+    if(feedIDList === null) {
+        return { status: 'err', errmsg: '找不到该订阅ID' };
+    }
+    feedIDList = JSON.parse(feedIDList);
+    if(feedIDList.indexOf(feedid) === -1) {
+        return { status: 'err', errmsg: '找不到该订阅ID' };;
+    }
+    feedIDList.splice(feedIDList.indexOf(feedid),1);
+    if(feedIDList.length === 0) {
+        feedIDList.push(Math.random().toString(36).substr(2));
+    }
+    configDynamic.feedID[configDynamic.islandMode] = feedIDList[0];
+    await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].feedID, configDynamic.feedID[configDynamic.islandMode]);
+    await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].feedIDList, JSON.stringify(feedIDList));
+    return { status: 'ok' };
 }
 /**
  * 获取订阅列表
@@ -609,5 +657,8 @@ export {
     getFeedList,
     addFeed,
     delFeed,
-    isSubscribed
+    isSubscribed,
+    getFeedID,
+    addFeedID,
+    removeFeedID
 };

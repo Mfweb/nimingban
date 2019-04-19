@@ -1,20 +1,15 @@
 import React from 'react'
-import { Text, View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, ScrollView, TextInput, Alert } from 'react-native'
-import { getThreadList, getImage, getForumList, getFeedList } from '../modules/apis'
-import { ListProcessView } from '../component/list-process-view'
+import { View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, TextInput, Text } from 'react-native'
+import { getImage, getFeedID, getFeedList, addFeedID, removeFeedID } from '../modules/apis'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configBase, configDynamic, configNetwork, UISetting, loadUISetting } from '../modules/config'
+import { configDynamic, configLocal, UISetting, loadUISetting } from '../modules/config'
 import { Toast } from '../component/toast'
-import { history } from '../modules/history'
 import { MainListItem } from '../component/list-main-item'
 import { ActionSheet } from '../component/action-sheet'
 import { Header } from 'react-navigation'
-import { getHTMLDom } from '../modules/html-decoder'
-import { FixedButton } from '../component/fixed-button'
 import { FloatingScrollButton } from '../component/floating-scroll-button'
-import { pinkCheckUpdate, pinkDoHotUpdate } from '../modules/hotupdate'
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 const styles = StyleSheet.create({
     mainList: {
@@ -25,10 +20,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
+    footerMessage: {
+        fontSize: 18,
+        textAlign: 'center',
+        padding: 8
+    },
 });
-
-
-
 
 class FeedScreen extends React.Component {
     constructor(props) {
@@ -77,28 +74,93 @@ class FeedScreen extends React.Component {
     componentWillUnmount() {
         this.isUnmount = true;
     }
-
+    /**
+     * 获取订阅ID列表
+     */
+    _getFeedIDList = async () => {
+        var temp = await AsyncStorage.getItem(configLocal.localStorageName[configDynamic.islandMode].feedIDList);
+        if(temp !== null) {
+            temp = JSON.parse(temp);
+        }
+        return temp;
+    }
     /**
      * 右上角菜单
      */
-    _menuFunctions = () =>{
+    _menuFunctions = async () =>{
+        let feedID = await getFeedID();
+        let feedIDList = await this._getFeedIDList();
+        if(feedIDList === null) feedIDList = [feedID];
+        else {
+            if(feedIDList.indexOf(feedID) === -1) feedIDList.push(feedID);
+        }
+        feedIDList.splice(feedIDList.indexOf(feedID), 1, `${feedID}✔`);
         this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, '订阅ID管理',
         [
             '添加订阅ID',
             '删除当前订阅ID',
-        ],
+        ].concat(feedIDList),
         (index) => {
             this.ActionSheet.closeActionSheet(() => {
                 switch(index) {
                     case 0:
+                        this._addNewFeedID(feedIDList);
                         break;
                     case 1:
+                        removeFeedID(feedID).then((res)=>{
+                            if(res.status !== 'ok') {
+                                this.TopModal.showMessage('提示', res.errmsg, '确认');
+                            }
+                            else {
+                                this.TopModal.showMessage('提示', '删除完成', '确认');
+                            }
+                        });
                         break;
+                    default:
+                        configDynamic.feedID[configDynamic.islandMode] = feedIDList[index - 2];
+                        AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].feedID, configDynamic.feedID[configDynamic.islandMode]);
+                        this._pullDownRefresh();
                 }
             });
         });
     }
- 
+    /**
+     * 添加订阅ID
+     */
+    _addNewFeedID = () => {
+        this.inputID = '';
+        this.TopModal.showMessage('输入订阅ID', 
+        (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
+            <TextInput 
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                autoFocus={true}
+                textAlignVertical='center'
+                returnKeyType={'done'}
+                keyboardType={'default'}
+                onSubmitEditing={()=>this.TopModal.closeModal(()=>{
+                    addFeedID(this.inputID).then((res)=>{
+                        if(res.status !== 'ok') {
+                            this.TopModal.showMessage('提示', res.errmsg, '确认');
+                        }
+                        else {
+                            this.TopModal.showMessage('提示', '添加完成', '确认');
+                        }
+                    });
+                })}
+                onChangeText={(text)=>{this.inputID = text;}}/>
+        </View>),'确认',
+        ()=>this.TopModal.closeModal(()=>{
+            addFeedID(this.inputID).then((res)=>{
+                if(res.status !== 'ok') {
+                    this.TopModal.showMessage('提示', res.errmsg, '确认');
+                }
+                else {
+                    this.TopModal.showMessage('提示', '添加完成', '确认');
+                }
+            });
+        }), '取消');
+    }
+
     loadingImages = Array();
     _renderItem = ({ item, index }) => {
         if( (item.img != '') && (!item.localImage) && (this.loadingImages.indexOf(index) < 0) ) {
@@ -130,7 +192,6 @@ class FeedScreen extends React.Component {
         }
         this.setState({ headerLoading: true }, () => {
             getFeedList().then((res) => {
-                console.log(res);
                 if(this.isUnmount)return;
                 if (res.status == 'ok') {
                     this.loadingImages = [];
@@ -174,6 +235,7 @@ class FeedScreen extends React.Component {
                     keyExtractor={(item, index) => {return item.id.toString() + '-' + index.toString()}}
                     renderItem={this._renderItem}
                     removeClippedSubviews={true}
+                    ListFooterComponent={<Text style={[styles.footerMessage, {color: UISetting.colors.lightFontColor}]}>没有啦</Text>}
                     onScroll={()=>{
                         if(UISetting.showFastScrollButton) {
                             this.ScrollButton.show(1500);
