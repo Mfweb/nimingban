@@ -294,6 +294,13 @@ class LeftDrawerNavigator extends React.Component {
             })
         ], 0);
     }
+    _gotoFeed = () => {
+        this.props.navigation._childrenNavigation.Home.reset([
+            NavigationActions.navigate({
+                routeName: 'FeedScreen',
+            })
+        ], 0);
+    }
     /**
      * 板块分组
      */
@@ -452,7 +459,7 @@ class LeftDrawerNavigator extends React.Component {
                         </View>
 
                         <View style={styles.bottomToolsItem}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={this._gotoFeed}>
                                 <Icon name={'star'} size={32} color={UISetting.colors.fontColor} />
                             </TouchableOpacity>
                         </View>

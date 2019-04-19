@@ -132,7 +132,7 @@ class MainListItemHeader extends React.Component {
 
                     <View style={styles.mainListItemHeaderL2R}>
                         <Text style={displayData['fName'] ?styles.mainListItemForumName: styles.displayNone }>{displayData['fName']}</Text>
-                        <Text style={itemDetail.sage == '0' ? styles.displayNone : styles.mainListItemSAGE}>SAGE</Text>
+                        <Text style={itemDetail.sage === '1' ? styles.mainListItemSAGE : styles.displayNone}>SAGE</Text>
                     </View>
                 </View>
             </View>

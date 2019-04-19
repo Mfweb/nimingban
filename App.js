@@ -17,6 +17,7 @@ import { NewPostScreen } from './pages/new-post'
 import { HistoryManager } from './pages/history-manager'
 import { SettingScreen } from './pages/setting'
 import { UISetting } from './modules/config'
+import { FeedScreen } from './pages/feed'
 
 // 串浏览页面
 const MainStackNavigator = createStackNavigator({
@@ -32,6 +33,8 @@ const MainStackNavigator = createStackNavigator({
     WebView: { screen: PinkWebView },
     // 历史
     HistoryManager: { screen: HistoryManager },
+    // 订阅
+    FeedScreen: { screen: FeedScreen }
 }, {
     initialRouteName: 'Home',
     //顶栏配置
