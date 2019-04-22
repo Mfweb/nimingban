@@ -10,7 +10,7 @@ import SoundPlayer from 'react-native-sound'
 import { getUserCookieList, addUserCookieList, removeUserCookieList, setUserCookie } from '../modules/cookie-manager'
 import { UIButton } from '../component/uibutton'
 import { NavigationActions } from 'react-navigation'
-import { realAnonymousGetCookie } from '../modules/apis'
+import { realAnonymousGetCookie } from '../modules/api/ano/cookie'
 import ImagePicker from 'react-native-image-crop-picker';
 import JPEG from 'jpeg-js';
 import JSQR from 'jsqr';

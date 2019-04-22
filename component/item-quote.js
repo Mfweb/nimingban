@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
-import { getDetail } from '../modules/apis'
+import { getDetail } from '../modules/api/ano/thread'
 import { getHTMLDom } from '../modules/html-decoder'
 import { converDateTime } from '../modules/date-time'
 import { UISetting } from '../modules/config'

@@ -1,8 +1,7 @@
 import RNFS from 'react-native-fs';
-import { getUrl } from './apis'
-import { request } from './network'
-import { setUserCookieFromString, getCookie, clearCookie } from './cookie-manager'
-import { configNetwork, configLocal } from './config'
+import { request, getUrl } from '../network'
+import { setUserCookieFromString, getCookie, clearCookie } from '../../cookie-manager'
+import { configNetwork, configLocal } from '../../config'
 
 /**
  * 检查Session是否有效

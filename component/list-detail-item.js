@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { getImage } from '../modules/apis'
+import { getImage } from '../modules/api/image'
 import { getHTMLDom } from '../modules/html-decoder'
 import { MainListImage } from './list-image-view'
 import { MainListItemHeader } from './list-header'

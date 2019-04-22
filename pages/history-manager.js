@@ -3,7 +3,7 @@ import { Text, View, FlatList, Animated, Dimensions, TouchableOpacity, StyleShee
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import { history } from '../modules/history'
-import { getImage } from '../modules/apis'
+import { getImage } from '../modules/api/image'
 import { MainListItem } from '../component/list-main-item'
 import { Toast } from '../component/toast'
 import { ListProcessView } from '../component/list-process-view'

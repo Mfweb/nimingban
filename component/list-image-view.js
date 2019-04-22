@@ -1,7 +1,7 @@
 import React from 'react'
 import { Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import { ImageProcessView } from '../component/list-process-view'
-import { getImage } from '../modules/apis'
+import { getImage } from '../modules/api/image'
 import { history } from '../modules/history'
 
 const styles = StyleSheet.create({

@@ -1,6 +1,6 @@
 import CookieManager from 'react-native-cookies'
-import { configNetwork } from './config'
-import { saveCookie, getCookie } from './cookie-manager'
+import { saveCookie } from '../cookie-manager'
+import { configNetwork, configDynamic } from '../config'
 
 /**
  * 异步请求
@@ -162,5 +162,95 @@ function uploadFile(url, img, imgKey, option = {}) {
             _request(url, option, img, imgKey);
         } );
     });
-} 
-export { request, uploadFile }
+}
+
+/**
+ * 检查并返回最新的host，
+ * 免得之后30x出问题
+ */
+async function checkRedirect() {
+    // 如果不支持30x，直接返回固定地址
+    if( !configNetwork.baseUrl[configDynamic.islandMode].useRedirect ) {
+        return configNetwork.baseUrl[configDynamic.islandMode].base;
+    }
+    // 已经拿到了跳转之后的地址
+    if(configDynamic.apiRedirectURL[configDynamic.islandMode] != null) {
+        return configDynamic.apiRedirectURL[configDynamic.islandMode];
+    }
+    console.log('get new redirect');
+    var response = await request(configNetwork.baseUrl[configDynamic.islandMode].base);
+    if(response.stateCode != 200) {
+        console.warn('get redirect error');
+        return null;
+    }
+    if(response.responseURL.indexOf('/Forum')) {
+        configDynamic.apiRedirectURL[configDynamic.islandMode] = response.responseURL.replace('/Forum', '');
+        return configDynamic.apiRedirectURL[configDynamic.islandMode];
+    }
+    return null;
+}
+
+/**
+ * 拼接url
+ * @param {string} urlLink url参数
+ */
+async function getUrl(urlLink) {
+    let url = await checkRedirect();
+    return url===null?null:(url+urlLink);
+}
+
+/**
+ * 获取图片CDN
+ */
+async function getImageCDN() {
+    if(configDynamic.imageCDNURL[configDynamic.islandMode] == null) {
+        console.log('get new image cdn url');
+        let url = await getUrl(configNetwork.apiUrl.getImageCDN);
+        if(url === null) {
+            return null;
+        }
+        var response = await request(url);
+        if(response.stateCode != 200) {
+            return null;
+        }
+        try {
+            let cdnList = JSON.parse(response.body);
+            let maxRate = {url: 'https://nmbimg.fastmirror.org/', rate: 0};
+            cdnList.forEach(item => {
+                if(item.rate > maxRate.rate) {
+                    maxRate = item;
+                }
+            });
+            configDynamic.imageCDNURL[configDynamic.islandMode] = maxRate.url;
+            return configDynamic.imageCDNURL[configDynamic.islandMode];
+        }catch(error) {
+            return null;
+        }
+    }
+    else {
+        return configDynamic.imageCDNURL[configDynamic.islandMode];
+    }
+}
+
+export {
+    /**
+     * 网络请求
+     */
+    request,
+    /**
+     * 上传文件
+     */
+    uploadFile,
+    /**
+     * 检查并返回最新的host
+     */
+    checkRedirect,
+    /**
+     * 通过host拼接URL
+     */
+    getUrl,
+    /**
+     * getImageCDN
+     */
+    getImageCDN
+}
