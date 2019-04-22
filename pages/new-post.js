@@ -3,7 +3,8 @@ import { Text, View, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import MDIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { TopModal } from '../component/top-modal'
-import { replyNewThread, getImage } from '../modules/apis'
+import { replyNewThread } from '../modules/api/ano/thread'
+import { getImage } from '../modules/api/image'
 import { ActionSheet } from '../component/action-sheet'
 import ImagePicker from 'react-native-image-crop-picker';
 import { history } from '../modules/history'

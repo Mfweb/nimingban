@@ -3,7 +3,7 @@ import { View, Image, TextInput, TouchableOpacity, Keyboard } from 'react-native
 import { ImageProcessView } from '../../component/list-process-view'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
-import { checkSession, getVerifyCode, forgotPassword } from '../../modules/user-member-api'
+import { checkSession, getVerifyCode, forgotPassword } from '../../modules/api/ano/user-member'
 import { UIButton } from '../../component/uibutton'
 import { styles } from './user-member-styles'
 import { UISetting } from '../../modules/config'

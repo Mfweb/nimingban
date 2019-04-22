@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, StyleSheet, FlatList, Dimensions, TouchableOpacity, SafeAreaView, TextInput, Text } from 'react-native'
-import { getImage, getFeedID, getFeedList, addFeedID, removeFeedID } from '../modules/apis'
+import { getImage } from '../modules/api/image'
+import { getFeedID, getFeedList, addFeedID, removeFeedID } from '../modules/api/ano/feed'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { configDynamic, configLocal, UISetting, loadUISetting } from '../modules/config'

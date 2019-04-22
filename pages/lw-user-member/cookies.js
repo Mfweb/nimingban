@@ -4,7 +4,16 @@ import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
-import { checkSession, getVerifyCode, logout, getUserCookies, deleteUserCookie, getNewUserCookie, getVerifiedInfo, getEnableUserCookie } from '../../modules/user-member-api'
+import { 
+    checkSession, 
+    getVerifyCode, 
+    logout, 
+    getUserCookies, 
+    deleteUserCookie, 
+    getNewUserCookie, 
+    getVerifiedInfo, 
+    getEnableUserCookie 
+} from '../../modules/api/ano/user-member'
 import { UIButton } from '../../component/uibutton'
 import { ActionSheet } from '../../component/action-sheet'
 import { styles } from './user-member-styles'
