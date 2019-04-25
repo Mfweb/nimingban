@@ -411,9 +411,13 @@ class DetailsScreen extends React.Component {
                 return;
             }
             if (res.status === 'ok') {
-                this.props.navigation.setParams({
-                    threadDetail: res.res
-                });
+                if(startPage === 1) {
+                    this.props.navigation.setParams({
+                        threadDetail: res.res
+                    });
+                    this.threadDetail = res.res;
+                    this.poID = this.threadDetail.userid;
+                }
                 if(!isReply) {
                     this.localReplyCount = res.res.replys.length >= 19? 0: res.res.replys.length;
                     if(res.res.replys.length > 0 && res.res.replys[0].id==9999999 && this.localReplyCount > 0) {

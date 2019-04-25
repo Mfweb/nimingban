@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     },
     themeColorValueView: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     themeColorRect: {
         height: 18,
@@ -101,7 +102,15 @@ const styles = StyleSheet.create({
     },
     settingItemValueText: {
         fontSize: 16,
-        lineHeight: 20
+        lineHeight: 20,
+        flex: 1,
+        textAlign: 'right'
+    },
+    settingItemValueView: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center', 
+        flex: 1
     }
 });
 
@@ -215,8 +224,9 @@ class SettingScreen extends React.Component {
                                     字体大小
                                 </Text>
                             </View>
-                            <View>
+                            <View style={styles.settingItemValueView}>
                                 <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{this.state.fontSizeString}</Text>
+                                <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </TouchableOpacity>
                         <View style={this.state.showFontSize ? styles.fontSizeView : styles.displayNone}>
@@ -246,6 +256,7 @@ class SettingScreen extends React.Component {
                                 <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.threadBackgroundColor }]}></View>
                                 <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
                                 <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.linkColor }]}></View>
+                                <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </TouchableOpacity>
                         <View style={this.state.showThemeColor ? styles.themeColorView : styles.displayNone}>
@@ -352,8 +363,9 @@ class SettingScreen extends React.Component {
                                     时间格式
                                 </Text>
                             </View>
-                            <View>
+                            <View style={styles.settingItemValueView}>
                                 <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{timeFormatDisplayName[UISetting.timeFormat]}</Text>
+                                <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </TouchableOpacity>
                         <View style={this.state.showTimeFormat ? styles.fontSizeView : styles.displayNone}>
@@ -438,8 +450,9 @@ class SettingScreen extends React.Component {
                                     嵌套引用层数
                                 </Text>
                             </View>
-                            <View>
+                            <View style={styles.settingItemValueView}>
                                 <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{this.state.nestedQuoteCountString}</Text>
+                                <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </TouchableOpacity>
                         <View style={this.state.showNestedQuoteCount ? styles.fontSizeView : styles.displayNone}>
@@ -467,11 +480,11 @@ class SettingScreen extends React.Component {
                     <View style={[styles.settingGroup, { backgroundColor: UISetting.colors.threadBackgroundColor }]}>
                         <TouchableOpacity style={styles.settingItem} onPress={() => this.props.navigation.push('WebView', { URL: 'https://github.com/Mfweb/nimingban' })}>
                             <View>
-                                <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                     项目地址
                                 </Text>
                             </View>
-                            <View>
+                            <View style={styles.settingItemValueView}>
                                 <Text style={[styles.settingItemValueText, { color: UISetting.colors.linkColor, fontSize: 16 }]}>https://github.com/Mfweb/nimingban</Text>
                             </View>
                         </TouchableOpacity>
@@ -483,8 +496,8 @@ class SettingScreen extends React.Component {
                                     当前Host
                                 </Text>
                             </View>
-                            <View>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>
+                            <View style={styles.settingItemValueView}>
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>
                                     {
                                         configNetwork.baseUrl[configDynamic.islandMode].useRedirect
                                         ?
@@ -504,8 +517,9 @@ class SettingScreen extends React.Component {
                                     当前图片CDN
                                 </Text>
                             </View>
-                            <View>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{configDynamic.imageCDNURL[configDynamic.islandMode]}</Text>
+                            <View style={styles.settingItemValueView}>
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{configDynamic.imageCDNURL[configDynamic.islandMode]}111111111111111111</Text>
+                                <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </View>
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
@@ -520,8 +534,8 @@ class SettingScreen extends React.Component {
                                     版本号
                                 </Text>
                             </View>
-                            <View>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 14-({packageJson.version}))</Text>
+                            <View style={styles.settingItemValueView}>
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 14-({packageJson.version}))</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
