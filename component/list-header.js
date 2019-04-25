@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     mainListItemUserCookieNamePO: {
-        backgroundColor: '#FFE4E1',
         borderWidth: 1,
         borderRadius: 2,
     },
@@ -96,6 +95,7 @@ class MainListItemHeader extends React.Component {
         if(itemDetail.userid == this.props.po){
             displayData['userIDStyle'].push(styles.mainListItemUserCookieNamePO);
             displayData['userIDStyle'].push({borderColor: UISetting.colors.globalColor});
+            displayData['userIDStyle'].push({backgroundColor: UISetting.colors.lightColor});
         }
         displayData['fName'] = itemDetail.fname;
         displayData['userID'] = getHTMLDom(itemDetail.userid);
