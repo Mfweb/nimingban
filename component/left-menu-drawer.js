@@ -333,7 +333,7 @@ class LeftDrawerNavigator extends React.Component {
         return (
             <TouchableOpacity onPress={() => this._onPressItem(item)}>
                 <View style={styles.itemView}>
-                    <Text style={styles.itemText}>
+                    <Text style={[styles.itemText, {color: UISetting.colors.threadFontColor}]}>
                         {item.displayName}
                     </Text>
                 </View>
