@@ -535,7 +535,7 @@ class NewPostScreen extends React.Component {
                 >
                     <TextInput
                         value={this.state.inputText}
-                        style={[styles.inputText, { backgroundColor: UISetting.colors.threadBackgroundColor }]}
+                        style={[styles.inputText, { backgroundColor: UISetting.colors.threadBackgroundColor,color: UISetting.colors.lightFontColor }]}
                         autoCapitalize='none'
                         autoComplete='off'
                         multiline={true}

@@ -29,8 +29,8 @@ class UILogin extends React.Component {
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
-                    <TextInput 
-                    style={styles.userInputText}
+                    <TextInput
+                    style={[styles.userInputText,{color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'email-address'}
@@ -43,13 +43,13 @@ class UILogin extends React.Component {
                     onSubmitEditing={() => {this.secondTextInput.focus(); }}
                     onChangeText={this.props.onUserNameInput} />
                 </View>
-                
+
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
-                    <TextInput 
+                    <TextInput
                     ref={(input) => { this.secondTextInput = input; }}
-                    style={styles.userInputText}
+                    style={[styles.userInputText,{color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     placeholder={'密码'}
@@ -62,22 +62,30 @@ class UILogin extends React.Component {
                 </View>
 
                 <View style={styles.toolView2Btn}>
-                    <UIButton text={'注册'}
-                        style={{backgroundColor: UISetting.colors.fontColor}}
-                        textStyle={[styles.whiteButtonText,{color: UISetting.colors.globalColor}]}
+                    <UIButton
+                        text={'注册'}
+                        backgroundColor={UISetting.colors.fontColor}
+                        textColor={UISetting.colors.globalColor}
+                        fontSize={22}
+                        width="45%"
+                        show={true}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onRegisterButtonPress}/>
-                    <UIButton text={'登录'}
-                        style={{backgroundColor: UISetting.colors.globalColor}}
-                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.fontColor}]}
+                    <UIButton
+                        text={'登录'}
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.fontColor}
+                        fontSize={22}
+                        width="45%"
+                        show={true}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onLoginButtonPress}/>
                 </View>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.backtoUsermemberView}
                     onPress={()=>{
                         this.props.navigation.reset([
-                            NavigationActions.navigate({ 
+                            NavigationActions.navigate({
                                 routeName: 'UserCookieManager'
                             })
                         ], 0);
@@ -113,14 +121,14 @@ class UserMemberLogin extends React.Component {
                 </TouchableOpacity>
             ),
             headerRight: (
-                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
+                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }}
                 onPress={()=>{ navigation.push('UserMemberForgotPw') }} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Text style={{fontSize: 18, color:UISetting.colors.fontColor}}>忘记密码</Text>
                 </TouchableOpacity>
             )
         }
     }
-    
+
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
@@ -189,7 +197,7 @@ class UserMemberLogin extends React.Component {
         }
         if( this.inputPassWord.length < 5 ) {
             this.TopModal.showMessage('错误', `密码格式错误`,'确认');
-            return; 
+            return;
         }
         this._getVCode(()=>{
             Keyboard.dismiss();
@@ -206,11 +214,11 @@ class UserMemberLogin extends React.Component {
         this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
-                <TouchableOpacity 
+                <TouchableOpacity
                 style={styles.vcode}
                 onPress={()=>this._getVCode(checkCallback)}>
-                    <ImageProcessView 
-                    height={25} 
+                    <ImageProcessView
+                    height={25}
                     width={25} />
                 </TouchableOpacity>
             </View>
@@ -223,19 +231,19 @@ class UserMemberLogin extends React.Component {
                     onPress={()=>this._getVCode(checkCallback)}>
                         <Image style={{
                             width: 280, height: 50,top: 0
-                        }} 
-                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        }}
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') }
                         resizeMode='contain' />
                     </TouchableOpacity>
-                    <TextInput 
-                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    <TextInput
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center',color: UISetting.colors.lightFontColor}}
                     autoFocus={true}
                     textAlignVertical='center'
                     maxLength={5}
                     returnKeyType={'done'}
                     onSubmitEditing={()=>checkCallback()}
                     onChangeText={(text) => {this.inputVcode = text;}}/>
-                </View>    
+                </View>
                 )
             );
         });
@@ -245,9 +253,9 @@ class UserMemberLogin extends React.Component {
         return (
             <View style={[styles.loginView,{backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Image 
-                style={styles.loginTitleImg} 
-                resizeMode={'contain'} 
+                <Image
+                style={styles.loginTitleImg}
+                resizeMode={'contain'}
                 source={require('../../imgs/member-title.png')} />
                 <UILogin
                     navigation= {this.props.navigation}

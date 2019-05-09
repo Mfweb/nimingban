@@ -38,12 +38,12 @@ class PinkWebView extends React.Component {
             )
         };
     };
-    
+
     render() {
         let url = this.props.navigation.getParam('URL', 'https://mfweb.top/');
         return (
-            <WebView 
-                style={{flex:1}} 
+            <WebView
+                style={{flex:1}}
                 source={{uri: url}}
                 onNavigationStateChange={(res) => { this.props.navigation.setParams( {'title': res.title }); }}
                 startInLoadingState={true}

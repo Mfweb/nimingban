@@ -60,12 +60,6 @@ var styles = {
         paddingLeft: ScreenWidth * 0.05,
         paddingRight: ScreenWidth * 0.05,
     },
-    pinkButtonText: {
-        fontSize: 24
-    },
-    whiteButtonText: {
-        fontSize: 24
-    },
     //饼干管理
     cookieColumn: {
         flex: 1,
@@ -88,7 +82,7 @@ var styles = {
     },
     cookieText: {
         fontSize: 22,
-        textAlign:'center',     
+        textAlign:'center',
     },
     cookieMessage: {
         padding: 4,
@@ -172,9 +166,6 @@ var styles = {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around'
-    },
-    authToolsActBtnText: {
-        fontSize: 23
     },
     regPolicyView: {
         marginTop: 10,

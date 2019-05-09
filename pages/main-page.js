@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 11,
-        marginRight: 13, 
+        marginRight: 13,
         marginTop: 2
     },
     headerRightPageText: {
@@ -138,8 +138,8 @@ class HomeScreen extends React.Component {
     _newThread = () => {
         if(this.fid == '-1') {
             this.TopModal.showMessage('错误','时间线不能发串，请在左侧选择要发串的板块。','确认');
-            this.setState({ 
-                footerLoading: 0 
+            this.setState({
+                footerLoading: 0
             });
             return;
         }
@@ -183,10 +183,10 @@ class HomeScreen extends React.Component {
      */
     _gotoID = () => {
         this.inputID = 1;
-        this.TopModal.showMessage('输入串号', 
+        this.TopModal.showMessage('输入串号',
         (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
-            <TextInput 
-                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+            <TextInput
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center',color: UISetting.colors.lightFontColor}}
                 autoFocus={true}
                 textAlignVertical='center'
                 returnKeyType={'done'}
@@ -195,7 +195,7 @@ class HomeScreen extends React.Component {
                     this.props.navigation.navigate('Details', {
                         threadDetail: {
                             id: this.inputID,
-                            userid: 'null', 
+                            userid: 'null',
                             content: 'null',
                             now: '2099-12-12 12:12:12'
                         }
@@ -207,7 +207,7 @@ class HomeScreen extends React.Component {
             this.props.navigation.navigate('Details', {
                 threadDetail: {
                     id: this.inputID,
-                    userid: 'null', 
+                    userid: 'null',
                     content: 'null',
                     now: '2099-12-12 12:12:12'
                 }
@@ -219,10 +219,10 @@ class HomeScreen extends React.Component {
      */
     _gotoPage = () => {
         this.inputPage = this.state.page.toString();
-        this.TopModal.showMessage('输入页码', 
+        this.TopModal.showMessage('输入页码',
         (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
-            <TextInput 
-                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+            <TextInput
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center',color: UISetting.colors.lightFontColor}}
                 autoFocus={true}
                 textAlignVertical='center'
                 returnKeyType={'done'}
@@ -262,8 +262,8 @@ class HomeScreen extends React.Component {
                 let threadNo = url.href.split('/t/')[1];
                 this.props.navigation.push('Details', {
                     threadDetail: {
-                        id: threadNo, 
-                        userid: 'null', 
+                        id: threadNo,
+                        userid: 'null',
                         content: 'null',
                         now: '2099-12-12 12:12:12'
                     }
@@ -331,7 +331,7 @@ class HomeScreen extends React.Component {
             );
         }
     }
-    
+
     _pullUpLoading = () => {
         if (this.state.footerLoading != 0 || this.state.headerLoading || this.state.loadEnd) {
             return;
@@ -356,15 +356,15 @@ class HomeScreen extends React.Component {
                 }
                 else {
                     this.TopModal.showMessage('错误', `请求数据失败:${res.errmsg}`,'确认');
-                    this.setState({ 
-                        footerLoading: 0 
+                    this.setState({
+                        footerLoading: 0
                     });
                 }
             }).catch(()=>{
                 if(this.isUnmount)return;
                 this.TopModal.showMessage('错误', `请求数据失败`,'确认');
-                this.setState({ 
-                    footerLoading: 0 
+                this.setState({
+                    footerLoading: 0
                 });
             });
         });
@@ -397,8 +397,8 @@ class HomeScreen extends React.Component {
                 if(this.isUnmount)return;
                 this.TopModal.showMessage('错误', `请求数据失败${error}`,'确认');
                 console.log(error)
-                this.setState({ 
-                    headerLoading: false 
+                this.setState({
+                    headerLoading: false
                 });
             });
         });

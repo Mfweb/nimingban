@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 11,
-        marginRight: 13, 
+        marginRight: 13,
         marginTop: 2
     },
     headerRightPageText: {
@@ -114,7 +114,7 @@ class DetailsScreen extends React.Component {
         this.quoteIds = '';
         this.threadDetail = this.props.navigation.getParam('threadDetail', null);
         this.poID = this.threadDetail.userid;
-        this.props.navigation.setParams({ 
+        this.props.navigation.setParams({
             openLDrawer: this.props.navigation.openDrawer,
             menuFunctions: this._menuFunctions
         });
@@ -174,11 +174,11 @@ class DetailsScreen extends React.Component {
             });
         }
         return (
-            <DetailListItem 
-            itemDetail={item} 
-            navigation={this.props.navigation} 
-            Toast={this.toast} 
-            po={this.poID} 
+            <DetailListItem
+            itemDetail={item}
+            navigation={this.props.navigation}
+            Toast={this.toast}
+            po={this.poID}
             longPressItem={this._actionItem}/>
         )
     }
@@ -246,10 +246,10 @@ class DetailsScreen extends React.Component {
     _gotoPage = () => {
         this.inputPage = this.state.page.toString();
         let replyCount = this.state.replyList[0].replyCount ? this.state.replyList[0].replyCount: 0;
-        this.TopModal.showMessage(`输入页码 1~${Math.ceil(replyCount / 19)}`, 
+        this.TopModal.showMessage(`输入页码 1~${Math.ceil(replyCount / 19)}`,
         (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
-            <TextInput 
-                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+            <TextInput
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center', color: UISetting.colors.lightFontColor}}
                 autoFocus={true}
                 textAlignVertical='center'
                 returnKeyType={'done'}
@@ -264,7 +264,7 @@ class DetailsScreen extends React.Component {
      */
     _actionItem = (target, id, closeMark) => {
         let { pageX, pageY } = target.nativeEvent;
-        this.ActionSheet.showActionSheet(pageX, pageY, `操作>>No.${id}`, 
+        this.ActionSheet.showActionSheet(pageX, pageY, `操作>>No.${id}`,
         ['回复', '添加到引用缓存', '复制串号', '复制内容', '举报', '屏蔽饼干(未实现)', '屏蔽串号(未实现)'], (index)=>{
             this.ActionSheet.closeActionSheet();
             closeMark();
@@ -426,7 +426,7 @@ class DetailsScreen extends React.Component {
                 }
                 this.loadingImages = [];
                 let tempList = Array();
-                
+
                 tempList.push({
                     id: res.res.id,
                     img: res.res.img,
@@ -464,8 +464,8 @@ class DetailsScreen extends React.Component {
                         headerLoading: false,
                         footerLoading: 0,
                         loadEnd: res.res.replys.length >= 19 ? false : true,
-                        footerMessage: res.res.replys.length >= 19 ? 
-                        `上拉继续加载 ${res.res.replys.length}/${res.res.replyCount}`    
+                        footerMessage: res.res.replys.length >= 19 ?
+                        `上拉继续加载 ${res.res.replys.length}/${res.res.replyCount}`
                         :
                         `加载完成,点击再次加载 ${res.res.replys.length}/${res.res.replyCount}`
                     });
@@ -484,7 +484,7 @@ class DetailsScreen extends React.Component {
             }
         });
     }
-    
+
     render() {
         return (
             <SafeAreaView style={{flex:1, backgroundColor: UISetting.colors.defaultBackgroundColor}}>

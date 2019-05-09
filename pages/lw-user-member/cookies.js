@@ -4,15 +4,15 @@ import { ImageProcessView } from '../../component/list-process-view'
 import { NavigationActions } from 'react-navigation'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../../component/top-modal'
-import { 
-    checkSession, 
-    getVerifyCode, 
-    logout, 
-    getUserCookies, 
-    deleteUserCookie, 
-    getNewUserCookie, 
-    getVerifiedInfo, 
-    getEnableUserCookie 
+import {
+    checkSession,
+    getVerifyCode,
+    logout,
+    getUserCookies,
+    deleteUserCookie,
+    getNewUserCookie,
+    getVerifiedInfo,
+    getEnableUserCookie
 } from '../../modules/api/ano/user-member'
 import { UIButton } from '../../component/uibutton'
 import { ActionSheet } from '../../component/action-sheet'
@@ -57,7 +57,7 @@ class UserMemberCookies extends React.Component {
                 </TouchableOpacity>
             ),
             headerRight: (
-                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
+                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }}
                 onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
@@ -116,7 +116,7 @@ class UserMemberCookies extends React.Component {
                         break;
                         case 3:
                         this.props.navigation.reset([
-                            NavigationActions.navigate({ 
+                            NavigationActions.navigate({
                                 routeName: 'UserCookieManager'
                             })
                         ], 0);
@@ -133,11 +133,11 @@ class UserMemberCookies extends React.Component {
      * 获取名认证信息
      */
     _getVerifiedInfo = () => {
-        this.TopModal.showMessage('实名信息', 
+        this.TopModal.showMessage('实名信息',
         (
             <View style={{height: 100, justifyContent: 'center', alignItems: 'center'}}>
-                <ImageProcessView 
-                height={25} 
+                <ImageProcessView
+                height={25}
                 width={25} />
             </View>
         ), '确认', ()=>this.TopModal.closeModal(), null, null, async ()=>{
@@ -241,11 +241,11 @@ class UserMemberCookies extends React.Component {
         this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
-                <TouchableOpacity 
+                <TouchableOpacity
                 style={styles.vcode}
                 onPress={()=>this._getVCode(checkCallback)}>
-                    <ImageProcessView 
-                    height={25} 
+                    <ImageProcessView
+                    height={25}
                     width={25} />
                 </TouchableOpacity>
             </View>
@@ -258,19 +258,19 @@ class UserMemberCookies extends React.Component {
                     onPress={()=>this._getVCode(checkCallback)}>
                         <Image style={{
                             width: 280, height: 50,top: 0
-                        }} 
-                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        }}
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') }
                         resizeMode='contain' />
                     </TouchableOpacity>
-                    <TextInput 
-                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    <TextInput
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center', color: UISetting.colors.lightFontColor}}
                     autoFocus={true}
                     textAlignVertical='center'
                     maxLength={5}
                     returnKeyType={'done'}
                     onSubmitEditing={()=>checkCallback()}
                     onChangeText={(text) => {this.inputVcode = text;}}/>
-                </View>    
+                </View>
                 )
             );
         });
@@ -304,7 +304,7 @@ class UserMemberCookies extends React.Component {
                 </View>
 
                 <View style={styles.cookieColumn}>
-                    <Text style={styles.cookieText}>
+                    <Text style={[styles.cookieText, {color: UISetting.colors.lightFontColor}]}>
                         {item.value}
                     </Text>
                 </View>
@@ -312,15 +312,21 @@ class UserMemberCookies extends React.Component {
                 <View style={styles.cookieColumn}>
                     <UIButton
                     text={'删除'}
-                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor, width: 45, height: 30}}
-                    textStyle={{color: UISetting.colors.globalColor, fontSize: 19}}
+                    backgroundColor={UISetting.colors.defaultBackgroundColor}
+                    textColor={UISetting.colors.globalColor}
+                    fontSize={18}
+                    width="45%"
+                    show={true}
                     showLoading={false}
                     onPress={()=>this._deleteCookie(item.id)}
                     />
                     <UIButton
                     text={'应用'}
-                    style={{backgroundColor: UISetting.colors.globalColor, width: 45, height: 30}}
-                    textStyle={{color:'#FFF', fontSize: 19}}
+                    backgroundColor={UISetting.colors.globalColor}
+                    textColor={UISetting.colors.threadBackgroundColor}
+                    fontSize={18}
+                    width="45%"
+                    show={true}
                     showLoading={false}
                     onPress={()=>this._enableCookie(item)}
                     />

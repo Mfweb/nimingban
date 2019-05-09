@@ -130,10 +130,10 @@ class FeedScreen extends React.Component {
      */
     _addNewFeedID = () => {
         this.inputID = '';
-        this.TopModal.showMessage('输入订阅ID', 
+        this.TopModal.showMessage('输入订阅ID',
         (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
-            <TextInput 
-                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+            <TextInput
+                style={{flex:1, fontSize: 24, width: 280, textAlign:'center', color: UISetting.colors.lightFontColor}}
                 autoFocus={true}
                 textAlignVertical='center'
                 returnKeyType={'done'}
@@ -209,8 +209,8 @@ class FeedScreen extends React.Component {
                 if(this.isUnmount)return;
                 this.TopModal.showMessage('错误', `请求数据失败${error}`,'确认');
                 console.log(error)
-                this.setState({ 
-                    headerLoading: false 
+                this.setState({
+                    headerLoading: false
                 });
             });
         });

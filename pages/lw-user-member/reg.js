@@ -31,8 +31,8 @@ class UIReg extends React.Component {
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
-                    <TextInput 
-                    style={styles.userInputText}
+                    <TextInput
+                    style={[styles.userInputText,{color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'email-address'}
@@ -61,11 +61,14 @@ class UIReg extends React.Component {
                         <Text style={[styles.regPolicyTextHightL,{color: UISetting.colors.globalColor}]}>隐私政策</Text>
                     </TouchableOpacity>
                 </View>
-                
+
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'立即注册'}
-                        style={{backgroundColor: UISetting.colors.globalColor}}
-                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.threadBackgroundColor}
+                        fontSize={22}
+                        width="45%"
+                        show={true}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onRegisterButtonPress}/>
                 </View>
@@ -94,7 +97,7 @@ class UserMemberRegister extends React.Component {
             title: 'A岛-注册'
         }
     }
-    
+
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
@@ -163,11 +166,11 @@ class UserMemberRegister extends React.Component {
         this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
-                <TouchableOpacity 
+                <TouchableOpacity
                 style={styles.vcode}
                 onPress={()=>this._getVCode(checkCallback)}>
-                    <ImageProcessView 
-                    height={25} 
+                    <ImageProcessView
+                    height={25}
                     width={25} />
                 </TouchableOpacity>
             </View>
@@ -180,19 +183,19 @@ class UserMemberRegister extends React.Component {
                     onPress={()=>this._getVCode(checkCallback)}>
                         <Image style={{
                             width: 280, height: 50,top: 0
-                        }} 
-                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        }}
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') }
                         resizeMode='contain' />
                     </TouchableOpacity>
-                    <TextInput 
-                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    <TextInput
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center',color: UISetting.colors.lightFontColor}}
                     autoFocus={true}
                     textAlignVertical='center'
                     maxLength={5}
                     returnKeyType={'done'}
                     onSubmitEditing={()=>checkCallback()}
                     onChangeText={(text) => {this.inputVcode = text;}}/>
-                </View>    
+                </View>
                 )
             );
         });
@@ -219,9 +222,9 @@ class UserMemberRegister extends React.Component {
         return (
             <View style={[styles.memberView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Image 
-                style={styles.memberTitleImg} 
-                resizeMode={'contain'} 
+                <Image
+                style={styles.memberTitleImg}
+                resizeMode={'contain'}
                 source={require('../../imgs/member-title.png')} />
                 <UIReg
                     checkingSession={this.state.checkingSession}
