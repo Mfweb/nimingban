@@ -518,7 +518,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View style={styles.settingItemValueView}>
-                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{configDynamic.imageCDNURL[configDynamic.islandMode]}111111111111111111</Text>
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{configDynamic.imageCDNURL[configDynamic.islandMode]}</Text>
                                 <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </View>
