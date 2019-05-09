@@ -312,15 +312,21 @@ class UserMemberCookies extends React.Component {
                 <View style={styles.cookieColumn}>
                     <UIButton
                     text={'删除'}
-                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor, width: 45, height: 30}}
-                    textStyle={{color: UISetting.colors.globalColor, fontSize: 19}}
+                    backgroundColor={UISetting.colors.defaultBackgroundColor}
+                    textColor={UISetting.colors.globalColor}
+                    fontSize={18}
+                    width="45%"
+                    show={true}
                     showLoading={false}
                     onPress={()=>this._deleteCookie(item.id)}
                     />
                     <UIButton
                     text={'应用'}
-                    style={{backgroundColor: UISetting.colors.globalColor, width: 45, height: 30}}
-                    textStyle={{color:'#FFF', fontSize: 19}}
+                    backgroundColor={UISetting.colors.globalColor}
+                    textColor={UISetting.colors.threadBackgroundColor}
+                    fontSize={18}
+                    width="45%"
+                    show={true}
                     showLoading={false}
                     onPress={()=>this._enableCookie(item)}
                     />

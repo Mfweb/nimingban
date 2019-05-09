@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     settingItemValueView: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        alignItems: 'center', 
+        alignItems: 'center',
         flex: 1
     }
 });
@@ -175,7 +175,7 @@ class SettingScreen extends React.Component {
             this.tnnaiiSound.setVolume(1.0);
             this.tnnaiiSound.play();
         } catch {
-            
+
         }
     }
     _soundRelease() {
@@ -330,8 +330,11 @@ class SettingScreen extends React.Component {
                                     }} />
                                 <View style={styles.themeColorToolsView}>
                                     <UIButton text={'更新'}
-                                        style={{ backgroundColor: UISetting.colors.globalColor }}
-                                        textStyle={{ color: UISetting.colors.fontColor, fontSize: 18 }}
+                                        backgroundColor={UISetting.colors.globalColor}
+                                        textColor={UISetting.colors.fontColor}
+                                        fontSize={18}
+                                        width="45%"
+                                        show={true}
                                         showLoading={this.props.checkingSession}
                                         onPress={() => {
                                             this.props.navigation.setParams({ a: Math.random() });
@@ -341,8 +344,11 @@ class SettingScreen extends React.Component {
                                             saveUISetting();
                                         }} />
                                     <UIButton text={'取消(还原)'}
-                                        style={{ backgroundColor: UISetting.colors.defaultBackgroundColor }}
-                                        textStyle={{ color: UISetting.colors.globalColor, fontSize: 18 }}
+                                        backgroundColor={UISetting.colors.defaultBackgroundColor}
+                                        textColor={UISetting.colors.globalColor}
+                                        fontSize={18}
+                                        width="45%"
+                                        show={true}
                                         showLoading={this.props.checkingSession}
                                         onPress={() => {
                                             UISetting.colors[this.state.themeColorKeyNow] = UISetting.defaultColors[this.state.themeColorKeyNow];
@@ -378,7 +384,10 @@ class SettingScreen extends React.Component {
                                     UISetting.timeFormat = 0;
                                     saveUISetting();
                                 }}>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.timeFormat == 0 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor }]}>
+                                <Text style={[
+                                    styles.settingItemValueText, {
+                                        color: UISetting.timeFormat == 0 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor,
+                                        textAlign: 'center'}]}>
                                     {timeFormatDisplayName[0]}
                                 </Text>
                             </TouchableOpacity>
@@ -391,7 +400,10 @@ class SettingScreen extends React.Component {
                                     UISetting.timeFormat = 1;
                                     saveUISetting();
                                 }}>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.timeFormat == 1 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor }]}>
+                                <Text style={[
+                                    styles.settingItemValueText, {
+                                        color: UISetting.timeFormat == 1 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor,
+                                        textAlign: 'center' }]}>
                                     {timeFormatDisplayName[1]}
                                 </Text>
                             </TouchableOpacity>
@@ -404,7 +416,10 @@ class SettingScreen extends React.Component {
                                     UISetting.timeFormat = 2;
                                     saveUISetting();
                                 }}>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.timeFormat == 2 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor }]}>
+                                <Text style={[
+                                    styles.settingItemValueText, {
+                                        color: UISetting.timeFormat == 2 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor,
+                                        textAlign: 'center' }]}>
                                     {timeFormatDisplayName[2]}
                                 </Text>
                             </TouchableOpacity>
@@ -417,7 +432,9 @@ class SettingScreen extends React.Component {
                                     UISetting.timeFormat = 3;
                                     saveUISetting();
                                 }}>
-                                <Text style={[styles.settingItemValueText, { color: UISetting.timeFormat == 3 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor }]}>
+                                <Text style={[styles.settingItemValueText, {
+                                    color: UISetting.timeFormat == 3 ? UISetting.colors.linkColor : UISetting.colors.lightFontColor,
+                                    textAlign: 'center' }]}>
                                     {timeFormatDisplayName[3]}
                                 </Text>
                             </TouchableOpacity>
@@ -432,7 +449,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View>
-                                <Switch 
+                                <Switch
                                     value={UISetting.showFastScrollButton}
                                     onValueChange={(newValue)=>{
                                         UISetting.showFastScrollButton = newValue;

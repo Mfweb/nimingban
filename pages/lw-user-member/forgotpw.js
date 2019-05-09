@@ -26,7 +26,7 @@ class UIForgetPw extends React.Component {
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
-                    <TextInput 
+                    <TextInput
                     style={styles.userInputText}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
@@ -42,8 +42,11 @@ class UIForgetPw extends React.Component {
 
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'找回密码'}
-                        style={{backgroundColor: UISetting.colors.globalColor}}
-                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.threadBackgroundColor}
+                        fontSize={22}
+                        width="60%"
+                        show={true}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onFindButtonPress}/>
                 </View>
@@ -71,7 +74,7 @@ class UserMemberForgotPassword extends React.Component {
             title: 'A岛-找回密码'
         }
     }
-    
+
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
@@ -95,7 +98,7 @@ class UserMemberForgotPassword extends React.Component {
     _onFindPW = async () => {
         Keyboard.dismiss();
         if(this.inputVcode.length != 5) {
-            this.TopModal.showMessage('错误', `验证码长度错误`,'确认');  
+            this.TopModal.showMessage('错误', `验证码长度错误`,'确认');
             return;
         }
         this.setState({
@@ -135,11 +138,11 @@ class UserMemberForgotPassword extends React.Component {
         this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
-                <TouchableOpacity 
+                <TouchableOpacity
                 style={styles.vcode}
                 onPress={()=>this._getVCode(checkCallback)}>
-                    <ImageProcessView 
-                    height={25} 
+                    <ImageProcessView
+                    height={25}
                     width={25} />
                 </TouchableOpacity>
             </View>
@@ -152,11 +155,11 @@ class UserMemberForgotPassword extends React.Component {
                     onPress={()=>this._getVCode(checkCallback)}>
                         <Image style={{
                             width: 280, height: 50,top: 0
-                        }} 
-                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        }}
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') }
                         resizeMode='contain' />
                     </TouchableOpacity>
-                    <TextInput 
+                    <TextInput
                     style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
                     autoFocus={true}
                     textAlignVertical='center'
@@ -164,19 +167,19 @@ class UserMemberForgotPassword extends React.Component {
                     returnKeyType={'done'}
                     onSubmitEditing={()=>checkCallback()}
                     onChangeText={(text) => {this.inputVcode = text;}}/>
-                </View>    
+                </View>
                 )
             );
         });
     }
-  
+
     render() {
         return (
             <View style={[styles.memberView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Image 
-                style={styles.memberTitleImg} 
-                resizeMode={'contain'} 
+                <Image
+                style={styles.memberTitleImg}
+                resizeMode={'contain'}
                 source={require('../../imgs/member-title.png')} />
                 <UIForgetPw
                     checkingSession={this.state.checkingSession}

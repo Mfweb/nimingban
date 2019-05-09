@@ -69,21 +69,21 @@ const configNetwork = {
 
         memberLogin: "/Member/User/Index/login.html",//登录
         memberLogout: "/Member/User/Index/logout.html",//退出登录
-    
+
         memberSignup: "/Member/User/Index/sendRegister.html",//注册
         memberForgotPasswd: "/Member/User/Index/sendForgotPassword.html",//忘记密码
         memberChangePassword: "/Member/User/Index/changePassword.html",//修改密码
-    
+
         memberCheckSession: "/Member/User/Index/index.html",//检查是Session是否有效
         memberGetCookiesList: "/Member/User/Cookie/index.html",//饼干列表
         memberDeleteCookie: "/Member/User/Cookie/delete/id/",//删除饼干
         memberGetCookieDetail: "/Member/User/Cookie/switchTo/id/",//获取饼干内容
         memberGetNewCookie: "/Member/User/Cookie/apply.html",//获取新饼干
-        
+
         memberGetCertifiedStatus: "/Member/User/Authentication/mobile.html",//认证状态
         memberStartMobileCert: "/Member/User/Authentication/mobileReverseAuthCode",//手机认证
         memberMobileCheck: "/Member/User/Authentication/isBindMobile",//手机认证校验
-        
+
         getAuthPhone: "https://amember.mfweb.top/adao/member/getphone.php",//获取三酱验证手机号
     }
 }
@@ -190,7 +190,7 @@ var UISetting = {
 let __oldRender = Text.render;
 Text.render = (...args) => {
     let origin = __oldRender.call(this, ...args);
-    if(origin && origin.props && 
+    if(origin && origin.props &&
         origin.props.allowFontScaling === true &&
         origin.props.style &&
         origin.props.style.hasOwnProperty('fontSize')) {

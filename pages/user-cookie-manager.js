@@ -49,11 +49,11 @@ const styles = StyleSheet.create({
     },
     cookieIDText: {
         fontSize: 22,
-        textAlign:'center',
+        textAlign: 'center',
     },
     cookieText: {
         fontSize: 12,
-        textAlign:'center', 
+        textAlign: 'center',
         lineHeight: 12
     },
     backtoUsermemberView: {
@@ -73,13 +73,13 @@ function atob(input = '') {
     let output = '';
 
     if (str.length % 4 == 1) {
-      throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
+        throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
     }
     for (let bc = 0, bs = 0, buffer, i = 0;
         buffer = str.charAt(i++);
 
         ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
-        bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
+            bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0
     ) {
         buffer = chars.indexOf(buffer);
     }
@@ -103,13 +103,13 @@ class UserCookieManager extends React.Component {
             headerTintColor: UISetting.colors.fontColor,
             title: '饼干管理',
             headerLeft: (
-                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={()=>navigation.openDrawer()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                <TouchableOpacity style={{ marginLeft: 8, marginTop: 2 }} onPress={() => navigation.openDrawer()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Icon name={'menu'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             ),
             headerRight: (
-                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
-                    onPress={async ()=>navigation.state.params.showRightMenu()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
+                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }}
+                    onPress={async () => navigation.state.params.showRightMenu()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>
             )
@@ -117,8 +117,8 @@ class UserCookieManager extends React.Component {
     }
     componentDidMount() {
         SoundPlayer.setCategory('Playback');
-        this.codeSound = new SoundPlayer('scan-code.wav', SoundPlayer.MAIN_BUNDLE, (err)=>{
-            if(err) {
+        this.codeSound = new SoundPlayer('scan-code.wav', SoundPlayer.MAIN_BUNDLE, (err) => {
+            if (err) {
                 console.log('load sound error:', err);
             }
         });
@@ -133,14 +133,14 @@ class UserCookieManager extends React.Component {
      */
     _showRightMenu = () => {
         let menuList = ['扫描二维码', '相册选择二维码', '手动输入']
-        if(configDynamic.islandMode != 'lw') {
+        if (configDynamic.islandMode != 'lw') {
             menuList.push('立即获取');
         }
-        this.ActionSheet.showActionSheet( Dimensions.get('window').width, Header.HEIGHT, '详细菜单',
+        this.ActionSheet.showActionSheet(Dimensions.get('window').width, Header.HEIGHT, '详细菜单',
             menuList,
             (index) => {
-                this.ActionSheet.closeActionSheet(()=>{
-                    switch(index) {
+                this.ActionSheet.closeActionSheet(() => {
+                    switch (index) {
                         case 0:
                             this._scanQRCode();
                             break;
@@ -151,21 +151,21 @@ class UserCookieManager extends React.Component {
                             this._manualInput();
                             break;
                         case 3:
-                            if(configDynamic.islandMode == 'lw') {
+                            if (configDynamic.islandMode == 'lw') {
                                 this.TopModal.showMessage('错误', '该功能不支持芦苇岛', '确认');
                                 return;
                             }
                             else {
                                 this._autoGet();
                             }
-                        break;
+                            break;
                     }
                 });
             });
     }
     _autoGet = async () => {
         let res = await realAnonymousGetCookie();
-        if(res.status == 'ok') {
+        if (res.status == 'ok') {
             this.TopModal.showMessage('提示', '获取完成', '确认');
             this._pullDownRefreshing();
         }
@@ -178,31 +178,31 @@ class UserCookieManager extends React.Component {
      */
     _manualInput = () => {
         this.__inputCookieString = '';
-        this.TopModal.showMessage('输入饼干内容', 
-        (<View style={{height: 30, marginTop:20, marginBottom: 20}}>
-            <TextInput 
-                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
-                autoFocus={true}
-                textAlignVertical='center'
-                returnKeyType={'done'}
-                onSubmitEditing={()=>{
-                    this.TopModal.closeModal(async ()=>{
-                        this._addCookieToList(this.__inputCookieString);
-                    });
-                }}
-                onChangeText={(text) => {
-                    this.__inputCookieString = text;
-                }}/>
-        </View>),
-        '确认',
-        ()=>{
-            this.TopModal.closeModal(async ()=>{
-                this._addCookieToList(this.__inputCookieString);
-            });
-        }, '取消');
+        this.TopModal.showMessage('输入饼干内容',
+            (<View style={{ height: 30, marginTop: 20, marginBottom: 20 }}>
+                <TextInput
+                    style={{ flex: 1, fontSize: 24, width: 280, textAlign: 'center' }}
+                    autoFocus={true}
+                    textAlignVertical='center'
+                    returnKeyType={'done'}
+                    onSubmitEditing={() => {
+                        this.TopModal.closeModal(async () => {
+                            this._addCookieToList(this.__inputCookieString);
+                        });
+                    }}
+                    onChangeText={(text) => {
+                        this.__inputCookieString = text;
+                    }} />
+            </View>),
+            '确认',
+            () => {
+                this.TopModal.closeModal(async () => {
+                    this._addCookieToList(this.__inputCookieString);
+                });
+            }, '取消');
     }
     _scanQRFromImage = async () => {
-        try{
+        try {
             var pickerImage = await ImagePicker.openPicker({
                 mediaType: 'photo',
                 cropping: false,
@@ -214,36 +214,36 @@ class UserCookieManager extends React.Component {
                 compressImageMaxWidth: 500,
                 compressImageMaxHeight: 500
             });
-            if(!pickerImage) {
+            if (!pickerImage) {
                 return;
             }
-        }catch(ex) {
+        } catch (ex) {
             console.warn(ex);
         }
         // 解码base64
-        let binaryString =  atob(pickerImage.data);
+        let binaryString = atob(pickerImage.data);
         let len = binaryString.length;
         // 转为Uint8Array
         let bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++)        {
+        for (let i = 0; i < len; i++) {
             bytes[i] = binaryString.charCodeAt(i);
         }
         // 解码jpeg
         let jpegData = JPEG.decode(bytes.buffer, true);
         // 二维码解析
         let qrStr = JSQR(jpegData.data, jpegData.width, jpegData.height);
-        if(qrStr === null || !qrStr.data) {
+        if (qrStr === null || !qrStr.data) {
             this.TopModal.showMessage('错误', '图片中似乎不包含二维码', '确认');
             return;
         }
-        try{
+        try {
             let qrObj = JSON.parse(qrStr.data);
-            if(typeof qrObj !== 'object' || !qrObj.hasOwnProperty('cookie')) {
+            if (typeof qrObj !== 'object' || !qrObj.hasOwnProperty('cookie')) {
                 this.TopModal.showMessage('错误', '二维码中没有饼干', '确认');
                 return;
             }
             this._addCookieToList(qrObj['cookie']);
-        }catch{
+        } catch{
             this.TopModal.showMessage('错误', '二维码中没有饼干', '确认');
         }
     }
@@ -262,32 +262,32 @@ class UserCookieManager extends React.Component {
                         this.camera = ref;
                     }}
                     autoFocus={RNCamera.Constants.AutoFocus.on}
-                    barCodeTypes={Platform.OS=='ios'?[RNCamera.Constants.BarCodeType.qr]:[]}
-                    googleVisionBarcodeType={Platform.OS=='android'?RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeType.QR_CODE:null}
+                    barCodeTypes={Platform.OS == 'ios' ? [RNCamera.Constants.BarCodeType.qr] : []}
+                    googleVisionBarcodeType={Platform.OS == 'android' ? RNCamera.Constants.GoogleVisionBarcodeDetection.BarcodeType.QR_CODE : null}
                     captureAudio={false}
                     type={RNCamera.Constants.Type.back}
-                    onBarCodeRead={({data, type})=>{
-                        if(this.cameraScan) {
+                    onBarCodeRead={({ data, type }) => {
+                        if (this.cameraScan) {
                             this.cameraScan = false;
                             this.codeSound.play();
-                            this.TopModal.closeModal(()=>{
+                            this.TopModal.closeModal(() => {
                                 this.TopModal.setContent(null);
-                                try{
+                                try {
                                     let cookieJSON = JSON.parse(data);
-                                    if(cookieJSON && cookieJSON.hasOwnProperty('cookie')) {
+                                    if (cookieJSON && cookieJSON.hasOwnProperty('cookie')) {
                                         this._addCookieToList(cookieJSON['cookie']);
                                     }
                                     else {
                                         console.log(cookieJSON);
                                         this.TopModal.showMessage('错误', '该二维码中不包含饼干信息', '确认');
                                     }
-                                }catch(err){
+                                } catch (err) {
                                     this.TopModal.showMessage('错误', '该二维码中不包含饼干信息', '确认');
                                 }
                             });
                         }
-                    }}/>
-            ), 
+                    }} />
+            ),
             '关闭'
         );
     }
@@ -295,13 +295,13 @@ class UserCookieManager extends React.Component {
      * 增加一块饼干
      */
     _addCookieToList = (cookieValue) => {
-        if(this._checkCookie(cookieValue)) {
-            this._getUserMark(async (markStr)=>{
-                if(await addUserCookieList(markStr, cookieValue)) {
+        if (this._checkCookie(cookieValue)) {
+            this._getUserMark(async (markStr) => {
+                if (await addUserCookieList(markStr, cookieValue)) {
                     this.TopModal.showMessage('提示', '添加成功', '确认');
                     this._pullDownRefreshing();
                 }
-                else{
+                else {
                     this.TopModal.showMessage('错误', '饼干已存在', '确认');
                 }
             });
@@ -311,12 +311,12 @@ class UserCookieManager extends React.Component {
      * 检查饼干是否存在
      */
     _checkCookie = (cookieValue) => {
-        if(!cookieValue || cookieValue.length < 20) {
+        if (!cookieValue || cookieValue.length < 20) {
             this.TopModal.showMessage('错误', '必须输入饼干内容', '确认');
             return false;
         }
-        for(let i = 0; i < this.state.userCookies.length; i++) {
-            if(this.state.userCookies[i].value == cookieValue) {
+        for (let i = 0; i < this.state.userCookies.length; i++) {
+            if (this.state.userCookies[i].value == cookieValue) {
                 this.TopModal.showMessage('错误', '饼干已存在', '确认');
                 return false;
             }
@@ -326,35 +326,35 @@ class UserCookieManager extends React.Component {
     /**
      * 获取用户备注
      */
-    _getUserMark = (finish = ()=>{}) => {
+    _getUserMark = (finish = () => { }) => {
         this.__inputMarkString = '';
-        this.TopModal.showMessage('输入备注(可以为空)', 
-        <View style={{height: 30, marginTop:20, marginBottom: 20}}>
-            <TextInput 
-                style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
-                autoFocus={true}
-                textAlignVertical='center'
-                returnKeyType={'done'}
-                onSubmitEditing={()=>{
-                    this.TopModal.closeModal(async ()=>{
-                        finish(this.__inputMarkString);
-                    });
-                }}
-                onChangeText={(text) => {
-                    this.__inputMarkString = text;
-                }}/>
-        </View>
-        , '确认',()=>{
-            this.TopModal.closeModal(async ()=>{
-                finish(this.__inputMarkString);
-            });
-        }, '取消');
+        this.TopModal.showMessage('输入备注(可以为空)',
+            <View style={{ height: 30, marginTop: 20, marginBottom: 20 }}>
+                <TextInput
+                    style={{ flex: 1, fontSize: 24, width: 280, textAlign: 'center' }}
+                    autoFocus={true}
+                    textAlignVertical='center'
+                    returnKeyType={'done'}
+                    onSubmitEditing={() => {
+                        this.TopModal.closeModal(async () => {
+                            finish(this.__inputMarkString);
+                        });
+                    }}
+                    onChangeText={(text) => {
+                        this.__inputMarkString = text;
+                    }} />
+            </View>
+            , '确认', () => {
+                this.TopModal.closeModal(async () => {
+                    finish(this.__inputMarkString);
+                });
+            }, '取消');
     }
     _headerComponent = () => {
         return (
-            <View style={this.state.userCookies.length==0?styles.cookieMessage:styles.displayNone}>
-                <Text style={[styles.cookieMessageText, {color: UISetting.colors.lightFontColor}]}>
-                你还没有饼干，点击右上角添加饼干
+            <View style={this.state.userCookies.length == 0 ? styles.cookieMessage : styles.displayNone}>
+                <Text style={[styles.cookieMessageText, { color: UISetting.colors.lightFontColor }]}>
+                    你还没有饼干，点击右上角添加饼干
                 </Text>
             </View>
         );
@@ -362,16 +362,16 @@ class UserCookieManager extends React.Component {
     _footerComponent = () => {
         return (
             <View style={styles.cookieUsage}>
-                <TouchableOpacity 
-                    style={configDynamic.islandMode=='lw'?styles.backtoUsermemberView:styles.displayNone}
-                    onPress={()=>{
+                <TouchableOpacity
+                    style={configDynamic.islandMode == 'lw' ? styles.backtoUsermemberView : styles.displayNone}
+                    onPress={() => {
                         this.props.navigation.reset([
-                            NavigationActions.navigate({ 
+                            NavigationActions.navigate({
                                 routeName: 'UserMemberLogin'
                             })
                         ], 0);
                     }}>
-                    <Text style={[styles.backtoUsermemberText, {color: UISetting.colors.linkColor}]}>返回用户系统</Text>
+                    <Text style={[styles.backtoUsermemberText, { color: UISetting.colors.linkColor }]}>返回用户系统</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -391,41 +391,55 @@ class UserCookieManager extends React.Component {
     _renderItem = ({ item, index }) => {
         let using = configDynamic.userCookie[configDynamic.islandMode] == `userhash=${item.value}`;
         return (
-            <View style={[styles.cookieItem, using?{backgroundColor: UISetting.colors.lightColor}:{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
+            <View style={[styles.cookieItem, using ? { backgroundColor: UISetting.colors.lightColor } : { backgroundColor: UISetting.colors.threadBackgroundColor }]}>
                 <View style={styles.cookieColumn}>
-                    <Text style={[styles.cookieIDText, {color: UISetting.colors.globalColor}]}>
+                    <Text style={[styles.cookieIDText, { color: UISetting.colors.globalColor }]}>
                         {item.mark}
                     </Text>
                 </View>
 
                 <View style={styles.cookieColumn}>
-                    <Text style={[styles.cookieText, {color: UISetting.colors.lightFontColor}]}>
+                    <Text style={[styles.cookieText, { color: UISetting.colors.lightFontColor }]}>
                         {item.value}
                     </Text>
                 </View>
 
                 <View style={styles.cookieColumn}>
                     <UIButton
-                    text={'删除'}
-                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor, width: 45, height: 30}}
-                    textStyle={{color: UISetting.colors.globalColor, fontSize: 19}}
-                    showLoading={false}
-                    onPress={()=>this._deleteCookie(item.value)}
+                        text={'删除'}
+                        backgroundColor={UISetting.colors.defaultBackgroundColor}
+                        textColor={UISetting.colors.globalColor}
+                        fontSize={18}
+                        width="45%"
+                        show={true}
+                        show={true}
+                        showLoading={false}
+                        onPress={() => this._deleteCookie(item.value)}
                     />
                     <UIButton
-                    text={'应用'}
-                    style={using?styles.displayNone:{backgroundColor: UISetting.colors.globalColor, width: 45, height: 30}}
-                    textStyle={{color:UISetting.colors.fontColor, fontSize: 19}}
-                    showLoading={false}
-                    onPress={()=>this._enableCookie(item.value)}
+                        text={'应用'}
+                        width="45%"
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.fontColor}
+                        fontSize={18}
+                        show={true}
+                        show={!using}
+                        showLoading={false}
+                        onPress={() => this._enableCookie(item.value)}
                     />
+
                     <UIButton
-                    text={'取消'}
-                    style={(!using)?styles.displayNone:{backgroundColor: UISetting.colors.globalColor, width: 45, height: 30}}
-                    textStyle={{color:UISetting.colors.fontColor, fontSize: 19}}
-                    showLoading={false}
-                    onPress={this._disableCookie}
+                        text={'取消'}
+                        width="45%"
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.fontColor}
+                        fontSize={18}
+                        show={true}
+                        show={using}
+                        showLoading={false}
+                        onPress={this._disableCookie}
                     />
+
                 </View>
             </View>
         );
@@ -441,7 +455,7 @@ class UserCookieManager extends React.Component {
      * 删除指定饼干
      */
     _deleteCookie = (value) => {
-        this.TopModal.showMessage('信息', '确认删除？', '确认', async ()=>{
+        this.TopModal.showMessage('信息', '确认删除？', '确认', async () => {
             this.TopModal.closeModal();
             await removeUserCookieList(value);
             this._pullDownRefreshing();
@@ -456,16 +470,16 @@ class UserCookieManager extends React.Component {
     }
     render() {
         return (
-            <View style={{flex: 1}}>
-                <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
+            <View style={{ flex: 1 }}>
+                <TopModal ref={(ref) => { this.TopModal = ref; }} />
+                <ActionSheet ref={(ref) => { this.ActionSheet = ref; }} />
                 <FlatList
                     data={this.state.userCookies}
                     extraData={this.state}
-                    style={{backgroundColor: UISetting.colors.defaultBackgroundColor}}
+                    style={{ backgroundColor: UISetting.colors.defaultBackgroundColor }}
                     onRefresh={this._pullDownRefreshing}
                     refreshing={this.state.cookieListLoading}
-                    keyExtractor={(item, index) => {return index.toString()}}
+                    keyExtractor={(item, index) => { return index.toString() }}
                     renderItem={this._renderItem}
                     ListHeaderComponent={this._headerComponent}
                     ListFooterComponent={this._footerComponent}

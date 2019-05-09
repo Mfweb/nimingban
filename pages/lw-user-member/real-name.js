@@ -67,13 +67,19 @@ class UIWaitSuccess extends React.Component {
                 </View>
                 <View style={styles.authToolsView}>
                     <UIButton text={'我已发送'}
-                        style={{backgroundColor: UISetting.colors.globalColor}}
-                        textStyle={[styles.authToolsActBtnText,{color: UISetting.colors.fontColor}]}
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.fontColor}
+                        fontSize={22}
+                        width="45%"
+                        show={true}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onPressSend}/>
                     <UIButton text={'打开短信'}
-                        style={{backgroundColor: UISetting.colors.globalColor}}
-                        textStyle={[styles.authToolsActBtnText,{color: UISetting.colors.fontColor}]}
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.fontColor}
+                        fontSize={22}
+                        width="45%"
+                        show={true}
                         showLoading={this.props.checkingSession}
                         onPress={()=>{Linking.openURL(`sms:${authMessage.authMobile}&body=${authMessage.authCode}`);}}/>
                 </View>
@@ -111,7 +117,7 @@ class UIRealName extends React.Component {
                             {this.props.countryCode}
                         </Text>
                     </TouchableOpacity>
-                    <TextInput 
+                    <TextInput
                     style={styles.realNameUserInputText}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
@@ -125,11 +131,14 @@ class UIRealName extends React.Component {
                     onSubmitEditing={this.props.onStartPress}
                     onChangeText={this.props.onPhoneInput} />
                 </View>
-                
+
                 <View style={styles.toolView1Btn}>
                     <UIButton text={'开始认证'}
-                        style={{backgroundColor: UISetting.colors.globalColor}}
-                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.threadBackgroundColor}
+                        fontSize={22}
+                        width="45%"
+                        show={true}
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onStartPress}/>
                 </View>
@@ -163,14 +172,14 @@ class RealNameAuth extends React.Component {
                 </TouchableOpacity>
             ),
             headerRight: (
-                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
+                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }}
                     onPress={async ()=>navigation.state.params.logout()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Text style={{fontSize: 18, color:UISetting.colors.fontColor}}>退出登录</Text>
                 </TouchableOpacity>
             )
         }
     }
-    
+
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok' || sessionInfo.session !== true) { //检查状态失败
@@ -269,11 +278,11 @@ class RealNameAuth extends React.Component {
         this.TopModal.showMessage('输入验证码',
         (
             <View style={{width: 280, height: 100}}>
-                <TouchableOpacity 
+                <TouchableOpacity
                 style={styles.vcode}
                 onPress={()=>this._getVCode(checkCallback)}>
-                    <ImageProcessView 
-                    height={25} 
+                    <ImageProcessView
+                    height={25}
                     width={25} />
                 </TouchableOpacity>
             </View>
@@ -286,11 +295,11 @@ class RealNameAuth extends React.Component {
                     onPress={()=>this._getVCode(checkCallback)}>
                         <Image style={{
                             width: 280, height: 50,top: 0
-                        }} 
-                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') } 
+                        }}
+                        source={ vcode.status == 'ok'?{ uri: `file://${vcode.path}`}:require('../../imgs/vcode-error.png') }
                         resizeMode='contain' />
                     </TouchableOpacity>
-                    <TextInput 
+                    <TextInput
                     style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
                     autoFocus={true}
                     textAlignVertical='center'
@@ -298,7 +307,7 @@ class RealNameAuth extends React.Component {
                     returnKeyType={'done'}
                     onSubmitEditing={()=>checkCallback()}
                     onChangeText={(text) => {this.inputVcode = text;}}/>
-                </View>    
+                </View>
                 )
             );
         });
@@ -308,7 +317,7 @@ class RealNameAuth extends React.Component {
      */
     _onCountryCodePress = () => {
         Keyboard.dismiss();
-        this.TopModal.showMessage('选择国家', 
+        this.TopModal.showMessage('选择国家',
         (
             <FlatList
                 style={{height: 300, backgroundColor: UISetting.colors.defaultBackgroundColor}}
@@ -317,7 +326,7 @@ class RealNameAuth extends React.Component {
                 keyExtractor={(item, index) => {return index.toString()}}
                 renderItem={({item,index})=>{
                     return (
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={{margin: 5,borderRadius:2, backgroundColor: this.state.countryCode==index?UISetting.colors.lightFontColor:UISetting.colors.defaultBackgroundColor}}
                             onPress={()=>{this.setState({countryCode: index}, this.TopModal.closeModal());}}>
                             <Text style={{fontSize: 24, textAlign:'center'}}>
@@ -334,9 +343,9 @@ class RealNameAuth extends React.Component {
         return (
             <View style={[styles.loginView,{backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Image 
-                style={styles.loginTitleImg} 
-                resizeMode={'contain'} 
+                <Image
+                style={styles.loginTitleImg}
+                resizeMode={'contain'}
                 source={require('../../imgs/member-title.png')} />
                 <UIRealName
                     style={this.state.waitingSuccess?{display:'none'}:{}}

@@ -28,7 +28,7 @@ class UIChangePassword extends React.Component {
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
-                    <TextInput 
+                    <TextInput
                     style={styles.userInputText}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
@@ -46,7 +46,7 @@ class UIChangePassword extends React.Component {
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
-                    <TextInput 
+                    <TextInput
                     ref={(input) => { this.newPasswordInput1 = input; }}
                     style={styles.userInputText}
                     autoCapitalize={'none'}
@@ -65,7 +65,7 @@ class UIChangePassword extends React.Component {
                 <View style={[styles.userInputView,{backgroundColor: UISetting.colors.threadBackgroundColor}]}>
                     <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
-                    <TextInput 
+                    <TextInput
                     ref={(input) => { this.newPasswordInput2 = input; }}
                     style={styles.userInputText}
                     autoCapitalize={'none'}
@@ -82,9 +82,13 @@ class UIChangePassword extends React.Component {
                     onChangeText={this.props.onNewPasswordInput2} />
                 </View>
                 <View style={styles.toolView1Btn}>
-                    <UIButton text={'修改密码'}
-                        style={{backgroundColor: UISetting.colors.globalColor}}
-                        textStyle={[styles.pinkButtonText,{color: UISetting.colors.threadBackgroundColor}]}
+                    <UIButton
+                        text={'修改密码'}
+                        backgroundColor={UISetting.colors.globalColor}
+                        textColor={UISetting.colors.threadBackgroundColor}
+                        fontSize={24}
+                        show={true}
+                        width="30%"
                         showLoading={this.props.checkingSession}
                         onPress={this.props.onChangeButtonPress}/>
                 </View>
@@ -115,7 +119,7 @@ class UserMemberChangePassword extends React.Component {
             title: 'A岛-修改密码'
         }
     }
-    
+
     componentDidMount = async () => {
         let sessionInfo = await checkSession();
         if(sessionInfo.status != 'ok') {
@@ -147,7 +151,7 @@ class UserMemberChangePassword extends React.Component {
         }
         if(this.inputNewPassword1.length < 5) {
             this.TopModal.showMessage('错误', `新密码长度太短`,'确认');
-            return; 
+            return;
         }
         this.setState({checkSession: true}, async ()=>{
             let info = await changePassword(this.inputOldPassword,this.inputNewPassword1,this.inputNewPassword2);
@@ -168,14 +172,14 @@ class UserMemberChangePassword extends React.Component {
         });
     }
 
-   
+
     render() {
         return (
             <View style={[styles.memberView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <TopModal ref={(ref)=>{this.TopModal=ref;}} />
-                <Image 
-                style={styles.memberTitleImg} 
-                resizeMode={'contain'} 
+                <Image
+                style={styles.memberTitleImg}
+                resizeMode={'contain'}
                 source={require('../../imgs/member-title.png')} />
                 <UIChangePassword
                     checkingSession={this.state.checkingSession}
