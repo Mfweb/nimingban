@@ -181,7 +181,7 @@ class UserCookieManager extends React.Component {
         this.TopModal.showMessage('输入饼干内容',
             (<View style={{ height: 30, marginTop: 20, marginBottom: 20 }}>
                 <TextInput
-                    style={{ flex: 1, fontSize: 24, width: 280, textAlign: 'center' }}
+                    style={{ flex: 1, fontSize: 24, width: 280, textAlign: 'center',color: UISetting.colors.lightFontColor }}
                     autoFocus={true}
                     textAlignVertical='center'
                     returnKeyType={'done'}
@@ -331,7 +331,7 @@ class UserCookieManager extends React.Component {
         this.TopModal.showMessage('输入备注(可以为空)',
             <View style={{ height: 30, marginTop: 20, marginBottom: 20 }}>
                 <TextInput
-                    style={{ flex: 1, fontSize: 24, width: 280, textAlign: 'center' }}
+                    style={{ flex: 1, fontSize: 24, width: 280, textAlign: 'center', color: UISetting.colors.lightFontColor }}
                     autoFocus={true}
                     textAlignVertical='center'
                     returnKeyType={'done'}

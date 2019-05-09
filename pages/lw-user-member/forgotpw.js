@@ -27,7 +27,7 @@ class UIForgetPw extends React.Component {
                     <Icon name={'user'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput
-                    style={styles.userInputText}
+                    style={[styles.userInputText, {color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'email-address'}
@@ -160,7 +160,7 @@ class UserMemberForgotPassword extends React.Component {
                         resizeMode='contain' />
                     </TouchableOpacity>
                     <TextInput
-                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center',color: UISetting.colors.lightFontColor}}
                     autoFocus={true}
                     textAlignVertical='center'
                     maxLength={5}

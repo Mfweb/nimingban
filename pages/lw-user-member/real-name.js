@@ -118,7 +118,7 @@ class UIRealName extends React.Component {
                         </Text>
                     </TouchableOpacity>
                     <TextInput
-                    style={styles.realNameUserInputText}
+                    style={[styles.realNameUserInputText,{color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'phone-pad'}
@@ -300,7 +300,7 @@ class RealNameAuth extends React.Component {
                         resizeMode='contain' />
                     </TouchableOpacity>
                     <TextInput
-                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center',color: UISetting.colors.lightFontColor}}
                     autoFocus={true}
                     textAlignVertical='center'
                     maxLength={5}

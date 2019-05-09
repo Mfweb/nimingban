@@ -29,7 +29,7 @@ class UIChangePassword extends React.Component {
                     <Icon name={'lock'} size={24} color={UISetting.colors.globalColor} />
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput
-                    style={styles.userInputText}
+                    style={[styles.userInputText, {color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'email-address'}
@@ -48,7 +48,7 @@ class UIChangePassword extends React.Component {
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput
                     ref={(input) => { this.newPasswordInput1 = input; }}
-                    style={styles.userInputText}
+                    style={[styles.userInputText, {color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'email-address'}
@@ -67,7 +67,7 @@ class UIChangePassword extends React.Component {
                     <View style={[styles.splitLine,{backgroundColor: UISetting.colors.globalColor}]}></View>
                     <TextInput
                     ref={(input) => { this.newPasswordInput2 = input; }}
-                    style={styles.userInputText}
+                    style={[styles.userInputText,{color: UISetting.colors.lightFontColor}]}
                     autoCapitalize={'none'}
                     clearButtonMode={'always'}
                     keyboardType={'email-address'}

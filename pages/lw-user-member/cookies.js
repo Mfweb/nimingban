@@ -263,7 +263,7 @@ class UserMemberCookies extends React.Component {
                         resizeMode='contain' />
                     </TouchableOpacity>
                     <TextInput
-                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center'}}
+                    style={{flex:1, fontSize: 24, width: 280, textAlign:'center', color: UISetting.colors.lightFontColor}}
                     autoFocus={true}
                     textAlignVertical='center'
                     maxLength={5}
