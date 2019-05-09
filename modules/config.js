@@ -165,6 +165,8 @@ var UISetting = {
     timeFormat: 0, /* 时间格式 */
     showFastScrollButton: true, /* 快速滚动按钮 */
     nestedQuoteCount: 5, /* 嵌套引用层数 */
+    colorMode: 0, /* 颜色模式0 正常 1 黑暗模式 */
+    /* 默认颜色 */
     defaultColors: {
         globalColor: '#FA7296', /* 全局主要颜色 */
         lightColor: '#FFE4E1', /* 淡化颜色，也是主要颜色 */
@@ -175,16 +177,39 @@ var UISetting = {
         defaultBackgroundColor: '#F5F5F5', /* 绝大多数地方的背景色 */
         linkColor: '#1E90FF' /* 超链接等强调色 */
     },
+    /* 黑暗模式 */
+    darkColors: {
+        globalColor: 'hsl(334, 93%, 52%)',
+        lightColor: 'hsl(330, 91%, 75%)',
+        fontColor: '#FFF',
+        lightFontColor: 'hsl(0, 0%, 84%)',
+        threadFontColor: 'hsl(0, 0%, 99%)',
+        threadBackgroundColor: 'hsl(0, 0%, 1%)',
+        defaultBackgroundColor: 'hsl(0, 0%, 1%)',
+        linkColor: '#1E90FF'
+    },
+    /* 用户颜色 */
+    userColors: {
+        globalColor: '#FA7296',
+        lightColor: '#FFE4E1',
+        fontColor: '#FFF',
+        lightFontColor: '#696969',
+        threadFontColor: '#000',
+        threadBackgroundColor: '#FFF',
+        defaultBackgroundColor: '#F5F5F5',
+        linkColor: '#1E90FF'
+    },
+    /* 当前颜色 */
     colors: {
-        globalColor: '#FA7296', /* 全局主要颜色 */
-        lightColor: '#FFE4E1', /* 淡化颜色，也是主要颜色 */
-        fontColor: '#FFF', /* 在主要颜色上显示文字的文字颜色 */
-        lightFontColor: '#696969', /* 浅色文字颜色 */
-        threadFontColor: '#000', /* 串内容颜色 */
-        threadBackgroundColor: '#FFF',/* 串背景色 */
-        defaultBackgroundColor: '#F5F5F5', /* 绝大多数地方的背景色 */
-        linkColor: '#1E90FF' /* 超链接等强调色 */
-    }
+        globalColor: '#FA7296',
+        lightColor: '#FFE4E1',
+        fontColor: '#FFF',
+        lightFontColor: '#696969',
+        threadFontColor: '#000',
+        threadBackgroundColor: '#FFF',
+        defaultBackgroundColor: '#F5F5F5',
+        linkColor: '#1E90FF'
+    },
 }
 
 let __oldRender = Text.render;
@@ -216,6 +241,7 @@ function loadUISetting() {
             let savedSetting = JSON.parse(settingString);
             if(savedSetting) {
                 Object.assign(UISetting, savedSetting);
+                UISetting.colors = UISetting.colorMode === 1 ? UISetting.darkColors : UISetting.userColors;
             }
             console.log(UISetting);
         }

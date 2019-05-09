@@ -241,6 +241,26 @@ class SettingScreen extends React.Component {
                         </View>
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
 
+                        <TouchableOpacity style={styles.settingItem} onPress={() => this.setState({ showTimeFormat: !this.state.showTimeFormat })}>
+                            <View>
+                                <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
+                                    黑暗模式
+                                </Text>
+                            </View>
+                            <View>
+                                <Switch
+                                    value={UISetting.colorMode==1?true:false}
+                                    onValueChange={(newValue)=>{
+                                        UISetting.colorMode = newValue?1:0;
+                                        UISetting.colors = UISetting.colorMode === 1 ? UISetting.darkColors : UISetting.userColors;
+                                        this.forceUpdate();
+                                        this.props.navigation.setParams({ a: Math.random() });
+                                        saveUISetting();
+                                    }}/>
+                            </View>
+                        </TouchableOpacity>
+                        <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+
                         <TouchableOpacity style={styles.settingItem} onPress={() => this.setState({ showThemeColor: !this.state.showThemeColor })}>
                             <View>
                                 <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
