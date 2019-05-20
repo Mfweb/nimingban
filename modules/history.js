@@ -94,10 +94,10 @@ function addNewHistory(mode, detail, time) {
     return new Promise((resolve, reject) => {
         __historySQLite.transaction((tx) => {
             if(mode === 'cache') {
-                let sql = `INSERT INTO ${modeString[mode]}(id,island,img,ext,now,userid,name,email,title,content,sage,admin,replyCount,replyTo)`;
+                let sql = `REPLACE INTO ${modeString[mode]}(id,island,img,ext,now,userid,name,email,title,content,sage,admin,replyCount,replyTo)`;
                 for(let i = 0; i < detail.datas.length; i++) {
                     let item = detail.datas[i];
-                    sql += 
+                    sql +=
                     ` SELECT ${item.id},'${configDynamic.islandMode}','${item.img}','${item.ext}','${item.now}', '${item.userid}','${item.name}', '${item.email}','${item.title}','${item.content}',${item.sage},${item.admin},0,${detail.replyTo}`
                     if(i !== detail.datas.length - 1) {
                         sql += ' UNION ALL';
@@ -144,11 +144,37 @@ async function getDetailFromCache(id) {
     });
 }
 
+/**
+ * 从缓存中获取串数据
+ * @param {number} tid 串ID
+ * @param {number} page 分页
+ */
+async function getThreadReplys(tid, page) {
+    return new Promise((resolve, reject) => {
+        __historySQLite.transaction((tx) => {
+            // 获取主题串
+            tx.executeSql(`SELECT * FROM UserThreadCache WHERE island='${configDynamic.islandMode}' AND id=${tid} AND replyTo=0`, [], (tx, results) => {
+                if(results.rows.length === 0) {
+                    resolve({status: 'error'});
+                    return;
+                }
+                var threadDetail = results.rows.item(0);
+                // 获取回复
+                tx.executeSql(`SELECT * FROM UserThreadCache WHERE island='${configDynamic.islandMode}' AND replyTo=${tid} ORDER BY now DESC LIMIT ((${page}-1)*19),19`, [], (tx, results) => {
+                    threadDetail.replys = results.rows.raw();
+                    resolve({status: 'ok', data: threadDetail});
+                });
+            });
+        });
+    });
+}
+
 const history = {
     init: init,
     addNewHistory: addNewHistory,
     getHistory: getHistory,
     getDetailFromCache: getDetailFromCache,
-    clearHistory: clearHistory
+    clearHistory: clearHistory,
+    getThreadReplys: getThreadReplys
 }
 export { history }

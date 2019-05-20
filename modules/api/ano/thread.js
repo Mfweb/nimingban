@@ -7,8 +7,19 @@ import { history } from '../../history'
  * 获取串回复
  * @param {Number} tid 串ID
  * @param {Number} page 分页
+ * @param {Bool} force 是否强制从网络获取
  */
-async function getReplyList(tid, page) {
+async function getReplyList(tid, page, force = false) {
+    if(!force) {
+        // 从缓存获取
+        let cacheData = await history.getThreadReplys(tid, page);
+        // 缓存中没有，或者可能是最后一页
+        if(cacheData.status === 'ok' && cacheData.data.replys.length >= 19) {
+            console.log('from cache');
+            return { status: 'ok', res: cacheData.data };
+        }
+    }
+    console.log('from net');
     let url = await getUrl(configNetwork.apiUrl.getThreadReply);
     if(url === null) {
         return { status: 'error', errmsg: '获取host失败' };
@@ -17,7 +28,7 @@ async function getReplyList(tid, page) {
     var response = await request(url, {
         method: 'POST',
         headers: {
-            'cookie': await getUserCookie() 
+            'cookie': await getUserCookie()
         },
         body: {
             id: tid,
@@ -71,7 +82,7 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
         response = await uploadFile(url, img, 'image', {
             method: 'POST',
             headers: {
-                'cookie': await getUserCookie() 
+                'cookie': await getUserCookie()
             },
             body: bodys,
             onProgress: onProgress
@@ -81,7 +92,7 @@ async function replyNewThread(mode, tid, content, name="", email="", title="", i
         response = await request(url, {
             method: 'POST',
             headers: {
-                'cookie': await getUserCookie() 
+                'cookie': await getUserCookie()
             },
             body: {
                 resto: tid,
@@ -130,7 +141,7 @@ async function getDetailFromNet(id) {
     if(response.stateCode != 200) {
         return { status: 'error', errmsg: `http:${response.stateCode},${response.errMsg}` };
     }
-    
+
     try {
         let resJSON = JSON.parse(response.body);
         if(resJSON === 'thread不存在') {
@@ -159,7 +170,7 @@ async function getDetail(id) {
     }
 }
 
-export { 
+export {
     /**
      * 获取串回复列表
      */
