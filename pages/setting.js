@@ -268,14 +268,14 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View style={styles.themeColorValueView}>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.globalColor }]}></View>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.lightColor }]}></View>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.fontColor }]}></View>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.lightFontColor }]}></View>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.threadFontColor }]}></View>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.threadBackgroundColor }]}></View>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
-                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.linkColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.globalColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.lightColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.fontColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.lightFontColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.threadFontColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.threadBackgroundColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.defaultBackgroundColor }]}></View>
+                                <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.linkColor }]}></View>
                                 <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </TouchableOpacity>
@@ -285,13 +285,13 @@ class SettingScreen extends React.Component {
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         UI主色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.globalColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.globalColor }]}></View>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.themeColorViewColumn} onPress={() => this.setState({ themeColorKeyNow: 'lightColor', showThemeColorPicker: true })}>
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         淡化色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.lightColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.lightColor }]}></View>
                                 </TouchableOpacity>
                             </View>
 
@@ -300,13 +300,13 @@ class SettingScreen extends React.Component {
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         UI字体色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.fontColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.fontColor }]}></View>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.themeColorViewColumn} onPress={() => this.setState({ themeColorKeyNow: 'lightFontColor', showThemeColorPicker: true })}>
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         淡化字体色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.lightFontColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.lightFontColor }]}></View>
                                 </TouchableOpacity>
                             </View>
 
@@ -315,13 +315,13 @@ class SettingScreen extends React.Component {
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         串字体色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.threadFontColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.threadFontColor }]}></View>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.themeColorViewColumn} onPress={() => this.setState({ themeColorKeyNow: 'threadBackgroundColor', showThemeColorPicker: true })}>
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         串背景色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.threadBackgroundColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.threadBackgroundColor }]}></View>
                                 </TouchableOpacity>
                             </View>
 
@@ -330,13 +330,13 @@ class SettingScreen extends React.Component {
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         其他背景色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.defaultBackgroundColor }]}></View>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.themeColorViewColumn} onPress={() => this.setState({ themeColorKeyNow: 'linkColor', showThemeColorPicker: true })}>
                                     <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                         强调色：
                                     </Text>
-                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.colors.linkColor }]}></View>
+                                    <View style={[styles.themeColorRect, { backgroundColor: UISetting.userColors.linkColor }]}></View>
                                 </TouchableOpacity>
                             </View>
                             <View style={this.state.showThemeColorPicker ? {} : styles.displayNone}>
@@ -346,6 +346,7 @@ class SettingScreen extends React.Component {
                                     width={Dimensions.get('window').width}
                                     onColorChanged={(color) => {
                                         UISetting.colors[this.state.themeColorKeyNow] = color;
+                                        UISetting.userColors[this.state.themeColorKeyNow] = color;
                                         this.forceUpdate();
                                     }} />
                                 <View style={styles.themeColorToolsView}>
@@ -372,6 +373,7 @@ class SettingScreen extends React.Component {
                                         showLoading={this.props.checkingSession}
                                         onPress={() => {
                                             UISetting.colors[this.state.themeColorKeyNow] = UISetting.defaultColors[this.state.themeColorKeyNow];
+                                            UISetting.userColors[this.state.themeColorKeyNow] = UISetting.defaultColors[this.state.themeColorKeyNow];
                                             this.props.navigation.setParams({ a: Math.random() });
                                             this.setState({
                                                 showThemeColorPicker: false
