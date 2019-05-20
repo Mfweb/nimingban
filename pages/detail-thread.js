@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { TopModal } from '../component/top-modal'
 import  { Toast } from '../component/toast'
 import { DetailListItem } from '../component/list-detail-item'
-import { history } from '../modules/history'
 import { ActionSheet } from '../component/action-sheet'
 import { configNetwork, configDynamic, UISetting } from '../modules/config'
 import { Header } from 'react-navigation'
@@ -348,7 +347,6 @@ class DetailsScreen extends React.Component {
                         if( res.res.replys[0].id == 9999999 ) {
                             res.res.replys.splice(0, 1);
                         }
-                        history.addNewHistory('cache', {replyTo: res.res.id ,datas: res.res.replys});
                         //计算上次拉到哪里
                         let cpCount = (this.localReplyCount > 0) ? (res.res.replys.length - this.localReplyCount) : res.res.replys.length;
                         //本页是否填满
@@ -443,8 +441,6 @@ class DetailsScreen extends React.Component {
                 });
                 if(!isReply) {
                     tempList = tempList.concat(res.res.replys);
-                    history.addNewHistory('cache', {replyTo: 0, datas: [tempList[0]]});
-                    history.addNewHistory('cache', {replyTo: res.res.id, datas: res.res.replys});
                 }
 
                 if(isReply) {
