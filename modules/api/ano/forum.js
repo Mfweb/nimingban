@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { request, getUrl } from '../network'
 import { configNetwork, configLocal, configDynamic } from '../../config'
 import { getUserCookie } from '../../cookie-manager'
+import { history } from '../../history'
 
 /**
  * 将板块名字提取出来并缓存
@@ -16,7 +17,7 @@ async function saveForumNameCache(forumNames) {
     });
     configDynamic.forumNamecache[configDynamic.islandMode] = forumNameList;
     await AsyncStorage.setItem(
-        configLocal.localStorageName[configDynamic.islandMode].forumNameCache, 
+        configLocal.localStorageName[configDynamic.islandMode].forumNameCache,
         JSON.stringify(forumNameList)
     );
 }
@@ -57,7 +58,7 @@ async function getForumList(force = false) {
         // 缓存到本地
         await AsyncStorage.setItem(configLocal.localStorageName[configDynamic.islandMode].forumCache, localItem);
     }
- 
+
     try {
         let resJSON = JSON.parse(localItem);
         if(force === true) {
@@ -82,7 +83,7 @@ async function getThreadList(fid, page) {
     var response = await request(url, {
         method: 'POST',
         headers: {
-            'cookie': await getUserCookie() 
+            'cookie': await getUserCookie()
         },
         body: {
             id: fid,
@@ -103,6 +104,8 @@ async function getThreadList(fid, page) {
                 });
             }
         }
+        // 缓存串
+        history.addNewHistory('cache', {replyTo: 0, datas: resJSON});
         return { status: 'ok', res: resJSON };
     } catch (error) {
         return { status: 'error', errmsg: `${error}\r\n${unescape(response.body.replace(/\\u/g, '%u'))}` };
@@ -133,23 +136,23 @@ async function getForumIDByName(name) {
     return Object.keys(forumNameList).find(k => {return forumNameList[k] == name})
 }
 
-export { 
+export {
     /**
      * 获取板块列表
      */
-    getForumList, 
+    getForumList,
     /**
      * 获取板块中串列表
      */
-    getThreadList, 
+    getThreadList,
     /**
      * 通过ID获取板块名
      */
-    getForumNameByID, 
+    getForumNameByID,
     /**
      * 通过板块名获取ID
      */
-    getForumIDByName, 
+    getForumIDByName,
     /**
      * 将板块名字提取出来并缓存
      */
