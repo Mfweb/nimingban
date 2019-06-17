@@ -1,5 +1,5 @@
 {
-  "name": "PinkIsland",
+  "name": "pink-island",
   "version": "0.0.9",
   "private": true,
   "scripts": {
@@ -34,14 +34,14 @@
     "babel-jest": "24.1.0",
     "jest": "24.1.0",
     "metro-react-native-babel-preset": "0.51.1",
-    "react": "^16.8.3",
+    "react": "^16.8.6",
     "react-colorizer": "^1.1.1",
     "react-dom": "^16.8.6",
     "react-native": "^0.59.9",
     "react-native-webview": "^5.12.0",
     "react-test-renderer": "16.6.3",
     "styled-components": "^4.3.1",
-    "svgs": "^3.2.1"
+    "svgs": "^3.3.1"
   },
   "jest": {
     "preset": "react-native"
