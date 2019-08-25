@@ -15,7 +15,7 @@ import { Header } from 'react-navigation'
 import { getHTMLDom } from '../modules/html-decoder'
 import { FixedButton } from '../component/fixed-button'
 import { FloatingScrollButton } from '../component/floating-scroll-button'
-import { pinkCheckUpdate, pinkDoHotUpdate } from '../modules/hotupdate'
+//import { pinkCheckUpdate, pinkDoHotUpdate } from '../modules/hotupdate'
 
 
 const styles = StyleSheet.create({
@@ -116,7 +116,7 @@ class HomeScreen extends React.Component {
             openLDrawer: this.props.navigation.openDrawer,
             menuFunctions: this._menuFunctions
         });
-        pinkCheckUpdate();
+        //pinkCheckUpdate();
         getFeedList().then((res)=>{
             console.log(res);
         });
@@ -156,7 +156,7 @@ class HomeScreen extends React.Component {
         [
             '版规',
             '跳转串号',
-            '搜索(未实现)',
+            /*'搜索(未实现)',*/
             '跳转页码'
         ],
         (index) => {
@@ -169,8 +169,6 @@ class HomeScreen extends React.Component {
                         this._gotoID();
                         break;
                     case 2:
-                        break;
-                    case 3:
                         this._gotoPage();
                         break;
                 }

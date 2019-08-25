@@ -27,7 +27,6 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		19754A7C1E514F8E9EB171D5 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39B464C9EB0C4747A5ED70F0 /* MaterialCommunityIcons.ttf */; };
-		1CE382D5E80D44319FD07118 /* libRCTHotUpdate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C70881A9E10E41F7B342D64A /* libRCTHotUpdate.a */; };
 		20551110E2D246709AB463E5 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 33A2F7CBEBF3429BB62C4D6C /* FontAwesome.ttf */; };
 		2A753B0CF10D44A1BD1D3A78 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 93E47BB2A60442DB9F17B2EC /* Feather.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -614,7 +613,6 @@
 				EF3B5E4BFA42494FBB2F9D63 /* libRNSVG.a in Frameworks */,
 				4F6A5EC1528A476DB546EB6A /* libRNCSlider.a in Frameworks */,
 				CF408C49ADAA43A99B70D582 /* libRNCAsyncStorage.a in Frameworks */,
-				1CE382D5E80D44319FD07118 /* libRCTHotUpdate.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

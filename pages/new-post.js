@@ -418,7 +418,7 @@ class NewPostScreen extends React.Component {
         });
         this.ActionSheet.showActionSheet(Dimensions.get('window').width / 3 - 12 + 12, this.bodyViewBottom,
             '选择图片',
-            ['相机', '从相册选择', '涂鸦(未实现)', '芦苇娘'],
+            ['相机', '从相册选择', '芦苇娘'],
             (index) => {
                 this.ActionSheet.closeActionSheet(() => {
                     switch (index) {
@@ -429,9 +429,6 @@ class NewPostScreen extends React.Component {
                             this._selectImageFromLibrary();
                             break;
                         case 2:
-                            this.TopModal.showMessage('错误', '未实现', '确认');
-                            break;
-                        case 3:
                             Keyboard.dismiss();
                             if (this.state.showBottomBox && this.state.bottomBoxMode != 1) {
                                 this.setState({

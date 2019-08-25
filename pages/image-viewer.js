@@ -61,8 +61,8 @@ class ImageViewer extends React.Component {
         this.ActionSheet.showActionSheet(Dimensions.get('window').width, topY, '图片操作',
         [
             '保存到相册',
-            '百度搜图(未实现)',
-            'Google搜图(未实现)',
+            /*'百度搜图(未实现)',
+            'Google搜图(未实现)',*/
         ],
         (index) => {
             this.ActionSheet.closeActionSheet(() => {
@@ -105,7 +105,7 @@ class ImageViewer extends React.Component {
             <View style={[styles.mainView, {backgroundColor: UISetting.colors.defaultBackgroundColor}]}>
                 <Toast ref={(ref) => {this.toast = ref}}/>
                 <ActionSheet ref={(ref)=>{this.ActionSheet=ref;}} />
-                <ZoomImageViewer 
+                <ZoomImageViewer
                     style={styles.imageViewer}
                     saveToLocalByLongPress={false}
                     imageUrls={[{url: this.props.navigation.getParam('imageUrl', '-1'), props: {}}]}

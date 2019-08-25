@@ -576,7 +576,7 @@ class SettingScreen extends React.Component {
                                 <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
                         </TouchableOpacity>
-                            <View style={this.state.showImageCDN ? styles.fontSizeView : styles.displayNone}>
+                            {/*<View style={this.state.showImageCDN ? styles.fontSizeView : styles.displayNone}>
                                 <View style={styles.imageCDNItem}>
                                     <Text style={styles.imageCDNItemText}>自动获取</Text>
                                     <Switch
@@ -591,6 +591,7 @@ class SettingScreen extends React.Component {
                                         }}/>
                                 </View>
                             </View>
+                                    */}
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
 
 
@@ -604,7 +605,7 @@ class SettingScreen extends React.Component {
                                 </Text>
                             </View>
                             <View style={styles.settingItemValueView}>
-                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 14-({packageJson.version}))</Text>
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>1.00 beta(build 211-({packageJson.version}))</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
