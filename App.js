@@ -93,7 +93,8 @@ const AppNavigator = createDrawerNavigator({
 }, {
     drawerPosition: 'left',
     contentComponent: LeftDrawerNavigator,
-    drawerWidth: Dimensions.get('window').width * 0.7
+    drawerWidth: Dimensions.get('window').width * 0.7,
+    overlayColor: "#000000B2"
 });
 
 export default createAppContainer(AppNavigator);
