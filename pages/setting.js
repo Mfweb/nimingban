@@ -1,9 +1,9 @@
 import React from 'react'
-import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, Switch } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions, Switch, TextInput } from 'react-native'
 import Slider from '@react-native-community/slider';
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configNetwork, configDynamic, UISetting, saveUISetting } from '../modules/config'
+import { configNetwork, configDynamic, UISetting, saveUISetting, SystemSetting, saveSystemSetting } from '../modules/config'
 import { Toast } from '../component/toast'
 import { ActionSheet } from '../component/action-sheet'
 import ColorPicker from 'react-colorizer';
@@ -111,6 +111,15 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
         flex: 1
+    },
+    imageCDNItem: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around'
+    },
+    imageCDNItemText: {
+        fontSize: 16
     }
 });
 
@@ -128,7 +137,10 @@ class SettingScreen extends React.Component {
             showTimeFormat: false,
 
             showNestedQuoteCount: false,
-            nestedQuoteCountString: UISetting.nestedQuoteCount
+            nestedQuoteCountString: UISetting.nestedQuoteCount,
+
+            showImageCDN: false,
+            showImageCDNInput: SystemSetting.cdn[configDynamic.islandMode].privateCDNUrl
         };
     }
     static navigationOptions = ({ navigation }) => {
@@ -206,6 +218,9 @@ class SettingScreen extends React.Component {
             }, 500);
         }
         this.clickVersionCounter++;
+    }
+    inputCDNURL = () => {
+
     }
     render() {
         return (
@@ -550,7 +565,7 @@ class SettingScreen extends React.Component {
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
 
 
-                        <View style={styles.settingItem}>
+                        <TouchableOpacity style={styles.settingItem} onPress={() => this.setState({ showImageCDN: !this.state.showImageCDN })}>
                             <View>
                                 <Text style={[styles.settingItemText, { color: UISetting.colors.threadFontColor }]}>
                                     当前图片CDN
@@ -560,7 +575,22 @@ class SettingScreen extends React.Component {
                                 <Text numberOfLines={1} ellipsizeMode="tail" style={[styles.settingItemValueText, { color: UISetting.colors.lightFontColor }]}>{configDynamic.imageCDNURL[configDynamic.islandMode]}</Text>
                                 <Icon name={'arrow-right'} size={12} style={{marginLeft: 4}} color={UISetting.colors.lightFontColor} />
                             </View>
-                        </View>
+                        </TouchableOpacity>
+                            <View style={this.state.showImageCDN ? styles.fontSizeView : styles.displayNone}>
+                                <View style={styles.imageCDNItem}>
+                                    <Text style={styles.imageCDNItemText}>自动获取</Text>
+                                    <Switch
+                                        value={!SystemSetting.cdn[configDynamic.islandMode].privateCDN}
+                                        onValueChange={(newValue)=>{
+                                            SystemSetting.cdn[configDynamic.islandMode].privateCDN = !newValue;
+                                            this.forceUpdate();
+                                            saveSystemSetting();
+                                            if(newValue) { // 弹窗设置CDN
+                                                this.inputCDNURL();
+                                            }
+                                        }}/>
+                                </View>
+                            </View>
                         <View style={[styles.itemSplitLine, { backgroundColor: UISetting.colors.defaultBackgroundColor }]}></View>
 
 

@@ -96,17 +96,14 @@ class MainListItem extends React.Component {
     componentDidMount() {
         this._updateData(this.props.itemDetail);
     }
-    componentWillUnmount() {
-    }
-    componentWillReceiveProps(res) {
-        this._updateImage(res.itemDetail.localImage);
-    }
-    _updateImage = (localUri) => {
-        if(this.state.imgLocalUri != localUri) {
-            this.setState({
-                imgLocalUri: localUri
-            });
+
+    static getDerivedStateFromProps(props, state) {
+        if(props && props.itemDetail.localImage != state.imgLocalUri) {
+            return {
+                imgLocalUri: props.itemDetail.localImage
+            }
         }
+        return null;
     }
 
     _updateData = (itemDetail)=>{
@@ -119,8 +116,8 @@ class MainListItem extends React.Component {
                 let threadNo = url.href.split('/t/')[1];
                 this.props.navigation.navigate('Details', {
                     threadDetail: {
-                        id: threadNo, 
-                        userid: 'null', 
+                        id: threadNo,
+                        userid: 'null',
                         content: 'null',
                         now: '2099-12-12 12:12:12'
                     }
@@ -144,11 +141,11 @@ class MainListItem extends React.Component {
     render() {
         let { itemDetail } = this.props;
         return (
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={[styles.mainListItem, {
                     backgroundColor: UISetting.colors.threadBackgroundColor,
                     shadowColor: UISetting.colors.defaultBackgroundColor
-                }]} 
+                }]}
                 onPress={this._onPress} activeOpacity={1}>
                 <Animated.View style={[styles.touchActiveView, {backgroundColor: UISetting.colors.globalColor, transform: [{ translateX: this.state.translateNow}]}]}/>
                 <MainListItemHeader itemDetail={itemDetail} po={null}/>
@@ -156,7 +153,7 @@ class MainListItem extends React.Component {
                 <Text style={[styles.mainListItemContent, {color: UISetting.colors.threadFontColor}]}>
                     {this.state.displayData['threadContent']}
                 </Text>
-                <MainListImage 
+                <MainListImage
                     tid={itemDetail.id}
                     navigation={this.props.navigation}
                     Toast={this.props.Toast}

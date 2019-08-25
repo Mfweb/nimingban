@@ -4,7 +4,7 @@ import { getImage } from '../modules/api/image'
 import { getFeedID, getFeedList, addFeedID, removeFeedID } from '../modules/api/ano/feed'
 import { TopModal } from '../component/top-modal'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import { configDynamic, configLocal, UISetting, loadUISetting } from '../modules/config'
+import { configDynamic, configLocal, UISetting, loadSetting } from '../modules/config'
 import { Toast } from '../component/toast'
 import { MainListItem } from '../component/list-main-item'
 import { ActionSheet } from '../component/action-sheet'
@@ -61,11 +61,10 @@ class FeedScreen extends React.Component {
             )
         }
     }
-    componentWillMount () {
-        loadUISetting();
-    }
+
     componentDidMount() {
         this.isUnmount = false;
+        loadSetting();
         this._pullDownRefresh();
         this.props.navigation.setParams({
             openLDrawer: this.props.navigation.openDrawer,

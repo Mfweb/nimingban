@@ -160,6 +160,26 @@ var configDynamic = {
     }
 }
 
+var SystemSetting = {
+    cdn: {
+        'lw': {
+            privateCDN: false,
+            privateCDNUrl: ''
+        },
+        'bt': {
+            privateCDN: false,
+            privateCDNUrl: ''
+        },
+        'ld': {
+            privateCDN: false,
+            privateCDNUrl: ''
+        }
+    }
+};
+
+/**
+ * UI设置项
+ */
 var UISetting = {
     fontScale: 1.0, /* 字体缩放比例 */
     timeFormat: 0, /* 时间格式 */
@@ -232,9 +252,15 @@ Text.render = (...args) => {
     return origin;
 };
 
+/**
+ * 保存UI设置
+ */
 function saveUISetting() {
     AsyncStorage.setItem(`UISettings`, JSON.stringify(UISetting));
 }
+/**
+ * 载入UI设置
+ */
 function loadUISetting() {
     AsyncStorage.getItem('UISettings').then((settingString) => {
         if(settingString != null) {
@@ -247,4 +273,40 @@ function loadUISetting() {
         }
     });
 }
-export { configBase, configNetwork, configLocal, configDynamic, UISetting, saveUISetting, loadUISetting }
+/**
+ * 保存系统设置
+ */
+function saveSystemSetting() {
+    AsyncStorage.setItem(`SystemSetting`, JSON.stringify(SystemSetting));
+}
+/**
+ * 载入系统配置
+ */
+function loadSystemSetting() {
+    AsyncStorage.getItem('SystemSetting').then((settingString) => {
+        if(settingString != null) {
+            let savedSetting = JSON.parse(settingString);
+            if(savedSetting) {
+                Object.assign(SystemSetting, savedSetting);
+            }
+            console.log(SystemSetting);
+        }
+    });
+}
+
+function loadSetting() {
+    loadSystemSetting();
+    loadUISetting();
+}
+
+export {
+    configBase,
+    configNetwork,
+    configLocal,
+    configDynamic,
+    UISetting,
+    SystemSetting,
+    saveUISetting,
+    saveSystemSetting,
+    loadSetting
+};

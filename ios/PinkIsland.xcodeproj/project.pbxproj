@@ -61,10 +61,12 @@
 		8D19BDD42222B898005FB7DB /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D19BD562222B669005FB7DB /* QBImagePicker.framework */; };
 		8D19BDD52222B898005FB7DB /* QBImagePicker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8D19BD562222B669005FB7DB /* QBImagePicker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8D1CC54A221DE13B00C1AA32 /* scan-code.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8D1CC549221DE13B00C1AA32 /* scan-code.wav */; };
+		8D221BE223127A3C00037B63 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D221BAB23127A3B00037B63 /* libRCTGeolocation.a */; };
 		8D245DFF226227910061DE9F /* tnnaii-h-island-c.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 8D245DFE226227910061DE9F /* tnnaii-h-island-c.mp3 */; };
 		8D2C02EC22625FCE000AA457 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D2C02B522625FCE000AA457 /* libz.tbd */; };
 		8D2C02EE22625FD8000AA457 /* libbz2.1.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D2C02ED22625FD8000AA457 /* libbz2.1.0.tbd */; };
 		8DFEAFEE225FB0A200FCF41F /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DFEAFC1225FAE8B00FCF41F /* libRCTCameraRoll.a */; };
+		99B55D18EEE94AA5B4E42C0A /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92BA6D508CF84C84AB7E3A27 /* Fontisto.ttf */; };
 		9F2D2129CAF742E38DF9E72A /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D633A2A1E734E57A5786DCE /* libRNCamera.a */; };
 		A4EC6C019FE04ED0AFA77216 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BB1A314BA9044FF918EEBE5 /* FontAwesome5_Regular.ttf */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
@@ -158,20 +160,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = ADD01A681E09402E00F6D226;
 			remoteInfo = "RCTBlob-tvOS";
-		};
-		2D16E6831FA4F8DC00B85C8A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3DBE0D001F3B181A0099AA32;
-			remoteInfo = fishhook;
-		};
-		2D16E6851FA4F8DC00B85C8A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3DBE0D0D1F3B181C0099AA32;
-			remoteInfo = "fishhook-tvOS";
 		};
 		2DF0FFDE2056DD460020B375 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -340,6 +328,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 19825A1E1BD4A89800EE0337;
 			remoteInfo = RNSound;
+		};
+		8D221BDA23127A3C00037B63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BF14D6A371A449DB969D6F42 /* RNGestureHandler.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B5C32A36220C603B000FFB8D;
+			remoteInfo = "RNGestureHandler-tvOS";
 		};
 		8D2C01CC226253C3000AA457 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -542,12 +537,14 @@
 		8D19BD562222B669005FB7DB /* QBImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = QBImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D19BD9D2222B7BC005FB7DB /* RSKImageCropper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RSKImageCropper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1CC549221DE13B00C1AA32 /* scan-code.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = "scan-code.wav"; path = "../sounds/scan-code.wav"; sourceTree = "<group>"; };
+		8D221BAB23127A3B00037B63 /* libRCTGeolocation.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libRCTGeolocation.a; path = "build/Build/Products/Debug-iphonesimulator/libRCTGeolocation.a"; sourceTree = "<group>"; };
 		8D245DFE226227910061DE9F /* tnnaii-h-island-c.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "tnnaii-h-island-c.mp3"; path = "../sounds/tnnaii-h-island-c.mp3"; sourceTree = "<group>"; };
 		8D2C02B522625FCE000AA457 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		8D2C02ED22625FD8000AA457 /* libbz2.1.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.1.0.tbd; path = usr/lib/libbz2.1.0.tbd; sourceTree = SDKROOT; };
 		8D550F06FE8B44BFBF4197DE /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		8DFEAFB6225FAE8A00FCF41F /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		8FDF9C1818F74902B140F03F /* RNCSlider.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCSlider.xcodeproj; path = "../node_modules/@react-native-community/slider/ios/RNCSlider.xcodeproj"; sourceTree = "<group>"; };
+		92BA6D508CF84C84AB7E3A27 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		9309C20C1BBA4E63BD69C28E /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		93E47BB2A60442DB9F17B2EC /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		9DD5DAB92C6046A5999E43F0 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
@@ -586,6 +583,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D221BE223127A3C00037B63 /* libRCTGeolocation.a in Frameworks */,
 				8D2C02EE22625FD8000AA457 /* libbz2.1.0.tbd in Frameworks */,
 				8D2C02EC22625FCE000AA457 /* libz.tbd in Frameworks */,
 				8DFEAFEE225FB0A200FCF41F /* libRCTCameraRoll.a in Frameworks */,
@@ -722,8 +720,6 @@
 			children = (
 				139FDEF41B06529B00C62182 /* libRCTWebSocket.a */,
 				3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */,
-				2D16E6841FA4F8DC00B85C8A /* libfishhook.a */,
-				2D16E6861FA4F8DC00B85C8A /* libfishhook-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -768,6 +764,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8D221BAB23127A3B00037B63 /* libRCTGeolocation.a */,
 				8D2C02ED22625FD8000AA457 /* libbz2.1.0.tbd */,
 				8D2C02B522625FCE000AA457 /* libz.tbd */,
 				8D19BD9D2222B7BC005FB7DB /* RSKImageCropper.framework */,
@@ -808,6 +805,7 @@
 				272E379189F846CDA5CE01C1 /* SimpleLineIcons.ttf */,
 				8D1CC549221DE13B00C1AA32 /* scan-code.wav */,
 				8D550F06FE8B44BFBF4197DE /* Zocial.ttf */,
+				92BA6D508CF84C84AB7E3A27 /* Fontisto.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -991,6 +989,7 @@
 			isa = PBXGroup;
 			children = (
 				8D3B4F63220FDA6C00A13CD1 /* libRNGestureHandler.a */,
+				8D221BDB23127A3C00037B63 /* libRNGestureHandler-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1335,20 +1334,6 @@
 			remoteRef = 2D16E6711FA4F8DC00B85C8A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		2D16E6841FA4F8DC00B85C8A /* libfishhook.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libfishhook.a;
-			remoteRef = 2D16E6831FA4F8DC00B85C8A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		2D16E6861FA4F8DC00B85C8A /* libfishhook-tvOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libfishhook-tvOS.a";
-			remoteRef = 2D16E6851FA4F8DC00B85C8A /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		2DF0FFDF2056DD460020B375 /* libjsinspector.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1517,6 +1502,13 @@
 			remoteRef = 8D1CC545221DDCD200C1AA32 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		8D221BDB23127A3C00037B63 /* libRNGestureHandler-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNGestureHandler-tvOS.a";
+			remoteRef = 8D221BDA23127A3C00037B63 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		8D2C01CD226253C3000AA457 /* libRNCSlider.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1683,6 +1675,7 @@
 				6F682DE167D44B4E90AA524A /* SimpleLineIcons.ttf in Resources */,
 				8D245DFF226227910061DE9F /* tnnaii-h-island-c.mp3 in Resources */,
 				53EF4390F20E44DE892E357A /* Zocial.ttf in Resources */,
+				99B55D18EEE94AA5B4E42C0A /* Fontisto.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1945,6 +1938,10 @@
 				);
 				INFOPLIST_FILE = PinkIsland/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Build/Products/Debug-iphonesimulator",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1985,6 +1982,10 @@
 				);
 				INFOPLIST_FILE = PinkIsland/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/build/Build/Products/Debug-iphonesimulator",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

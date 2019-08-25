@@ -135,8 +135,8 @@ class ItemQuote extends React.Component {
             let threadNo = url.href.split('/t/')[1];
             this.props.navigation.push('Details', {
                 threadDetail: {
-                    id: threadNo, 
-                    userid: 'null', 
+                    id: threadNo,
+                    userid: 'null',
                     content: 'null',
                     now: '2099-12-12 12:12:12'
                 }
@@ -148,9 +148,6 @@ class ItemQuote extends React.Component {
             });
         }
     }
-    componentWillReceiveProps(res) {
-
-    }
     componentWillUnmount() {
         this.isUnmount = true;
     }
@@ -158,8 +155,8 @@ class ItemQuote extends React.Component {
         let dpId = this.props.id.match(/\d{1,11}/)[0];
         this.props.navigation.push('Details', {
             threadDetail: {
-                id: dpId, 
-                userid: 'null', 
+                id: dpId,
+                userid: 'null',
                 content: 'null',
                 now: '2099-12-12 12:12:12'
             }
@@ -170,7 +167,7 @@ class ItemQuote extends React.Component {
             return null;
         }
         return (
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={[styles.quoteView, {
                     borderColor: UISetting.colors.globalColor,
                     backgroundColor: UISetting.colors.lightColor

@@ -86,7 +86,7 @@ class DetailsScreen extends React.Component {
             headerTitle: (
                 <View style={styles.headerTitle}>
                     <Text style={[styles.headerTitleText, {color: UISetting.colors.fontColor}]}>
-                        {configNetwork.baseUrl[configDynamic.islandMode].base}
+                        ADnmb.com
                     </Text>
                     <Text style={[styles.headerTitleText, {color: UISetting.colors.fontColor}]}>
                         No.{navigation.getParam('threadDetail', null).id}
@@ -328,7 +328,7 @@ class DetailsScreen extends React.Component {
             return;
         }
         this.setState({ footerLoading: 1 }, async function() {
-            getReplyList(this.threadDetail.id, this.state.page).then((res) => {
+            getReplyList(this.threadDetail.id, this.state.page, true).then((res) => {
                 if(this.isUnMount) {
                     return;
                 }
@@ -400,9 +400,9 @@ class DetailsScreen extends React.Component {
         }
         this.setState({ headerLoading: true, page: startPage }, async () => {
             let isReply = false;
-            let res = await getReplyList(this.threadDetail.id, this.state.page);
+            let res = await getReplyList(this.threadDetail.id, this.state.page, true);
             if(res.status !== 'ok' && res.errmsg === '该主题不存在') {
-                res = await getDetail(this.threadDetail.id);
+                res = await getDetail(this.threadDetail.id, true);
                 isReply = true;
             }
             if(this.isUnMount) {

@@ -59,7 +59,7 @@ class TopModal extends React.Component {
             nowScale: new Animated.Value(0.1),
             showx: false,
 
-            
+
             width: Dimensions.get('window').width * 0.9,
             title: '无标题',
             item: null,
@@ -73,6 +73,8 @@ class TopModal extends React.Component {
     isUnMount = false;
     componentDidMount() {
         this.isUnMount = false;
+        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
+        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     }
     keyboardWillShowListener = null;
     keyboardWillHideListener = null;
@@ -81,10 +83,7 @@ class TopModal extends React.Component {
         this.keyboardWillShowListener.remove();
         this.keyboardWillHideListener.remove();
     }
-    componentWillMount() {
-        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
-        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
-    }
+
     modalSize = null;
     _keyboardWillShow = (e) => {
         if(this.modalSize != null) {
@@ -92,7 +91,7 @@ class TopModal extends React.Component {
             let modalBottom = this.modalSize.y + this.modalSize.height;
             //let modalZero = this.modalSize.y + this.modalSize.height / 2;
             let marginTop = modalBottom - keyboardTop - 140;
-            
+
             this.setState({
                 top: marginTop
             });
@@ -151,10 +150,10 @@ class TopModal extends React.Component {
      * @param {string} cancelButtonText 取消按钮
      * @param {function} cancelButtonCallBack 取消回调
      */
-    showMessage = ( title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null, 
+    showMessage = ( title, content, successButtonText, successButtonCallBack = null, cancelButtonText = null, cancelButtonCallBack = null,
         showSuccess=()=>{}, onClosePress=null) => {
-        let tempContent = 
-            (typeof content == 'string') 
+        let tempContent =
+            (typeof content == 'string')
             ?
             (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
                 <Text style={{fontSize: 20, margin: 10}}>{content}</Text>
@@ -180,8 +179,8 @@ class TopModal extends React.Component {
      * @param {string or object} newContent 内容
      */
     setContent = (newContent) => {
-        let tempContent = 
-            (typeof newContent == 'string') 
+        let tempContent =
+            (typeof newContent == 'string')
             ?
             (<ScrollView alwaysBounceVertical={false} style={{maxHeight: Dimensions.get('window').height - Header.HEIGHT - 140}}>
                 <Text style={{fontSize: 20, margin: 10}}>{newContent}</Text>
@@ -207,14 +206,14 @@ class TopModal extends React.Component {
             animationType={'fade'}
             visible={this.state.showx}
             transparent={true}>
-            <View 
+            <View
             style = {[ styles.modalMask ]}>
                 <Animated.View style={ [styles.modalRoot, {
                     backgroundColor: UISetting.colors.defaultBackgroundColor,
                     shadowColor: UISetting.colors.defaultBackgroundColor,
-                    width: this.state.width, 
+                    width: this.state.width,
                     marginTop: this.state.top,
-                    transform: [{ scale: this.state.nowScale }] 
+                    transform: [{ scale: this.state.nowScale }]
                 }]}
                     onLayout={this._onLayout}
                     ref={(ref)=>this.modalView=ref} >
@@ -228,31 +227,31 @@ class TopModal extends React.Component {
                     </View>
                     <View style={[styles.modalTitleSplitLine, {backgroundColor: UISetting.colors.lightFontColor}]}></View>
                     <View style={{
-                        width: this.state.width, 
+                        width: this.state.width,
                         maxHeight: (this.props.maxHeight ? this.props.maxHeight:(Dimensions.get('window').height - Header.HEIGHT)) - 50 - 40 - 20 // -button - title - 保留
                         }}>
                         {this.state.item}
                     </View>
                     <View style={[styles.modalTitleSplitLine, {backgroundColor: UISetting.colors.lightFontColor}]}></View>
                     <View style={[styles.modalButtonView, this.state.width]}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             activeOpacity={0.7}
                             style={this.state.leftButtonText ?[
-                                styles.modalButton, 
+                                styles.modalButton,
                                 {
                                     width:this.state.width / 2,
                                     borderBottomLeftRadius: 8,
                                 }]:styles.displayNone
-                            } 
+                            }
                             onPress={this.state.onLeftButtonPress}>
                             <Text style={{fontSize: 20, color: UISetting.colors.globalColor}}>{this.state.leftButtonText}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             activeOpacity={0.7}
                             style={[
-                                styles.modalButton, 
+                                styles.modalButton,
                                 {
-                                    width: this.state.leftButtonText ? this.state.width/2 : this.state.width, 
+                                    width: this.state.leftButtonText ? this.state.width/2 : this.state.width,
                                     backgroundColor: UISetting.colors.globalColor,
                                     borderBottomRightRadius: 8,
                                     borderBottomLeftRadius: this.state.leftButtonText?0:8

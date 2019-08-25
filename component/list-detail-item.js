@@ -34,7 +34,9 @@ class DetailListItem extends React.Component {
             displayData:{},
             imgLocalUri: null,
             fullImageDownloading: false,
-            selected: false
+            selected: false,
+            updateContent: false,
+            threadDetail: null
         }
     }
     _onPressImage = () => {
@@ -58,23 +60,34 @@ class DetailListItem extends React.Component {
             }
         });
     }
+
     componentDidMount() {
         this._updateData(this.props.itemDetail);
     }
-    
-    componentWillReceiveProps(res) {
-        this._updateImage(res.itemDetail.localImage);
-        this._updateData(res.itemDetail);
+
+    static getDerivedStateFromProps(props, state) {
+        if(props &&
+            (state.threadDetail == null ||
+                props.itemDetail.localImage != state.imgLocalUri ||
+                props.itemDetail.content != state.threadDetail.content ||
+                props.itemDetail.userid != state.threadDetail.userid)) {
+            return {
+                imgLocalUri: props.itemDetail.localImage,
+                updateContent: true,
+                threadDetail: props.itemDetail
+            }
+        }
+        return null;
     }
-    componentWillUnmount() {
-    }
-    _updateImage = (localUri) => {
-        if(this.state.imgLocalUri != localUri) {
+
+    getSnapshotBeforeUpdate() {
+        if(this.state.updateContent) {
             this.setState({
-                imgLocalUri: localUri
-            });
+                updateContent: false
+            }, ()=>this._updateData(this.state.threadDetail));
         }
     }
+
     _onPressUrl = (url)=>{
         if( (url.href.indexOf('/t/') >= 0) && (
             (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
@@ -82,8 +95,8 @@ class DetailListItem extends React.Component {
             let threadNo = url.href.split('/t/')[1];
             this.props.navigation.push('Details', {
                 threadDetail: {
-                    id: threadNo, 
-                    userid: 'null', 
+                    id: threadNo,
+                    userid: 'null',
                     content: 'null',
                     now: '2099-12-12 12:12:12'
                 }
@@ -115,8 +128,8 @@ class DetailListItem extends React.Component {
                             let dpId = content.match(/\d{1,11}/)[0];
                             this.props.navigation.push('Details', {
                                 threadDetail: {
-                                    id: dpId, 
-                                    userid: 'null', 
+                                    id: dpId,
+                                    userid: 'null',
                                     content: 'null',
                                     now: '2099-12-12 12:12:12'
                                 }
@@ -165,7 +178,7 @@ class DetailListItem extends React.Component {
             <TouchableOpacity style={[styles.mainListItem, this.state.selected?{backgroundColor: UISetting.colors.lightColor}:{backgroundColor: UISetting.colors.threadBackgroundColor}]} onLongPress={this._longPressItem} activeOpacity={1}>
                 <MainListItemHeader itemDetail={itemDetail} po={this.props.po}/>
                 {this.state.displayData['threadContent']}
-                <MainListImage 
+                <MainListImage
                     tid={itemDetail.id}
                     navigation={this.props.navigation}
                     Toast={this.props.Toast}

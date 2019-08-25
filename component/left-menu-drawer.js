@@ -102,7 +102,8 @@ class IsLandSelect extends React.Component {
             islandList: [],
             nowOpacity: new Animated.Value(0),
             nowScale: new Animated.Value(0.1),
-            show: false
+            show: false,
+            animating: false
         }
     }
     componentDidMount() {
@@ -124,25 +125,23 @@ class IsLandSelect extends React.Component {
             islandList: tempIsland
         });
     }
-    componentWillReceiveProps(newProps) {
-        if (newProps.show != this.state.show) {
-            if (newProps.show === true) {
-                this.setState({
-                    show: true
-                }, () => {
-                    this.startAnime('in');
-                });
-            }
-            else if (newProps.show === false) {
-                this.startAnime('out', () => {
-                    this.setState({
-                        show: false,
-                    });
-                });
+
+    static getDerivedStateFromProps(props, state) {
+        if (props && props.show != state.show) {
+            return {
+                animating: true,
+                show: props.show
             }
         }
     }
-    startAnime = function (mode, finish = () => { }) {
+    getSnapshotBeforeUpdate() {
+        if(this.state.animating) {
+            this.setState({
+                animating: false
+            }, ()=>this.startAnime(this.state.show?'in':'out'));
+        }
+    }
+    startAnime = (mode, finish = () => { }) => {
         if (this.isUnMount) {
             return;
         }
@@ -358,25 +357,31 @@ class LeftDrawerNavigator extends React.Component {
     getForumData = async (force, finish = () => { }) => {
         let res = await getForumList(force);
         if (res.status == 'ok') {
-            let tempList = Array();
-            for (let gIndex = 0; gIndex < res.res.length; gIndex++) {
-                let tempItem = Array();
-                for (let iIndex = 0; iIndex < res.res[gIndex].forums.length; iIndex++) {
-                    let itm = res.res[gIndex].forums[iIndex];
-                    tempItem.push({
-                        displayName: itm.showName ? getHTMLDom(itm.showName) : getHTMLDom(itm.name),
-                        name: itm.name,
-                        id: itm.id
+            if(typeof res.res === "object") {
+                let tempList = Array();
+                for (let gIndex = 0; gIndex < res.res.length; gIndex++) {
+                    let tempItem = Array();
+                    for (let iIndex = 0; iIndex < res.res[gIndex].forums.length; iIndex++) {
+                        let itm = res.res[gIndex].forums[iIndex];
+                        tempItem.push({
+                            displayName: itm.showName ? getHTMLDom(itm.showName) : getHTMLDom(itm.name),
+                            name: itm.name,
+                            id: itm.id
+                        });
+                    }
+                    tempList.push({
+                        groupName: res.res[gIndex].name,
+                        data: tempItem
                     });
                 }
-                tempList.push({
-                    groupName: res.res[gIndex].name,
-                    data: tempItem
-                });
+                this.setState({
+                    forumList: tempList,
+                }, finish);
             }
-            this.setState({
-                forumList: tempList,
-            }, finish);
+            else {
+                alert(res.res);
+                finish();
+            }
         }
         else {
             finish();
@@ -410,7 +415,7 @@ class LeftDrawerNavigator extends React.Component {
         this.setState({
             showAllIsland: false
         }, () => {
-            this._pullDownRefresh(false, () => this._gotoFroum(-1, '时间线'));
+            this._pullDownRefresh(true, () => this._gotoFroum(-1, '时间线'));
         });
     }
 

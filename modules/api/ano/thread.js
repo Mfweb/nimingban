@@ -174,9 +174,9 @@ async function getDetailFromNet(id) {
  * 如果之前没有查看过，那会首先当作主串获取，如果不存在则当作普通串获取
  * @param {string} id ID
  */
-async function getDetail(id) {
+async function getDetail(id, force = false) {
     let detailCatch = await history.getDetailFromCache(id);
-    if(detailCatch.rows.length === 0) { // 缓存中没有
+    if(detailCatch.rows.length === 0 || force) { // 缓存中没有
         detailCatch = await getDetailFromNet(id);
         return detailCatch;
     }

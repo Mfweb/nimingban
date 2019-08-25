@@ -51,28 +51,44 @@ class HistoryHeader extends React.Component {
         super(props);
         this.state = {
             headerMove: new Animated.Value(0),
-            mode: 0
+            mode: 0,
+            moveTo: -1
         }
     }
 
-    componentWillReceiveProps (newProps) {
-        if(newProps.mode != this.state.mode) {
-            let target = this.maxWidth * 0.3334 * newProps.mode - 1;
-            Animated.timing(
-                this.state.headerMove,
-                {
-                    toValue: target<0?0:target,
-                    duration: 150,
-                    useNativeDriver: true,
-                    stiffness: 80
-                }
-            ).start(()=>{
-                this.setState({
-                    mode: newProps.mode
+    static getDerivedStateFromProps(props, state) {
+        if(props && props.mode != state.mode) {
+            return {
+                moveTo: props.mode
+            };
+        }
+        return null;
+    }
+
+    getSnapshotBeforeUpdate() {
+        if(this.state.moveTo >= 0 && this.maxWidth) {
+            var t = this.state.moveTo;
+            this.setState({
+                moveTo: -1
+            }, ()=>{
+                let target = this.maxWidth * 0.3334 * t - 1;
+                Animated.timing(
+                    this.state.headerMove,
+                    {
+                        toValue: target<0?0:target,
+                        duration: 150,
+                        useNativeDriver: true,
+                        stiffness: 80
+                    }
+                ).start(()=>{
+                    this.setState({
+                        mode: t
+                    });
                 });
             });
         }
     }
+
     _onLayout = (res) => {
         this.maxWidth = res.nativeEvent.layout.width;
     }
@@ -89,8 +105,8 @@ class HistoryHeader extends React.Component {
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity style={[
-                styles.headerButton, 
-                styles.headerCenterButton, { 
+                styles.headerButton,
+                styles.headerCenterButton, {
                     borderLeftColor: UISetting.colors.fontColor,
                     borderRightColor: UISetting.colors.fontColor
                     }
@@ -140,7 +156,7 @@ class HistoryManager extends React.Component {
                 </TouchableOpacity>
             ),
             headerRight: (
-                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }} 
+                <TouchableOpacity style={{ marginRight: 8, marginTop: 2 }}
                     onPress={async ()=>navigation.state.params.menuFunctions()} underlayColor={UISetting.colors.lightColor} activeOpacity={0.5} >
                     <Icon name={'options'} size={24} color={UISetting.colors.fontColor} />
                 </TouchableOpacity>

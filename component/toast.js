@@ -36,6 +36,8 @@ class Toast extends React.Component {
     isUnMount = false;
     componentDidMount() {
         this.isUnMount = false;
+        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
+        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     }
     keyboardWillShowListener = null;
     keyboardWillHideListener = null;
@@ -43,10 +45,6 @@ class Toast extends React.Component {
         this.isUnMount = true;
         this.keyboardWillShowListener.remove();
         this.keyboardWillHideListener.remove();
-    }
-    componentWillMount() {
-        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow.bind(this));
-        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide.bind(this));
     }
     _keyboardWillShow = (e) => {
         this.setState({
@@ -122,8 +120,8 @@ class Toast extends React.Component {
                 left: this.state.left,
                 opacity: this.state.nowOpacity,
                 transform: [
-                    { 
-                        scale: this.state.nowScale 
+                    {
+                        scale: this.state.nowScale
                     }
                 ]
             }]}

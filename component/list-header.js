@@ -73,15 +73,33 @@ class MainListItemHeader extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            displayData: {}
+            displayData: {},
+            updateHeader: false
         }
     }
 
     componentDidMount () {
+        this._updateData(this.props.itemDetail);
     }
-    componentWillReceiveProps(newProps) {
-        this._updateData(newProps.itemDetail);
+
+    static getDerivedStateFromProps(props, state) {
+        if(props && (!state.displayData.hasOwnProperty('userID') || state.displayData['userID'] != props.itemDetail.userid)) {
+            console.log(123);
+            return {
+                updateHeader: true
+            }
+        }
+        return false;
     }
+
+    getSnapshotBeforeUpdate() {
+        if(this.state.updateHeader) {
+            this.setState({
+                updateHeader: false
+            }, ()=>this._updateData(this.props.itemDetail));
+        }
+    }
+
     _updateData = (itemDetail) => {
         let displayData = {};
         displayData['userIDStyle'] = [];
@@ -98,7 +116,7 @@ class MainListItemHeader extends React.Component {
             displayData['userIDStyle'].push({backgroundColor: UISetting.colors.lightColor});
         }
         displayData['fName'] = itemDetail.fname;
-        displayData['userID'] = getHTMLDom(itemDetail.userid);
+        displayData['userID'] = itemDetail.userid;
         displayData['displayTime'] = converDateTime(itemDetail.now);
         this.setState({
             displayData: displayData
