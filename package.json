@@ -1,6 +1,6 @@
 {
   "name": "pink-island",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -9,7 +9,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
     "@react-native-community/slider": "^1.1.4",
-    "buffer": "^5.4.0",
+    "buffer": "^5.4.2",
     "events": "^3.0.0",
     "htmlparser2": "^3.10.1",
     "jpeg-js": "^0.3.6",
@@ -23,10 +23,10 @@
     "react-native-image-crop-picker": "^0.24.1",
     "react-native-image-zoom-viewer": "^2.2.26",
     "react-native-sound": "^0.10.12",
-    "react-native-sqlite-storage": "^3.3.11",
-    "react-native-svg": "^9.6.4",
+    "react-native-sqlite-storage": "^4.0.0",
+    "react-native-svg": "^9.7.1",
     "react-native-vector-icons": "^6.6.0",
-    "react-navigation": "^3.12.0"
+    "react-navigation": "^3.12.1"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",

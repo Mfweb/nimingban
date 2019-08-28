@@ -6,11 +6,11 @@ import { UISetting } from '../modules/config'
 
 const styles = StyleSheet.create({
     mainListItemUserCookieNameBigVIP: {
-        fontSize: 18,
+        fontSize: 17,
         color: 'red'
     },
     mainListItemUserCookieName: {
-        fontSize: 18,
+        fontSize: 17,
     },
     mainListItemUserCookieNamePO: {
         borderWidth: 1,
@@ -26,11 +26,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8
     },
+    mainListItemHeaderL1L: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center'
+    },
     mainListItemTid: {
-        fontSize: 18
+        fontSize: 17,
+        marginLeft: 17
     },
     mainListItemTime: {
-        fontSize: 18
+        fontSize: 17
     },
     mainListItemHeaderL2: {
         flex: 1,
@@ -48,10 +54,10 @@ const styles = StyleSheet.create({
         display: 'none'
     },
     mainListItemTitle: {
-        fontSize: 16
+        fontSize: 17
     },
     mainListItemName: {
-        fontSize: 16
+        fontSize: 17
     },
     mainListItemSAGE: {
         color: 'red',
@@ -60,7 +66,7 @@ const styles = StyleSheet.create({
     },
     mainListItemForumName: {
         color: 'red',
-        fontSize: 20
+        fontSize: 17
     },
 });
 
@@ -78,13 +84,12 @@ class MainListItemHeader extends React.Component {
         }
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this._updateData(this.props.itemDetail);
     }
 
     static getDerivedStateFromProps(props, state) {
-        if(props && (!state.displayData.hasOwnProperty('userID') || state.displayData['userID'] != props.itemDetail.userid)) {
-            console.log(123);
+        if (props && (!state.displayData.hasOwnProperty('userID') || state.displayData['userID'] != props.itemDetail.userid)) {
             return {
                 updateHeader: true
             }
@@ -93,27 +98,30 @@ class MainListItemHeader extends React.Component {
     }
 
     getSnapshotBeforeUpdate() {
-        if(this.state.updateHeader) {
+        if (this.state.updateHeader) {
             this.setState({
                 updateHeader: false
-            }, ()=>this._updateData(this.props.itemDetail));
+            }, () => this._updateData(this.props.itemDetail));
         }
+        return null;
     }
+    componentDidUpdate() {
 
+    }
     _updateData = (itemDetail) => {
         let displayData = {};
         displayData['userIDStyle'] = [];
-        if(itemDetail.admin == 1) {
+        if (itemDetail.admin == 1) {
             displayData['userIDStyle'].push(styles.mainListItemUserCookieNameBigVIP);
         }
         else {
             displayData['userIDStyle'].push(styles.mainListItemUserCookieName);
-            displayData['userIDStyle'].push({color: UISetting.colors.globalColor});
+            displayData['userIDStyle'].push({ color: UISetting.colors.globalColor });
         }
-        if(itemDetail.userid == this.props.po){
+        if (itemDetail.userid == this.props.po) {
             displayData['userIDStyle'].push(styles.mainListItemUserCookieNamePO);
-            displayData['userIDStyle'].push({borderColor: UISetting.colors.globalColor});
-            displayData['userIDStyle'].push({backgroundColor: UISetting.colors.lightColor});
+            displayData['userIDStyle'].push({ borderColor: UISetting.colors.globalColor });
+            displayData['userIDStyle'].push({ backgroundColor: UISetting.colors.lightColor });
         }
         displayData['fName'] = itemDetail.fname;
         displayData['userID'] = itemDetail.userid;
@@ -126,30 +134,30 @@ class MainListItemHeader extends React.Component {
         let { itemDetail } = this.props;
         let { displayData } = this.state;
         return (
-            <View style={{padding: 8}}>
+            <View style={{ padding: 8 }}>
                 <View style={styles.mainListItemHeader}>
                     <View style={styles.mainListItemHeaderL1}>
-                        <Text style={displayData['userIDStyle']}>
-                            {displayData['userID']}
-                        </Text>
-
-                        <Text style={[styles.mainListItemTid, {color: UISetting.colors.globalColor}]}>
-                            No.{itemDetail.id}
-                        </Text>
-
-                        <Text style={[styles.mainListItemTime, {color: UISetting.colors.globalColor}]}>
+                        <View style={styles.mainListItemHeaderL1L}>
+                            <Text style={displayData['userIDStyle']}>
+                                {displayData['userID']}
+                            </Text>
+                            <Text style={[styles.mainListItemTid, { color: UISetting.colors.globalColor }]}>
+                                No.{itemDetail.id}
+                            </Text>
+                        </View>
+                        <Text style={[styles.mainListItemTime, { color: UISetting.colors.globalColor }]}>
                             {displayData['displayTime']}
                         </Text>
                     </View>
                 </View>
                 <View style={styles.mainListItemHeaderL2}>
                     <View style={styles.mainListItemHeaderL2L}>
-                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : [styles.mainListItemTitle, {color: UISetting.colors.lightFontColor}]}>{itemDetail.title}</Text>
-                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : [styles.mainListItemName, {color: UISetting.colors.lightFontColor}]}>{itemDetail.name}</Text>
+                        <Text style={itemDetail.title == '无标题' ? styles.displayNone : [styles.mainListItemTitle, { color: UISetting.colors.lightFontColor }]}>{itemDetail.title}</Text>
+                        <Text style={itemDetail.name == '无名氏' ? styles.displayNone : [styles.mainListItemName, { color: UISetting.colors.lightFontColor }]}>{itemDetail.name}</Text>
                     </View>
 
                     <View style={styles.mainListItemHeaderL2R}>
-                        <Text style={displayData['fName'] ?styles.mainListItemForumName: styles.displayNone }>{displayData['fName']}</Text>
+                        <Text style={displayData['fName'] ? styles.mainListItemForumName : styles.displayNone}>{displayData['fName']}</Text>
                         <Text style={itemDetail.sage === '1' ? styles.mainListItemSAGE : styles.displayNone}>SAGE</Text>
                     </View>
                 </View>

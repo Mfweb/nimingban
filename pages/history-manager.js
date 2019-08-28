@@ -87,8 +87,11 @@ class HistoryHeader extends React.Component {
                 });
             });
         }
+        return null;
     }
+    componentDidUpdate() {
 
+    }
     _onLayout = (res) => {
         this.maxWidth = res.nativeEvent.layout.width;
     }

@@ -264,7 +264,7 @@ class DetailsScreen extends React.Component {
     _actionItem = (target, id, closeMark) => {
         let { pageX, pageY } = target.nativeEvent;
         this.ActionSheet.showActionSheet(pageX, pageY, `操作>>No.${id}`,
-        ['回复', '添加到引用缓存', '复制串号', '复制内容', '举报', '屏蔽饼干(未实现)', '屏蔽串号(未实现)'], (index)=>{
+        ['回复', '添加到引用缓存', '复制串号', '复制内容', '举报',/* '屏蔽饼干(未实现)', '屏蔽串号(未实现)'*/], (index)=>{
             this.ActionSheet.closeActionSheet();
             closeMark();
             switch (index) {

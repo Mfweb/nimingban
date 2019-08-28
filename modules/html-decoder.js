@@ -19,9 +19,9 @@ const arrEntities = {
     'lt': '<', 'gt': '>', 'amp': '&', 'quot': '"',
     'nbsp': ' ', 'emsp': ' ', 'ensp': ' ', 'thinsp': ' ',
     'mdash': '—', 'ndash': '–', 'minus': '−', '-': '-',
-    'oline': '‾', 'cent': '¢', 'pound': '£', 'euro': '€', 
+    'oline': '‾', 'cent': '¢', 'pound': '£', 'euro': '€',
     'sect': '§', 'dagger': '†', 'Dagger': '‡', 'lsquo': '‘',
-    'rsquo': '’', '\'': '\'', '#x263a': '☺', '#x2605':'★', 
+    'rsquo': '’', '\'': '\'', '#x263a': '☺', '#x2605':'★',
     '#x2606': '☆', '#x2610': '☐', 'middot': '·', 'bull': '•',
     'copy': '©', 'reg': '®', 'trade': '™', 'iquest': '¿','iexcl': '¡',
     'Aring': 'Å', 'hellip': '…', '#x2295': '⊕', '#x2299': '⊙','#x2640': '♀',
@@ -137,7 +137,7 @@ function _getHTMLDom(htmlJSONIn, aCallback, tagName = null, tagAttribs = null, p
  */
 function getHTMLDom(htmlTextIn, aCallback = ()=>{}) {
     let outDom = _getHTMLDom(parseDOM(htmlTextIn), aCallback);
-    return <Text style={{fontSize: 20}} key={domKey++}>{outDom}</Text>;
+    return <Text key={domKey++}>{outDom}</Text>;
 }
 /**
  * 将字符串中的链接转为超链接

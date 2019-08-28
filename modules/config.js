@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, PixelRatio } from 'react-native';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-community/async-storage';
+import packageJson from '../package.json';
 
 const configBase = {
     appMark: 'PinkAdao',
@@ -192,7 +193,7 @@ var UISetting = {
         lightColor: '#FFE4E1', /* 淡化颜色，也是主要颜色 */
         fontColor: '#FFF', /* 在主要颜色上显示文字的文字颜色 */
         lightFontColor: '#696969', /* 浅色文字颜色 */
-        threadFontColor: '#000', /* 串内容颜色 */
+        threadFontColor: '#4B4B4B', /* 串内容颜色 */
         threadBackgroundColor: '#FFF',/* 串背景色 */
         defaultBackgroundColor: '#F5F5F5', /* 绝大多数地方的背景色 */
         linkColor: '#1E90FF' /* 超链接等强调色 */
@@ -214,7 +215,7 @@ var UISetting = {
         lightColor: '#FFE4E1',
         fontColor: '#FFF',
         lightFontColor: '#696969',
-        threadFontColor: '#000',
+        threadFontColor: '#4B4B4B',
         threadBackgroundColor: '#FFF',
         defaultBackgroundColor: '#F5F5F5',
         linkColor: '#1E90FF'
@@ -225,7 +226,7 @@ var UISetting = {
         lightColor: '#FFE4E1',
         fontColor: '#FFF',
         lightFontColor: '#696969',
-        threadFontColor: '#000',
+        threadFontColor: '#4B4B4B',
         threadBackgroundColor: '#FFF',
         defaultBackgroundColor: '#F5F5F5',
         linkColor: '#1E90FF'
@@ -251,27 +252,40 @@ Text.render = (...args) => {
     }
     return origin;
 };
-
+async function checkFirstRun() {
+    let lastVer = await AsyncStorage.getItem('version');
+    if(lastVer == null || lastVer != packageJson.version) {
+        await AsyncStorage.setItem('version', packageJson.version);
+        return true;
+    }
+    return false;
+}
 /**
  * 保存UI设置
  */
 function saveUISetting() {
+    console.log(UISetting);
     AsyncStorage.setItem(`UISettings`, JSON.stringify(UISetting));
 }
 /**
  * 载入UI设置
  */
-function loadUISetting() {
-    AsyncStorage.getItem('UISettings').then((settingString) => {
-        if(settingString != null) {
-            let savedSetting = JSON.parse(settingString);
-            if(savedSetting) {
-                Object.assign(UISetting, savedSetting);
-                UISetting.colors = UISetting.colorMode === 1 ? UISetting.darkColors : UISetting.userColors;
+async function loadUISetting() {
+    let settingString = await AsyncStorage.getItem('UISettings');
+    if(settingString != null) {
+        let savedSetting = JSON.parse(settingString);
+        if(savedSetting) {
+            delete savedSetting.defaultColors;
+            if(await checkFirstRun()) {
+                console.log("first");
+                delete savedSetting.userColors;
+                delete savedSetting.colors;
             }
-            console.log(UISetting);
+            Object.assign(UISetting, savedSetting);
+            UISetting.colors = UISetting.colorMode === 1 ? UISetting.darkColors : UISetting.userColors;
         }
-    });
+        console.log(UISetting);
+    }
 }
 /**
  * 保存系统设置

@@ -160,7 +160,7 @@ class MainListItem extends React.Component {
                     localUri={this.state.imgLocalUri}
                     imgUri={itemDetail.img + itemDetail.ext}/>
                 <View style={this.state.displayData['replayCountText']===undefined? styles.displayNone: styles.mainListItemBottom}>
-                    <Icon name={'bubble'} size={24} color={UISetting.colors.globalColor} />
+                    <Icon name={'bubble'} size={20} color={UISetting.colors.globalColor} />
                     <Text style={[styles.mainListReplayCountText, {color: UISetting.colors.globalColor}]}>{this.state.displayData['replayCountText']}</Text>
                 </View>
             </TouchableOpacity>

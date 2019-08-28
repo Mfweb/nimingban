@@ -133,6 +133,7 @@ class IsLandSelect extends React.Component {
                 show: props.show
             }
         }
+        return null;
     }
     getSnapshotBeforeUpdate() {
         if(this.state.animating) {
@@ -140,6 +141,10 @@ class IsLandSelect extends React.Component {
                 animating: false
             }, ()=>this.startAnime(this.state.show?'in':'out'));
         }
+        return null;
+    }
+    componentDidUpdate() {
+
     }
     startAnime = (mode, finish = () => { }) => {
         if (this.isUnMount) {

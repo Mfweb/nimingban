@@ -86,8 +86,11 @@ class DetailListItem extends React.Component {
                 updateContent: false
             }, ()=>this._updateData(this.state.threadDetail));
         }
+        return null;
     }
+    componentDidUpdate() {
 
+    }
     _onPressUrl = (url)=>{
         if( (url.href.indexOf('/t/') >= 0) && (
             (url.href.indexOf('adnmb') >= 0) || (url.href.indexOf('nimingban') >= 0) || (url.href.indexOf('h.acfun'))
